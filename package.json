@@ -12,6 +12,7 @@
     "@react-three/drei": "^9.107.2",
     "@react-three/fiber": "^8.16.8",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@vercel/speed-insights": "^1.0.12",
     "chart.js": "^4.4.3",
     "framer-motion": "^11.2.12",
     "gsap": "^3.12.5",

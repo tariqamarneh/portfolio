@@ -1,13 +1,13 @@
-// src/app/layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import FloatingNav from '@/components/FloatingNav'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Your Name - Web Developer & AI Enthusiast',
+  title: 'Tariq Amarneh - Web Developer & AI Enthusiast',
   description: 'Portfolio of a web developer specializing in Next.js, Python, and Generative AI',
 }
 
@@ -18,6 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <SpeedInsights/>
       <body className={`${inter.className} bg-gray-900 text-white`}>
         <div className="relative">
           {children}
