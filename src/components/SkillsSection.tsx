@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import ScrollAnimationWrapper from './ScrollAnimationWrapper'
 
 type Skill = {
   name: string
@@ -54,36 +55,35 @@ export default function SkillsSection() {
 
   return (
     <section id="skills" className="py-20">
-      <div className="container mx-auto px-8 md:px-16">
-        <motion.h2 
-          className="text-5xl font-bold mb-16 text-center neon-text"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Skills
-        </motion.h2>
-        <div className="flex justify-center space-x-4 mb-12">
-          {['all', 'frontend', 'backend', 'ai'].map((category) => (
-            <motion.button
-              key={category}
-              onClick={() => setActiveCategory(category as any)}
-              className={`px-6 py-2 rounded-full text-lg font-semibold ${
-                activeCategory === category
-                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
-                  : 'glass-effect text-indigo-200'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </motion.button>
-          ))}
-        </div>
+      <div className="container mx-auto px-4 sm:px-8 md:px-16">
+        <ScrollAnimationWrapper>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-12 text-center gradient-text">
+            Skills
+          </h2>
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <div className="flex flex-wrap justify-center md:justify-between gap-2 mb-8">
+            {['all', 'frontend', 'backend', 'ai'].map((category) => (
+              <motion.button
+                key={category}
+                onClick={() => setActiveCategory(category as any)}
+                className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${
+                  activeCategory === category
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    : 'glass-effect text-blue-200 hover:text-white'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </motion.button>
+            ))}
+          </div>
+        </ScrollAnimationWrapper>
         <AnimatePresence mode="wait">
           <motion.div 
             key={activeCategory}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -98,4 +98,3 @@ export default function SkillsSection() {
     </section>
   )
 }
-

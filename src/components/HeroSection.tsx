@@ -47,12 +47,21 @@ export default function HeroSection() {
               </div>
             </ScrollAnimationWrapper>
             <ScrollAnimationWrapper>
-              <a 
-                href="#contact" 
-                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-full hover:from-blue-700 hover:to-purple-700 transition duration-300 inline-block"
-              >
-                Get in touch
-              </a>
+            <div className="flex flex-col sm:flex-row gap-4">
+                <a 
+                  href="#contact" 
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-full hover:from-indigo-600 hover:to-purple-700 transition duration-300 text-center"
+                >
+                  Get in touch
+                </a>
+                <a 
+                  href="/Tariq_Naser.pdf" 
+                  download
+                  className="px-8 py-3 bg-transparent border-2 border-indigo-500 text-indigo-500 font-bold rounded-full hover:bg-indigo-500 hover:text-white transition duration-300 text-center"
+                >
+                  Download CV
+                </a>
+              </div>
             </ScrollAnimationWrapper>
           </div>
         </div>

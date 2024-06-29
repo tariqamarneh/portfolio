@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'laptop': '1024px',
+      },
       colors: {
         blue: {
           400: '#60A5FA',
