@@ -18,6 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <SpeedInsights/>
       <body className={`${inter.className} bg-gray-900 text-white`}>
         <div className="relative">
