@@ -17,7 +17,7 @@ const AudioEasterEgg = dynamic(() => import('@/components/AudioEasterEgg'), {
 })
 
 export const metadata: Metadata = {
-  title: 'Your Name - Web Developer & AI Enthusiast',
+  title: 'Tariq Amarneh - Web Developer & AI Enthusiast',
   description: 'Portfolio of a web developer specializing in Next.js, Python, and Generative AI',
 }
 
