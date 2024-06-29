@@ -1,0 +1,44 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #6366f1;
+  --secondary: #8b5cf6;
+  --accent: #f43f5e;
+  --background: #0f172a;
+  --text: #e2e8f0;
+}
+
+body {
+  color: var(--text);
+  background-color: var(--background);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg;
+  }
+  
+  .neon-text {
+    text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 15px var(--primary), 0 0 20px var(--primary);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
