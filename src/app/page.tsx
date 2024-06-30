@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import HeroSection from '@/components/HeroSection'
@@ -9,11 +8,6 @@ import ContactSection from '@/components/ContactSection'
 import ScrollProgressIndicator from '@/components/ScrollProgressIndicator'
 
 const GradientBackground = dynamic(() => import('@/components/GradientBackground'), {
-  ssr: false,
-})
-
-
-const AudioEasterEgg = dynamic(() => import('@/components/AudioEasterEgg'), {
   ssr: false,
 })
 
@@ -34,7 +28,6 @@ export default function Home() {
         <JourneySection />
         <ContactSection />
       </div>
-      <AudioEasterEgg />
     </main>
   )
 }
