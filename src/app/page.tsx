@@ -6,6 +6,7 @@ import ProjectsSection from '@/components/ProjectsSection'
 import SkillsSection from '@/components/SkillsSection'
 import JourneySection from '@/components/JourneySection'
 import ContactSection from '@/components/ContactSection'
+import ScrollProgressIndicator from '@/components/ScrollProgressIndicator'
 
 const GradientBackground = dynamic(() => import('@/components/GradientBackground'), {
   ssr: false,
@@ -26,6 +27,7 @@ export default function Home() {
     <main className="relative">
       <GradientBackground />
       <div className="relative z-10">
+        <ScrollProgressIndicator/>
         <HeroSection />
         <ProjectsSection />
         <SkillsSection />

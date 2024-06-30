@@ -22,6 +22,15 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="theme-color" content="#ff0000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <meta name="application-name" content="My Portfolio"/>
+        <meta name="apple-mobile-web-app-title" content="Mobile rules"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
       </head>
       <body className={`${inter.className} bg-gray-900 text-white flex flex-col min-h-screen`}>
         <SpeedInsights/>

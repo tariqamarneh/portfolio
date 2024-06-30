@@ -42,3 +42,41 @@ html {
 .animate-spin-slow {
   animation: spin-slow 20s linear infinite;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  /* Webkit browsers (Chrome, Safari, newer versions of Edge) */
+  ::-webkit-scrollbar {
+    width: 12px;
+    background-color: #1a202c; /* Dark background to match your site */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(79, 70, 229, 0.1);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #4338ca; /* indigo-700 */
+    border-radius: 10px;
+    border: 3px solid #1a202c; /* Creates padding effect */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #3730a3; /* Darker on hover */
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #4338ca #1a202c;
+  }
+}
