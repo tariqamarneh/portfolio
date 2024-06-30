@@ -24,12 +24,14 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="theme-color" content="#ff0000" />
+        <meta name="theme-color" content="#000000" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes"/>
         <meta name="application-name" content="My Portfolio"/>
-        <meta name="apple-mobile-web-app-title" content="Mobile rules"/>
+        <meta name="apple-mobile-web-app-title" content="Tariq"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="shortcut icon" type="image/jpeg" href="favicon.jpg" />
+        <link rel="apple-touch-icon" href="favicon.jpg"/>
 
       </head>
       <body className={`${inter.className} bg-gray-900 text-white flex flex-col min-h-screen`}>
