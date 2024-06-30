@@ -3,8 +3,13 @@
 import Image from 'next/image'
 import { TypeAnimation } from 'react-type-animation'
 import ScrollAnimationWrapper from './ScrollAnimationWrapper'
+import TypingAnimation from './TypingAnimation'
+import { motion, useInView } from 'framer-motion'
+import React from 'react'
 
 export default function HeroSection() {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
   return (
     <section id="home" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
       <div className="container mx-auto px-8 md:px-16 relative z-10">
@@ -12,21 +17,27 @@ export default function HeroSection() {
           <ScrollAnimationWrapper animation="fade-in">
             <div className="mb-8 md:mb-0 relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-300 blur-sm"></div>
-              <div className="relative">
-                <Image
-                  src="/images/my_photo.png"
-                  alt="Your Name"
-                  width={250}
-                  height={250}
-                  className="rounded-full border-4 border-gray-800 shadow-lg transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
+                <motion.div 
+                  ref={ref}
+                  className="relative"
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  <Image
+                    src="/images/my_photo.png"
+                    alt="Your Name"
+                    width={250}
+                    height={250}
+                    className="rounded-full border-4 border-gray-800 shadow-lg transition-transform duration-300 group-hover:scale-105"
+                  />
+                </motion.div>
             </div>
           </ScrollAnimationWrapper>
           <div className="text-left">
             <ScrollAnimationWrapper animation="fade-in">
               <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text">
-                Tariq Amarneh
+                <TypingAnimation text='Tariq Amarneh'/>
               </h1>
             </ScrollAnimationWrapper>
             <ScrollAnimationWrapper animation="fade-up">
@@ -52,14 +63,14 @@ export default function HeroSection() {
                   href="#contact" 
                   className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-full hover:from-indigo-600 hover:to-purple-700 transition duration-300 text-center"
                 >
-                  Get in touch
+                  <TypingAnimation text='Get in touch'/>
                 </a>
                 <a 
                   href="/Tariq_Naser.pdf" 
                   download
                   className="px-8 py-3 bg-transparent border-2 border-indigo-500 text-indigo-500 font-bold rounded-full hover:bg-indigo-500 hover:text-white transition duration-300 text-center"
                 >
-                  Download CV
+                  <TypingAnimation text='Download CV'/>
                 </a>
               </div>
             </ScrollAnimationWrapper>

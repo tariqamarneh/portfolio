@@ -28,9 +28,9 @@ const AudioEasterEgg: React.FC = () => {
 
   const playAudio = () => {
     setIsPlaying(true)
-    const audio = new Audio('/path-to-your-audio-file.mp3')  // Replace with your audio file path
+    const audio = new Audio('/path-to-your-audio-file.mp3')
     audio.play()
-    setTimeout(() => setIsPlaying(false), 3000)  // Adjust based on your audio length
+    setTimeout(() => setIsPlaying(false), 3000)
   }
 
   return (

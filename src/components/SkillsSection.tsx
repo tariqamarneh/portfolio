@@ -28,21 +28,23 @@ const skills: Skill[] = [
 
 const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
   return (
-    <motion.div 
-      className="glass-effect rounded-xl p-6 shadow-xl"
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="text-5xl mb-4">{skill.icon}</div>
-      <h3 className="text-xl font-bold mb-2 text-white">{skill.name}</h3>
-      <div className="w-full bg-indigo-900 rounded-full h-2 mb-4">
-        <div 
-          className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full"
-          style={{ width: `${skill.level}%` }}
-        />
-      </div>
-      <p className="text-indigo-200">{skill.level}% proficiency</p>
-    </motion.div>
+    <ScrollAnimationWrapper>
+      <motion.div 
+        className="glass-effect rounded-xl p-6 shadow-xl"
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="text-5xl mb-4">{skill.icon}</div>
+        <h3 className="text-xl font-bold mb-2 text-white">{skill.name}</h3>
+        <div className="w-full bg-indigo-900 rounded-full h-2 mb-4">
+          <div 
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full"
+            style={{ width: `${skill.level}%` }}
+          />
+        </div>
+        <p className="text-indigo-200">{skill.level}% proficiency</p>
+      </motion.div>
+    </ScrollAnimationWrapper>
   )
 }
 
