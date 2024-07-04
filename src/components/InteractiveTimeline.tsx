@@ -41,12 +41,6 @@ const timelineEvents: TimelineEvent[] = [
     title: "Microsoft Certified",
     description: "Achieved the Microsoft Certified: Azure AI fundamentals certification, demonstrating proficiency in AI and machine learning concepts.",
     icon: "☁️"
-  },
-  {
-    date: "2024",
-    title: "PwC Associate Consultant",
-    description: "Joined PwC as an Associate Consultant, working on AI projects and developing full-stack web applications.",
-    icon: "💼"
   }
 ]
 
