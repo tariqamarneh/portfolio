@@ -41,6 +41,12 @@ const timelineEvents: TimelineEvent[] = [
     title: "Microsoft Certified",
     description: "Achieved the Microsoft Certified: Azure AI fundamentals certification, demonstrating proficiency in AI and machine learning concepts.",
     icon: "☁️"
+  },
+  {
+    date: "2024",
+    title: "Software engineer at ProgressSoft",
+    description: "Associate at ProgressSoft as Java Software Engineer, working on web application projects using Spring Boot.",
+    icon: "☕"
   }
 ]
 

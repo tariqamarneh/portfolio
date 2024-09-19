@@ -13,6 +13,8 @@ type Skill = {
 }
 
 const skills: Skill[] = [
+  { name: "Java", level: 90, category: "backend", icon: "☕" },
+  { name: "Spring Boot", level: 90, category: "backend", icon: "🍃" },
   { name: "Python", level: 95, category: "backend", icon: "🐍" },
   { name: "FastAPI", level: 95, category: "backend", icon: "🚀" },
   { name: "MongoDB", level: 90, category: "backend", icon: "🛢" },
@@ -64,12 +66,12 @@ export default function SkillsSection() {
           </h2>
         </ScrollAnimationWrapper>
         <ScrollAnimationWrapper>
-          <div className="flex flex-wrap justify-center md:justify-between gap-2 mb-8">
+          <div className="flex flex-wrap justify-center md:justify-center gap-2 mb-8">
             {['all', 'frontend', 'backend', 'ai'].map((category) => (
               <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category as any)}
-                className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${
+                className={`px-4 py-2 mx-4 rounded-full text-sm md:text-base font-semibold ${
                   activeCategory === category
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                     : 'glass-effect text-blue-200 hover:text-white'
