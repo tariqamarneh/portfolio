@@ -15,6 +15,13 @@ type Project = {
 
 const projects: Project[] = [
   {
+    title: "hogwarts-artifacts-online",
+    description: "Back-end application designed to demonstrate typical use cases and best practices in Spring Boot development",
+    technologies: ["Java", "Spring Boot", "CI/CD", "Azure"],
+    imageUrl: "/images/hogwarts.png",
+    linkUrl: "https://github.com/tariqamarneh/hogwarts-artifacts-online"
+  },
+  {
     title: "DocViz",
     description: "A web app that summarizes documents and extract key phrases and insights using AI.",
     technologies: ["Python", "Next.js", "FastAPI", "MongoDB"],
