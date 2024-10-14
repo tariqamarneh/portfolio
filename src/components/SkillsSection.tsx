@@ -71,7 +71,7 @@ export default function SkillsSection() {
               <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category as any)}
-                className={`px-4 py-2 mx-2 rounded-full text-sm md:text-base font-semibold ${
+                className={`px-4 py-2 mx-2org.example.utils.writer rounded-full text-sm md:text-base font-semibold ${
                   activeCategory === category
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                     : 'glass-effect text-blue-200 hover:text-white'

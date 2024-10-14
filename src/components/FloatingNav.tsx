@@ -58,7 +58,7 @@ export default function FloatingNav() {
                 <li key={item.name}>
                   <a
                     href={item.href}
-                    className={`px-3 py-1 md:px-4 md:py-2 rounded-full text-sm md:text-base font-medium transition-colors duration-300 ${
+                    className={`px-1 py-1 md:px-4 md:py-2 rounded-full text-sm md:text-base font-medium transition-colors duration-300 ${
                       activeSection === item.href.slice(1)
                         ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                         : 'text-blue-200 hover:text-white'
