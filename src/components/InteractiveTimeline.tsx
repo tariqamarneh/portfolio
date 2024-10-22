@@ -13,41 +13,47 @@ interface TimelineEvent {
 
 const timelineEvents: TimelineEvent[] = [
   {
-    date: "2019",
-    title: "University",
-    description: "Embarked on a transformative journey in Data Science and Artificial Intelligence at Princess Sumaya University for Technology, culminating in a successful graduation in 2023 with a commendable 3.23 GPA.",
-    icon: "🎓"
+    date:"2024-10",
+    title: "SDE I (L4) at Amazon",
+    description: "Working as a Software Development Engineer at Amazon, building and optimizing scalable applications that impact millions of users globally.",
+    icon: "📦"
   },
   {
-    date: "2021",
-    title: "Google Professional Certified",
-    description: "Achieved the Google Professional Data Analytics Certificate, mastering the foundations of data analytics, data visualization, and data quality.",
-    icon: "📊"
+    date: "2024-07",
+    title: "Software engineer at ProgressSoft",
+    description: "Associate at ProgressSoft as Java Software Engineer, working on web application projects using Spring Boot.",
+    icon: "☕"
   },
   {
-    date: "2022",
-    title: "Internship at Arab Bank",
-    description: "Gained practical experience working with data and analytics, and building machine learning models.",
-    icon: "🏦"
-  },
-  {
-    date: "2023",
-    title: "Internship at PwC",
-    description: "Interned at PwC as Generative AI Engineer, working on AI projects and developing web applications.",
-    icon: "🤖"
-  },
-  {
-    date: "2024",
+    date: "2024-03",
     title: "Microsoft Certified",
     description: "Achieved the Microsoft Certified: Azure AI fundamentals certification, demonstrating proficiency in AI and machine learning concepts.",
     icon: "☁️"
   },
   {
-    date: "2024",
-    title: "Software engineer at ProgressSoft",
-    description: "Associate at ProgressSoft as Java Software Engineer, working on web application projects using Spring Boot.",
-    icon: "☕"
-  }
+    date: "2023-09",
+    title: "Internship at PwC",
+    description: "Interned at PwC as Generative AI Engineer, working on AI projects and developing web applications.",
+    icon: "🤖"
+  },
+  {
+    date: "2022-07",
+    title: "Internship at Arab Bank",
+    description: "Gained practical experience working with data and analytics, and building machine learning models.",
+    icon: "🏦"
+  },
+  {
+    date: "2021-05",
+    title: "Google Professional Certified",
+    description: "Achieved the Google Professional Data Analytics Certificate, mastering the foundations of data analytics, data visualization, and data quality.",
+    icon: "📊"
+  },
+  {
+    date: "2019-09",
+    title: "University",
+    description: "Embarked on a transformative journey in Data Science and Artificial Intelligence at Princess Sumaya University for Technology, culminating in a successful graduation in 2023 with a commendable 3.23 GPA.",
+    icon: "🎓"
+  },
 ]
 
 const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft: boolean }> = ({ event, isActive, isLeft }) => {
