@@ -13,19 +13,17 @@ type Skill = {
 }
 
 const skills: Skill[] = [
-  { name: "Java", level: 90, category: "backend", icon: "☕" },
-  { name: "Spring Boot", level: 90, category: "backend", icon: "🍃" },
-  { name: "Python", level: 95, category: "backend", icon: "🐍" },
-  { name: "FastAPI", level: 95, category: "backend", icon: "🚀" },
-  { name: "MongoDB", level: 90, category: "backend", icon: "🛢" },
-  { name: "Next.js", level: 90, category: "frontend", icon: "📱" },
-  { name: "React", level: 85, category: "frontend", icon: "⚛️" },
-  { name: "TypeScript", level: 80, category: "frontend", icon: "🔷" },
-  { name: "Tailwind CSS", level: 80, category: "frontend", icon: "🎨" },
-  { name: "TensorFlow", level: 75, category: "ai", icon: "🧠" },
-  { name: "PyTorch", level: 70, category: "ai", icon: "🔥" },
-  { name: "NLP", level: 80, category: "ai", icon: "💬" },
-  { name: "Langchain", level: 80, category: "ai", icon: "🤖" },
+  { name: "Java", level: 90, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/java-colored.svg" },
+  { name: "Spring Boot", level: 90, category: "backend", icon: "/icons8-spring-boot-36.svg" },
+  { name: "Python", level: 95, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/python-colored.svg" },
+  { name: "FastAPI", level: 95, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/fastapi-colored.svg" },
+  { name: "MongoDB", level: 90, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/mongodb-colored.svg" },
+  { name: "Next.js", level: 90, category: "frontend", icon: "/nextjs_icon_dark.svg" },
+  { name: "TypeScript", level: 80, category: "frontend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg" },
+  { name: "Tailwind CSS", level: 80, category: "frontend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tailwindcss-colored.svg" },
+  { name: "TensorFlow", level: 75, category: "ai", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tensorflow-colored.svg" },
+  { name: "PyTorch", level: 70, category: "ai", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/pytorch-colored.svg" },
+  { name: "Langchain", level: 80, category: "ai", icon: "/langchain.svg" },
 ]
 
 const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
@@ -36,7 +34,7 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="text-5xl mb-4">{skill.icon}</div>
+        <div className="text-5xl mb-4"><img src={skill.icon} width="36" height="36" alt="TensorFlow" /></div>
         <h3 className="text-xl font-bold mb-2 text-white">{skill.name}</h3>
         <div className="w-full bg-indigo-900 rounded-full h-2 mb-4">
           <div 
