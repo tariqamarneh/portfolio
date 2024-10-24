@@ -8,22 +8,27 @@ import ScrollAnimationWrapper from './ScrollAnimationWrapper'
 type Skill = {
   name: string
   level: number
-  category: 'frontend' | 'backend' | 'ai'
+  category: 'frontend' | 'backend' | 'ai' | "devops"
   icon: string
 }
 
 const skills: Skill[] = [
   { name: "Java", level: 90, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/java-colored.svg" },
-  { name: "Spring Boot", level: 90, category: "backend", icon: "/icons8-spring-boot-36.svg" },
+  { name: "Spring Boot", level: 80, category: "backend", icon: "/spring-boot-logo.svg" },
   { name: "Python", level: 95, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/python-colored.svg" },
   { name: "FastAPI", level: 95, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/fastapi-colored.svg" },
   { name: "MongoDB", level: 90, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/mongodb-colored.svg" },
-  { name: "Next.js", level: 90, category: "frontend", icon: "/nextjs_icon_dark.svg" },
+  { name: "Postgres", level: 90, category: "backend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/postgresql-colored.svg" },
+  { name: "Next.js", level: 85, category: "frontend", icon: "/nextjs_icon_dark.svg" },
   { name: "TypeScript", level: 80, category: "frontend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg" },
   { name: "Tailwind CSS", level: 80, category: "frontend", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tailwindcss-colored.svg" },
+  { name: "Langchain", level: 80, category: "ai", icon: "/langchain-logo.svg" },
   { name: "TensorFlow", level: 75, category: "ai", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tensorflow-colored.svg" },
   { name: "PyTorch", level: 70, category: "ai", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/pytorch-colored.svg" },
-  { name: "Langchain", level: 80, category: "ai", icon: "/langchain.svg" },
+  { name: "Git", level: 90, category: "devops", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/git-colored.svg" },
+  { name: "Docker", level: 85, category: "devops", icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/docker-colored.svg" },
+  { name: "Azure", level: 80, category: "devops", icon: "/azure-icon-svgrepo-com.svg" },
+
 ]
 
 const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
@@ -34,7 +39,7 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="text-5xl mb-4"><img src={skill.icon} width="36" height="36" alt="TensorFlow" /></div>
+        <div className="text-5xl mb-4"><img src={skill.icon} width="36" height="36" alt="Logo" /></div>
         <h3 className="text-xl font-bold mb-2 text-white">{skill.name}</h3>
         <div className="w-full bg-indigo-900 rounded-full h-2 mb-4">
           <div 
@@ -65,7 +70,7 @@ export default function SkillsSection() {
         </ScrollAnimationWrapper>
         <ScrollAnimationWrapper>
           <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {['all', 'frontend', 'backend', 'ai'].map((category) => (
+            {['all', 'frontend', 'backend', 'devops', 'ai'].map((category) => (
               <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category as any)}
