@@ -39,7 +39,7 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="text-5xl mb-4"><img src={skill.icon} width="36" height="36" alt="Logo" /></div>
+        <div className="text-5xl mb-4"><img src={skill.icon} width="46" height="46" alt="Logo" /></div>
         <h3 className="text-xl font-bold mb-2 text-white">{skill.name}</h3>
         <div className="w-full bg-indigo-900 rounded-full h-2 mb-4">
           <div 
