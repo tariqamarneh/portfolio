@@ -1,8 +1,7 @@
-// src/components/InteractiveTimeline.tsx
 'use client'
 
 import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 interface TimelineEvent {
   date: string
@@ -56,22 +55,103 @@ const timelineEvents: TimelineEvent[] = [
   },
 ]
 
-const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft: boolean }> = ({ event, isActive, isLeft }) => {
+const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft: boolean; index: number }> = ({ 
+  event, 
+  isActive, 
+  isLeft,
+  index 
+}) => {
+  const containerVariants = {
+    offscreen: { 
+      opacity: 0,
+      y: 50
+    },
+    onscreen: { 
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: index * 0.2,
+        ease: "easeOut"
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -50,
+      transition: {
+        duration: 0.5,
+        ease: "easeIn"
+      }
+    }
+  }
+
+  const contentVariants = {
+    inactive: {
+      scale: 1,
+      opacity: 0.9,
+      transition: {
+        duration: 0.3
+      }
+    },
+    active: {
+      scale: 1.02,
+      opacity: 1,
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
+
+  const iconVariants = {
+    inactive: {
+      scale: 1,
+      transition: {
+        duration: 0.3
+      }
+    },
+    active: {
+      scale: 1.1,
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
+
   return (
     <motion.div 
       className={`mb-12 flex items-center ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      variants={containerVariants}
+      initial="offscreen"
+      whileInView="onscreen"
+      exit="exit"
+      viewport={{ 
+        once: false, 
+        margin: "-100px",
+        amount: 0.4 // This makes the animation trigger when 40% of the element is visible
+      }}
     >
-      <div className={`w-1/2 ${isLeft ? 'text-right pr-8' : 'text-left pl-8'}`}>
+      <motion.div 
+        className={`w-1/2 ${isLeft ? 'text-right pr-8' : 'text-left pl-8'}`}
+        variants={contentVariants}
+        animate={isActive ? "active" : "inactive"}
+      >
         <div className="text-sm font-semibold text-indigo-400 mb-1">{event.date}</div>
         <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
         <p className="text-gray-300 text-sm">{event.description}</p>
-      </div>
-      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-800 border-4 border-indigo-700 text-2xl z-10">
-        <img src={event.icon} width="36" height="36" alt="Logo" />
-      </div>
+      </motion.div>
+      <motion.div 
+        className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-800 border-4 border-indigo-700 text-2xl z-10 overflow-hidden"
+        variants={iconVariants}
+        animate={isActive ? "active" : "inactive"}
+      >
+        <img 
+          src={event.icon} 
+          width="36" 
+          height="36" 
+          alt="Logo" 
+          className="object-contain"
+        />
+      </motion.div>
       <div className="w-1/2"></div>
     </motion.div>
   )
@@ -80,9 +160,38 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
 const InteractiveTimeline: React.FC = () => {
   const [activeEvent, setActiveEvent] = useState<string | null>(null)
 
+  const lineVariants = {
+    offscreen: { 
+      height: 0, 
+      opacity: 0 
+    },
+    onscreen: { 
+      height: "100%", 
+      opacity: 1,
+      transition: {
+        duration: 1,
+        delay: 0.2
+      }
+    },
+    exit: {
+      height: 0,
+      opacity: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }
+
   return (
-    <div className="relative">
-      <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-r from-blue-600 to-purple-600"></div>
+    <div className="relative py-8">
+      <motion.div 
+        className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-r from-blue-600 to-purple-600"
+        variants={lineVariants}
+        initial="offscreen"
+        whileInView="onscreen"
+        exit="exit"
+        viewport={{ once: false }}
+      />
       {timelineEvents.map((event, index) => (
         <div 
           key={event.date} 
@@ -90,7 +199,12 @@ const InteractiveTimeline: React.FC = () => {
           onMouseEnter={() => setActiveEvent(event.date)}
           onMouseLeave={() => setActiveEvent(null)}
         >
-          <TimelineEvent event={event} isActive={activeEvent === event.date} isLeft={index % 2 === 0} />
+          <TimelineEvent 
+            event={event} 
+            isActive={activeEvent === event.date} 
+            isLeft={index % 2 === 0}
+            index={index}
+          />
         </div>
       ))}
     </div>

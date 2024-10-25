@@ -23,9 +23,9 @@ export default function Home() {
       <div className="relative z-10">
         <ScrollProgressIndicator/>
         <HeroSection />
+        <JourneySection />
         <ProjectsSection />
         <SkillsSection />
-        <JourneySection />
         <ContactSection />
       </div>
     </main>

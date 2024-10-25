@@ -12,6 +12,8 @@ export default function ContactSection() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState('')
+  const [submitError, setErrorMessage] = useState('')
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState({
@@ -23,7 +25,7 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -37,11 +39,11 @@ export default function ContactSection() {
         setSubmitMessage('Thank you for your message! I\'ll get back to you soon.')
         setFormState({ name: '', email: '', message: '' })
       } else {
-        setSubmitMessage('Oops! Something went wrong. Please try again later.')
+        setErrorMessage('Oops! Something went wrong. Please try again later.')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
-      setSubmitMessage('Oops! Something went wrong. Please try again later.')
+      setErrorMessage('Oops! Something went wrong. Please try again later.')
     }
 
     setIsSubmitting(false)
@@ -52,7 +54,7 @@ export default function ContactSection() {
     <section id="contact" className="py-20">
       <div className="container mx-auto px-8 md:px-16">
         <ScrollAnimationWrapper>
-          <motion.h2 
+          <motion.h2
             className="text-5xl font-bold mb-16 text-center neon-text"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,8 +64,8 @@ export default function ContactSection() {
           </motion.h2>
         </ScrollAnimationWrapper>
         <ScrollAnimationWrapper>
-          <motion.form 
-            onSubmit={handleSubmit} 
+          <motion.form
+            onSubmit={handleSubmit}
             className="max-w-lg mx-auto glass-effect rounded-xl p-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -126,13 +128,23 @@ export default function ContactSection() {
           </motion.form>
         </ScrollAnimationWrapper>
         {submitMessage && (
-          <motion.p 
+          <motion.p
             className="mt-4 text-center text-green-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
             {submitMessage}
+          </motion.p>
+        )}
+        {submitError && (
+          <motion.p
+            className="mt-4 text-center text-red-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {submitError}
           </motion.p>
         )}
       </div>

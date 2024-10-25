@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const navItems = [
   { name: 'Home', href: '#home' },
+  { name: 'Journey', href: '#journey' },
   { name: 'Projects', href: '#projects' },
   { name: 'Skills', href: '#skills' },
-  { name: 'Journey', href: '#journey' },
   { name: 'Contact', href: '#contact' },
 ]
 
@@ -26,7 +26,7 @@ export default function FloatingNav() {
 
     const handleScroll = () => {
       toggleVisibility()
-      const sections = ['home', 'projects', 'skills', 'journey', 'contact']
+      const sections = ['home', 'journey', 'projects', 'skills', 'contact']
       let current = ''
 
       for (let section of sections) {

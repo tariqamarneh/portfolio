@@ -1,9 +1,8 @@
-// src/components/ProjectsSection.tsx
 'use client'
 
 import { motion } from 'framer-motion'
-import ScrollAnimationWrapper from './ScrollAnimationWrapper'
 import { useState } from 'react'
+import { ExternalLink, Github } from 'lucide-react'
 
 type Project = {
   title: string
@@ -44,65 +43,164 @@ const projects: Project[] = [
   },
 ]
 
-const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
+const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
   const [isHovered, setIsHovered] = useState(false)
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 50,
+      scale: 0.9
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }),
+    hover: {
+      y: -10,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    }
+  }
+
+  const overlayVariants = {
+    hidden: {
+      opacity: 0,
+      backdropFilter: "blur(0px)"
+    },
+    visible: {
+      opacity: 1,
+      backdropFilter: "blur(3px)",
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
+
+  const isGithubLink = project.linkUrl.includes('github.com')
 
   return (
     <motion.div 
-      className="glass-effect rounded-xl overflow-hidden shadow-xl transform transition-all duration-300 hover:scale-105"
+      className="relative rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700/50"
+      variants={cardVariants}
+      custom={index}
+      initial="hidden"
+      whileInView="visible"
+      whileHover="hover"
+      viewport={{ once: true, margin: "-50px" }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <div className="relative h-48 sm:h-64">
-        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-contain" />
+      <div className="relative h-48 sm:h-64 overflow-hidden">
+        <motion.img 
+          src={project.imageUrl} 
+          alt={project.title} 
+          className="w-full h-full object-contain"
+          animate={{ scale: isHovered ? 1.1 : 1 }}
+          transition={{ duration: 0.4 }}
+        />
         <motion.div 
-          className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
+          className="absolute inset-0 flex items-center justify-center bg-black/60"
+          variants={overlayVariants}
+          initial="hidden"
+          animate={isHovered ? "visible" : "hidden"}
         >
           <a 
             href={project.linkUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="px-4 py-2 sm:px-6 sm:py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-full hover:from-indigo-600 hover:to-purple-700 transition duration-300 text-sm sm:text-base"
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-full hover:from-indigo-700 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
           >
-            View Project
+            {isGithubLink ? <Github className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
+            {isGithubLink ? 'View on GitHub' : 'Visit Project'}
           </a>
         </motion.div>
       </div>
-      <div className="p-4 sm:p-6">
-        <h3 className="text-xl sm:text-2xl font-bold mb-2 text-white">{project.title}</h3>
-        <p className="text-indigo-200 mb-4 text-sm sm:text-base">{project.description}</p>
-        <div className="flex flex-wrap gap-2">
+      <div className="p-6">
+        <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          {project.title}
+        </h3>
+        <p className="text-gray-300 mb-4 line-clamp-2 hover:line-clamp-none transition-all duration-300">
+          {project.description}
+        </p>
+        <motion.div 
+          className="flex flex-wrap gap-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           {project.technologies.map((tech, index) => (
-            <span key={index} className="px-2 py-1 bg-indigo-800 text-indigo-200 text-xs sm:text-sm font-semibold rounded-full">
+            <motion.span 
+              key={index} 
+              className="px-3 py-1 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 text-indigo-200 text-sm font-medium rounded-full border border-indigo-700/30"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+            >
               {tech}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   )
 }
 
-export default function ProjectsSection() {
+const ProjectsSection: React.FC = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  }
+
+  const titleVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  }
+
   return (
-    <section id="projects" className="py-20">
-      <div className="container mx-auto px-4 sm:px-8 md:px-16">
-        <ScrollAnimationWrapper>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-8 sm:mb-16 text-center neon-text">
+    <section id="projects" className="py-20 relative overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-5xl font-bold mb-16 text-center bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+            variants={titleVariants}
+          >
             Projects
-          </h2>
-        </ScrollAnimationWrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
-          {projects.map((project, index) => (
-            <ScrollAnimationWrapper key={project.title} animation="slide-in">
-              <ProjectCard project={project} />
-            </ScrollAnimationWrapper>
-          ))}
-        </div>
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.title} project={project} index={index} />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
+
+export default ProjectsSection
