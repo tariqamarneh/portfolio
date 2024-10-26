@@ -71,7 +71,7 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
       y: 0,
       transition: {
         duration: 0.5,
-        delay: index * 0.2,
+        delay: 0.1,
         ease: "easeOut"
       }
     },
@@ -127,7 +127,7 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
       viewport={{ 
         once: false, 
         margin: "-100px",
-        amount: 0.4 // This makes the animation trigger when 40% of the element is visible
+        amount: 0.2 // This makes the animation trigger when 40% of the element is visible
       }}
     >
       <motion.div 
