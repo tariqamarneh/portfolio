@@ -3,8 +3,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import FloatingNav from '@/components/general/FloatingNav'
-import Footer from '@/components/footer/Footer'  // Make sure this import is correct
+import Footer from '@/components/footer/Footer' 
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} bg-gray-900 text-white flex flex-col min-h-screen`}>
         <SpeedInsights/>
+        <Analytics/>
         <main className="flex-grow">
           {children}
           <FloatingNav />
