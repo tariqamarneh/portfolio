@@ -2,8 +2,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import FloatingNav from '@/components/FloatingNav'
-import Footer from '@/components/Footer'  // Make sure this import is correct
+import FloatingNav from '@/components/general/FloatingNav'
+import Footer from '@/components/footer/Footer'  // Make sure this import is correct
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] })

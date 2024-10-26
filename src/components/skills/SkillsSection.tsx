@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Search } from 'lucide-react';
-import ScrollAnimationWrapper from './ScrollAnimationWrapper';
+import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper';
+import Image from 'next/image';
+
 
 type Skill = {
   name: string;
@@ -10,7 +12,7 @@ type Skill = {
   category: 'frontend' | 'backend' | 'database' | 'ai' | 'devops';
   icon: string;
   description?: string;
-  yearStarted?: number; 
+  yearStarted?: number;
 }
 
 const skills: Skill[] = [
@@ -178,7 +180,12 @@ const SkillCard: React.FC<{
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
-            <img src={skill.icon} width="46" height="46" alt={`${skill.name} Logo`} />
+            <Image
+              src={skill.icon}
+              width={46}
+              height={46}
+              alt={`${skill.name} Logo`} 
+            />
           </div>
           <div className="flex-grow">
             <div className="flex justify-between items-center mb-2">

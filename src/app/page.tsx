@@ -1,13 +1,13 @@
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
-import HeroSection from '@/components/HeroSection'
-import ProjectsSection from '@/components/ProjectsSection'
-import SkillsSection from '@/components/SkillsSection'
-import JourneySection from '@/components/JourneySection'
-import ContactSection from '@/components/ContactSection'
-import ScrollProgressIndicator from '@/components/ScrollProgressIndicator'
+import HeroSection from '@/components/hero/HeroSection'
+import ProjectsSection from '@/components/projects/ProjectsSection'
+import SkillsSection from '@/components/skills/SkillsSection'
+import JourneySection from '@/components/journey/JourneySection'
+import ContactSection from '@/components/contact/ContactSection'
+import ScrollProgressIndicator from '@/components/general/ScrollProgressIndicator'
 
-const GradientBackground = dynamic(() => import('@/components/GradientBackground'), {
+const GradientBackground = dynamic(() => import('@/components/general/GradientBackground'), {
   ssr: false,
 })
 
@@ -21,7 +21,7 @@ export default function Home() {
     <main className="relative">
       <GradientBackground />
       <div className="relative z-10">
-        <ScrollProgressIndicator/>
+        <ScrollProgressIndicator />
         <HeroSection />
         <JourneySection />
         <ProjectsSection />

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { ExternalLink, Github } from 'lucide-react'
-import ScrollAnimationWrapper from './ScrollAnimationWrapper'
+import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
 
 type Project = {
   title: string

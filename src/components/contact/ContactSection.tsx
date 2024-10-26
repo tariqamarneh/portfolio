@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import ScrollAnimationWrapper from './ScrollAnimationWrapper'
+import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
 
 export default function ContactSection() {
   const [formState, setFormState] = useState({

@@ -1,4 +1,3 @@
-// components/TypingAnimation.tsx
 import React from 'react';
 import { motion, useAnimation } from 'framer-motion';
 

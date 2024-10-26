@@ -1,7 +1,6 @@
-// src/components/JourneySection.tsx
 import React from 'react'
 import InteractiveTimeline from './InteractiveTimeline'
-import ScrollAnimationWrapper from './ScrollAnimationWrapper'
+import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
 
 const JourneySection: React.FC = () => {
   return (

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image';
 
 interface TimelineEvent {
   date: string
@@ -144,10 +145,10 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
         variants={iconVariants}
         animate={isActive ? "active" : "inactive"}
       >
-        <img 
+        <Image 
           src={event.icon} 
-          width="36" 
-          height="36" 
+          width={36} 
+          height={36} 
           alt="Logo" 
           className="object-contain"
         />

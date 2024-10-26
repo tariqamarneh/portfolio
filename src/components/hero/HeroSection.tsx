@@ -1,11 +1,11 @@
 'use client'
 import Image from 'next/image'
 import { TypeAnimation } from 'react-type-animation'
-import ScrollAnimationWrapper from './ScrollAnimationWrapper'
-import TypingAnimation from './TypingAnimation'
+import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
+import TypingAnimation from '../general/TypingAnimation'
 import { motion, useInView } from 'framer-motion'
 import React, { useState } from 'react'
-import ContactModal from './ContactModal'
+import ContactModal from '../contact/ContactModal'
 
 export default function HeroSection(): JSX.Element {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export default function HeroSection(): JSX.Element {
           <ScrollAnimationWrapper animation="fade-in">
             <div className="mb-8 md:mb-0 relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-300 blur-sm"></div>
-              <motion.div 
+              <motion.div
                 ref={ref}
                 className="relative"
                 initial={{ opacity: 0 }}
@@ -39,7 +39,7 @@ export default function HeroSection(): JSX.Element {
           <div className="text-left">
             <ScrollAnimationWrapper animation="fade-in">
               <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text">
-                <TypingAnimation text='Tariq Amarneh'/>
+                <TypingAnimation text='Tariq Amarneh' />
               </h1>
             </ScrollAnimationWrapper>
             <ScrollAnimationWrapper animation="fade-up">
@@ -61,18 +61,18 @@ export default function HeroSection(): JSX.Element {
             </ScrollAnimationWrapper>
             <ScrollAnimationWrapper>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button 
+                <button
                   onClick={() => setIsModalOpen(true)}
                   className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-full hover:from-indigo-600 hover:to-purple-700 transition duration-300 text-center"
                 >
-                  <TypingAnimation text='Get in touch'/>
+                  <TypingAnimation text='Get in touch' />
                 </button>
-                <a 
-                  href="/Tariq_Naser.pdf" 
+                <a
+                  href="/Tariq_Naser.pdf"
                   download
                   className="px-8 py-3 bg-transparent border-2 border-indigo-500 text-indigo-500 font-bold rounded-full hover:bg-indigo-500 hover:text-white transition duration-300 text-center"
                 >
-                  <TypingAnimation text='Download CV'/>
+                  <TypingAnimation text='Download CV' />
                 </a>
                 <div className="flex space-x-6 items-center justify-center">
                   <a href="https://github.com/tariqamarneh" target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:text-white transition-colors duration-300">
@@ -92,7 +92,7 @@ export default function HeroSection(): JSX.Element {
         </div>
       </div>
 
-      <ContactModal 
+      <ContactModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
