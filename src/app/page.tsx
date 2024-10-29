@@ -6,6 +6,7 @@ import SkillsSection from '@/components/skills/SkillsSection'
 import JourneySection from '@/components/journey/JourneySection'
 import ContactSection from '@/components/contact/ContactSection'
 import ScrollProgressIndicator from '@/components/general/ScrollProgressIndicator'
+import Footer from '@/components/footer/Footer'
 
 const GradientBackground = dynamic(() => import('@/components/general/GradientBackground'), {
   ssr: false,
@@ -27,6 +28,7 @@ export default function Home() {
         <ProjectsSection />
         <SkillsSection />
         <ContactSection />
+        <Footer />
       </div>
     </main>
   )

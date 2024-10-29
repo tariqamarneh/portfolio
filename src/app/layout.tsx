@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import FloatingNav from '@/components/general/FloatingNav'
-import Footer from '@/components/footer/Footer' 
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
 
@@ -42,7 +41,6 @@ export default function RootLayout({
           {children}
           <FloatingNav />
         </main>
-        <Footer />
       </body>
     </html>
   )

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+
 
 interface ContactModalProps {
     isOpen: boolean;
@@ -22,11 +24,53 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitMessage, setSubmitMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
+
+    const MESSAGE_MAX_LENGTH = 500;
+
+    const validateField = (name: string, value: string) => {
+        switch (name) {
+            case 'name':
+                return value.length < 2 ? 'Name must be at least 2 characters long' : '';
+            case 'email':
+                return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address' : '';
+            case 'message':
+                return value.length < 10 ? 'Message must be at least 10 characters long' :
+                    value.length > MESSAGE_MAX_LENGTH ? `Message must be less than ${MESSAGE_MAX_LENGTH} characters` : '';
+            default:
+                return '';
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setFieldErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+    };
 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        setIsSubmitting(true)
+        e.preventDefault();
+
+        // Validate all fields before submission
+        const errors = {
+            name: validateField('name', formData.name),
+            email: validateField('email', formData.email),
+            message: validateField('message', formData.message)
+        };
+
+        setFieldErrors(errors);
+        if (Object.values(errors).some(error => error)) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitMessage('');
+        setErrorMessage('');
 
         try {
             const response = await fetch('/api/contact', {
@@ -35,20 +79,34 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
-            })
+            });
 
             if (response.ok) {
-                setSubmitMessage('Thank you for your message! I\'ll get back to you soon.')
-                setFormData({ name: '', email: '', message: '' })
+                setSubmitMessage('Thank you for your message! I\'ll get back to you soon.');
+                setFormData({ name: '', email: '', message: '' });
             } else {
-                setErrorMessage('Oops! Something went wrong. Please try again later.')
+                const data = await response.json();
+                setErrorMessage(data.message || 'Something went wrong. Please try again later.');
             }
         } catch (error) {
-            console.error('Error submitting form:', error)
-            setErrorMessage('Oops! Something went wrong. Please try again later.')
+            console.error('Error submitting form:', error);
+            setErrorMessage('Unable to send message. Please check your connection and try again.');
         }
-        setIsSubmitting(false)
-    }
+
+        setIsSubmitting(false);
+    };
+
+    const formFields = [
+        { name: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
+        { name: 'email', label: 'Email', type: 'email', placeholder: 'your.email@example.com' },
+        {
+            name: 'message',
+            label: 'Message',
+            type: 'textarea',
+            placeholder: 'Your message here...',
+            rows: 4
+        }
+    ];
 
     const overlayVariants = {
         hidden: { opacity: 0 },
@@ -132,75 +190,83 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                         </motion.h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <motion.div
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 }}
-                            >
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    required
-                                />
-                            </motion.div>
+                            {formFields.map(({ name, label, type, placeholder, rows }) => (
+                                <div key={name} className="mb-6">
+                                    <label
+                                        htmlFor={name}
+                                        className="block mb-2 text-sm font-medium text-indigo-200"
+                                    >
+                                        {label}
+                                    </label>
+                                    {type === 'textarea' ? (
+                                        <div>
+                                            <textarea
+                                                id={name}
+                                                name={name}
+                                                value={formData[name as keyof typeof formData]}
+                                                onChange={handleChange}
+                                                required
+                                                rows={rows}
+                                                maxLength={MESSAGE_MAX_LENGTH}
+                                                className={`w-full px-3 py-2 text-indigo-200 bg-indigo-900 bg-opacity-50 rounded-md 
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
+                                                placeholder={placeholder}
+                                                aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
+                                                aria-describedby={`${name}-error`}
+                                            />
+                                            <div className="mt-1 text-sm text-indigo-300">
+                                                {formData.message.length}/{MESSAGE_MAX_LENGTH} characters
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <input
+                                            type={type}
+                                            id={name}
+                                            name={name}
+                                            value={formData[name as keyof typeof formData]}
+                                            onChange={handleChange}
+                                            required
+                                            className={`w-full px-3 py-2 text-indigo-200 bg-indigo-900 bg-opacity-50 rounded-md 
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                    ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
+                                            placeholder={placeholder}
+                                            aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
+                                            aria-describedby={`${name}-error`}
+                                        />
+                                    )}
+                                    {fieldErrors[name as keyof typeof fieldErrors] && (
+                                        <p
+                                            id={`${name}-error`}
+                                            className="mt-1 text-sm text-red-400"
+                                            role="alert"
+                                        >
+                                            {fieldErrors[name as keyof typeof fieldErrors]}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
 
-                            <motion.div
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 }}
+                            <motion.button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full px-5 py-3 text-white bg-gradient-to-r from-indigo-500 to-purple-600 
+              rounded-md hover:from-indigo-600 hover:to-purple-700 focus:outline-none 
+              focus:ring-2 focus:ring-indigo-500 disabled:opacity-50
+              flex items-center justify-center"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                aria-label={isSubmitting ? 'Sending message...' : 'Send message'}
                             >
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    required
-                                />
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.4 }}
-                            >
-                                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
-                                    Message
-                                </label>
-                                <textarea
-                                    id="message"
-                                    rows={4}
-                                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
-                                    value={formData.message}
-                                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                    required
-                                />
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.5 }}
-                            >
-                                <motion.button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-md hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    {isSubmitting ? 'Sending...' : 'Send Message'}
-                                </motion.button>
-                            </motion.div>
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="animate-spin mr-2" size={20} />
+                                        Sending...
+                                    </>
+                                ) : (
+                                    'Send Message'
+                                )}
+                            </motion.button>
 
                         </form>
 

@@ -184,7 +184,7 @@ const SkillCard: React.FC<{
               src={skill.icon}
               width={46}
               height={46}
-              alt={`${skill.name} Logo`} 
+              alt={`${skill.name} Logo`}
             />
           </div>
           <div className="flex-grow">
@@ -330,7 +330,7 @@ const SkillsSection: React.FC = () => {
 
               <div className="glass-effect rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-4 text-white">Category Distribution</h3>
-                {['frontend', 'backend', 'devops', 'ai'].map(category => {
+                {['frontend', 'backend', 'database', 'devops', 'ai'].map(category => {
                   const count = filteredSkills.filter(s => s.category === category).length;
                   return (
                     <div key={category} className="mb-4">
