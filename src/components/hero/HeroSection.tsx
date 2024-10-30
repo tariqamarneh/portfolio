@@ -25,10 +25,9 @@ export default function HeroSection(): JSX.Element {
       role="region"
       aria-label="Portfolio Introduction"
     >
-      {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-10 bg-grid-pattern"></div>
 
-      <div className="container mx-auto px-8 md:px-16 relative z-10">
+      <div className="container mx-auto px-8 md:px-16 relative z-10 py-10">
         <div className="flex flex-col md:flex-row items-center justify-center gap-8">
           <ScrollAnimationWrapper animation="fade-in">
             <div className="mb-8 md:mb-0 relative group">
@@ -57,7 +56,6 @@ export default function HeroSection(): JSX.Element {
               <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text">
                 <TypingAnimation text='Tariq Amarneh' />
               </h1>
-              {/* Added tagline */}
               <p className="text-lg text-gray-400 mb-4">
                 Crafting exceptional digital experiences through innovative web solutions
               </p>
