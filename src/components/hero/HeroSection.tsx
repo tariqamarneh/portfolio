@@ -6,8 +6,11 @@ import TypingAnimation from '../general/TypingAnimation'
 import { motion, useInView } from 'framer-motion'
 import React, { useState } from 'react'
 import ContactModal from '../contact/ContactModal'
+import { useTheme } from '@/components/general/GradientBackground'
+
 
 export default function HeroSection(): JSX.Element {
+  const { isDark } = useTheme()
   const ref = React.useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -56,13 +59,13 @@ export default function HeroSection(): JSX.Element {
               <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text">
                 <TypingAnimation text='Tariq Amarneh' />
               </h1>
-              <p className="text-lg text-gray-400 mb-4">
+              <p className={`text-lg ${isDark ? 'text-gray-400':'text-gray-600'} mb-4`}>
                 Crafting exceptional digital experiences through innovative web solutions
               </p>
             </ScrollAnimationWrapper>
 
             <ScrollAnimationWrapper animation="fade-up">
-              <div className="text-xl md:text-2xl mb-6 text-blue-300">
+              <div className={`text-xl md:text-2xl mb-6 ${isDark ? 'text-blue-300':'text-blue-500'}`}>
                 <TypeAnimation
                   sequence={[
                     'Web Developer',
@@ -103,7 +106,7 @@ export default function HeroSection(): JSX.Element {
                     href="https://github.com/tariqamarneh"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-indigo-500 hover:text-white transition-colors duration-300 transform hover:-translate-y-1"
+                    className={`text-indigo-500 ${isDark ? 'hover:text-white':'hover:text-black'} transition-colors duration-300 transform hover:-translate-y-1`}
                     aria-label="Visit GitHub Profile"
                   >
                     <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -114,7 +117,7 @@ export default function HeroSection(): JSX.Element {
                     href="https://www.linkedin.com/in/tariq-naser/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-indigo-500 hover:text-white transition-colors duration-300 transform hover:-translate-y-1"
+                    className={`text-indigo-500 ${isDark ? 'hover:text-white':'hover:text-black'} transition-colors duration-300 transform hover:-translate-y-1`}
                     aria-label="Visit LinkedIn Profile"
                   >
                     <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

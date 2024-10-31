@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Search } from 'lucide-react';
 import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper';
 import Image from 'next/image';
+import { useTheme } from '@/components/general/GradientBackground'
+
 
 
 type Skill = {
@@ -212,7 +214,8 @@ const SkillCard: React.FC<{
 };
 
 const SkillsSection: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<'all' | 'frontend' | 'backend' | 'database' | 'ai' | 'devops'>('all');
+  type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops' | 'ai';
+  const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'stats'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
@@ -229,22 +232,24 @@ const SkillsSection: React.FC = () => {
     'Intermediate': filteredSkills.filter(s => s.level === 'Intermediate').length,
     'Beginner': filteredSkills.filter(s => s.level === 'Beginner').length,
   };
+  const { isDark } = useTheme()
 
   return (
     <section id="skills" className="py-20">
       <div className="container mx-auto px-4 sm:px-8 md:px-16">
         <ScrollAnimationWrapper>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-12 text-center gradient-text">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-12 text-center neon-text">
             Skills & Expertise
           </h2>
         </ScrollAnimationWrapper>
 
+        <ScrollAnimationWrapper>
         <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="flex flex-wrap justify-center gap-2">
-            {['all', 'frontend', 'backend', 'database', 'devops', 'ai'].map((category) => (
+            {(['all', 'frontend', 'backend', 'database', 'devops', 'ai'] as Category[]).map((category) => (
               <motion.button
                 key={category}
-                onClick={() => setActiveCategory(category as any)}
+                onClick={() => setActiveCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${activeCategory === category
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                   : 'glass-effect text-blue-200 hover:text-white'
@@ -262,11 +267,11 @@ const SkillsSection: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search skills..."
-                className="pl-10 pr-4 py-2 rounded-full bg-opacity-20 bg-white backdrop-blur-md border border-white/10 text-white placeholder-white/50"
+                className={`pl-10 pr-4 py-2 rounded-full bg-opacity-20 ${isDark?'bg-white border-white/10 text-white placeholder-white/50':'bg-black border-white text-black placeholder-white/100'}  backdrop-blur-md border`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-white/50" />
+              <Search className={`absolute left-3 top-2.5 h-5 w-5 ${isDark?'text-white/50':'text-white/100'}`} />
             </div>
 
             <motion.button
@@ -279,6 +284,7 @@ const SkillsSection: React.FC = () => {
             </motion.button>
           </div>
         </div>
+        </ScrollAnimationWrapper>
 
         <AnimatePresence mode="wait">
           {viewMode === 'grid' ? (

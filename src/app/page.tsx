@@ -7,6 +7,7 @@ import JourneySection from '@/components/journey/JourneySection'
 import ContactSection from '@/components/contact/ContactSection'
 import ScrollProgressIndicator from '@/components/general/ScrollProgressIndicator'
 import Footer from '@/components/footer/Footer'
+import { ThemeProvider, ThemeToggle } from '@/components/general/GradientBackground'
 
 const GradientBackground = dynamic(() => import('@/components/general/GradientBackground'), {
   ssr: false,
@@ -20,16 +21,19 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main className="relative">
-      <GradientBackground />
-      <div className="relative z-10">
-        <ScrollProgressIndicator />
-        <HeroSection />
-        <JourneySection />
-        <ProjectsSection />
-        <SkillsSection />
-        <ContactSection />
-        <Footer />
-      </div>
+      <ThemeProvider>
+        <ThemeToggle />
+        <GradientBackground />
+        <div className="relative z-10">
+          <ScrollProgressIndicator />
+          <HeroSection />
+          <JourneySection />
+          <ProjectsSection />
+          <SkillsSection />
+          <ContactSection />
+          <Footer />
+        </div>
+      </ThemeProvider>
     </main>
   )
 }

@@ -1,11 +1,14 @@
 "use client";
 
 import React from 'react';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { useTheme } from '@/components/general/GradientBackground'
 
 const Footer: React.FC = () => {
+  const { isDark } = useTheme()
+
   return (
-    <footer className="py-6 mt-8 text-white">
+    <footer className={`py-6 mt-8 ${isDark?'text-white':'text-black'}`}>
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center space-y-4">
           <div className="text-center">

@@ -24,7 +24,7 @@ export default function FloatingNav() {
       const sections = navItems.map(item => item.href.slice(1))
       let current = ''
 
-      for (let section of sections) {
+      for (const section of sections) {
         const element = document.getElementById(section)
         if (element) {
           const rect = element.getBoundingClientRect()
@@ -101,7 +101,7 @@ export default function FloatingNav() {
           </motion.div>
           <motion.button
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 p-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+            className="fixed bottom-4 right-4 p-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0, scale: 0 }}
@@ -109,7 +109,7 @@ export default function FloatingNav() {
             exit={{ opacity: 0, scale: 0 }}
             aria-label="Scroll to top"
           >
-            <ChevronUp size={20} />
+            <ChevronUp size={24} />
           </motion.button>
 
         </div>

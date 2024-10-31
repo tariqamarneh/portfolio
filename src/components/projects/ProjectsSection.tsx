@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { ExternalLink, Github } from 'lucide-react'
 import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
+import { useTheme } from '@/components/general/GradientBackground'
+
 
 type Project = {
   title: string
@@ -87,6 +89,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
   }
 
   const isGithubLink = project.linkUrl.includes('github.com')
+  const { isDark } = useTheme()
 
   return (
     <ScrollAnimationWrapper>
@@ -127,10 +130,10 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
           </motion.div>
         </div>
         <div className="p-6">
-          <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          <h3 className={`text-2xl font-bold mb-3 bg-gradient-to-r ${isDark? 'from-indigo-400 to-purple-400':'from-indigo-600 to-purple-600'} bg-clip-text text-transparent`}>
             {project.title}
           </h3>
-          <p className="text-gray-300 mb-4 line-clamp-2 hover:line-clamp-none transition-all duration-300">
+          <p className={`${isDark? 'text-gray-300':'text-gray-100'} mb-4 line-clamp-2 hover:line-clamp-none transition-all duration-300`}>
             {project.description}
           </p>
           <motion.div
@@ -142,7 +145,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
             {project.technologies.map((tech, index) => (
               <motion.span
                 key={index}
-                className="px-3 py-1 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 text-indigo-200 text-sm font-medium rounded-full border border-indigo-700/30"
+                className={`px-3 py-1 bg-gradient-to-r ${isDark? 'from-indigo-900/50 to-purple-900/50 text-indigo-200':'from-indigo-700/50 to-purple-700/50 text-white'} text-sm font-medium rounded-full border border-indigo-700/30`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
@@ -191,7 +194,7 @@ const ProjectsSection: React.FC = () => {
         >
           <ScrollAnimationWrapper>
             <motion.h2
-              className="text-5xl font-bold mb-16 text-center bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+              className="text-5xl font-bold mb-16 text-center neon-text"
               variants={titleVariants}
             >
               Projects

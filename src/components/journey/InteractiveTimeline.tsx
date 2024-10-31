@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image';
+import { useTheme } from '@/components/general/GradientBackground'
 
 interface TimelineEvent {
   date: string
@@ -60,7 +61,6 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
   event, 
   isActive, 
   isLeft,
-  index 
 }) => {
   const containerVariants = {
     offscreen: { 
@@ -117,6 +117,7 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
       }
     }
   }
+  const { isDark } = useTheme()
 
   return (
     <motion.div 
@@ -128,7 +129,7 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
       viewport={{ 
         once: false, 
         margin: "-100px",
-        amount: 0.2 // This makes the animation trigger when 40% of the element is visible
+        amount: 0.2 
       }}
     >
       <motion.div 
@@ -136,12 +137,12 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
         variants={contentVariants}
         animate={isActive ? "active" : "inactive"}
       >
-        <div className="text-sm font-semibold text-indigo-400 mb-1">{event.date}</div>
-        <h3 className="text-xl font-bold mb-2 text-white">{event.title}</h3>
-        <p className="text-gray-300 text-sm">{event.description}</p>
+        <div className={`text-sm font-semibold ${isDark? 'text-indigo-400':'text-indigo-600'} mb-1`}>{event.date}</div>
+        <h3 className={`text-xl font-bold mb-2 ${isDark? 'text-white':'text-black'}`}>{event.title}</h3>
+        <p className={`${isDark? 'text-gray-300':'text-gray-500'} text-sm`}>{event.description}</p>
       </motion.div>
       <motion.div 
-        className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-800 border-4 border-indigo-700 text-2xl z-10 overflow-hidden"
+        className={`flex items-center justify-center w-16 h-16 rounded-full ${isDark? 'bg-gray-800':'bg-gray-300'} border-4 border-indigo-700 text-2xl z-10 overflow-hidden`}
         variants={iconVariants}
         animate={isActive ? "active" : "inactive"}
       >
