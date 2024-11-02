@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#111827" rx="128" />
+  
+  <!-- Stylized "T" and "A" initials -->
+  <g transform="translate(256, 256)">
+    <!-- T -->
+    <path
+      d="M-120 -100 h140 v40 h-50 v160 h-40 v-160 h-50 z"
+      fill="#60A5FA"
+    />
+    <!-- A -->
+    <path
+      d="M20 100 l80 -200 h40 l80 200 h-45 l-20 -50 h-70 l-20 50 h-45 z M110 10 l-25 -65 l-25 65 h50 z"
+      fill="#93C5FD"
+    />
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="256" cy="256" r="180" stroke="#DBEAFE" stroke-width="8" fill="none" opacity="0.2" />
+  <circle cx="256" cy="256" r="160" stroke="#DBEAFE" stroke-width="4" fill="none" opacity="0.1" />
+</svg>

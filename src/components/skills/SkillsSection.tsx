@@ -30,7 +30,7 @@ const skills: Skill[] = [
     name: "Spring Boot",
     level: 'Intermediate',
     category: "backend",
-    icon: "/spring-boot-logo.svg",
+    icon: "/skills_logo/spring-boot-logo.svg",
     description: "Enterprise application development, Spring ecosystem",
     yearStarted: 2024
   },
@@ -78,7 +78,7 @@ const skills: Skill[] = [
     name: "redis",
     level: 'Expert',
     category: "database",
-    icon: "/redis-logo-svgrepo-com.svg",
+    icon: "/skills_logo/redis-logo-svgrepo-com.svg",
     description: "",
     yearStarted: 2023
   },
@@ -86,7 +86,7 @@ const skills: Skill[] = [
     name: "Next.js",
     level: 'Intermediate',
     category: "frontend",
-    icon: "/nextjs_icon_dark.svg",
+    icon: "/skills_logo/nextjs_icon_dark.svg",
     description: "Simple frontend application development, clean code",
     yearStarted: 2023
   },
@@ -110,7 +110,7 @@ const skills: Skill[] = [
     name: "Langchain",
     level: 'Expert',
     category: "ai",
-    icon: "/langchain-logo.svg",
+    icon: "/skills_logo/langchain-logo.svg",
     description: "Summarizing large pdf's, chatbots, AI applications",
     yearStarted: 2023
   },
@@ -150,7 +150,7 @@ const skills: Skill[] = [
     name: "Azure",
     level: 'Expert',
     category: "devops",
-    icon: "/azure-icon-svgrepo-com.svg",
+    icon: "/skills_logo/azure-icon.svg",
     description: "Web service, container registry, CI/CD",
     yearStarted: 2023
   },
@@ -158,7 +158,7 @@ const skills: Skill[] = [
     name: "kubernetes",
     level: 'Beginner',
     category: "devops",
-    icon: "/kubernetes.svg",
+    icon: "/skills_logo/kubernetes.svg",
     description: "",
     yearStarted: 2024
   },
@@ -244,46 +244,46 @@ const SkillsSection: React.FC = () => {
         </ScrollAnimationWrapper>
 
         <ScrollAnimationWrapper>
-        <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex flex-wrap justify-center gap-2">
-            {(['all', 'frontend', 'backend', 'database', 'devops', 'ai'] as Category[]).map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${activeCategory === category
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                  : 'glass-effect text-blue-200 hover:text-white'
-                  }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </motion.button>
-            ))}
-          </div>
-
-          <div className="flex gap-4 items-center">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search skills..."
-                className={`pl-10 pr-4 py-2 rounded-full bg-opacity-20 ${isDark?'bg-white border-white/10 text-white placeholder-white/50':'bg-black border-white text-black placeholder-white/100'}  backdrop-blur-md border`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className={`absolute left-3 top-2.5 h-5 w-5 ${isDark?'text-white/50':'text-white/100'}`} />
+          <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div className="flex flex-wrap justify-center gap-2">
+              {(['all', 'frontend', 'backend', 'database', 'devops', 'ai'] as Category[]).map((category) => (
+                <motion.button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${activeCategory === category
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    : 'glass-effect text-blue-200 hover:text-white'
+                    }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </motion.button>
+              ))}
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setViewMode(viewMode === 'grid' ? 'stats' : 'grid')}
-              className="p-2 rounded-full glass-effect"
-            >
-              <BarChart className="h-5 w-5 text-white" />
-            </motion.button>
+            <div className="flex gap-4 items-center">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search skills..."
+                  className={`pl-10 pr-4 py-2 rounded-full bg-opacity-20 ${isDark ? 'bg-white border-white/10 text-white placeholder-white/50' : 'bg-black border-white text-black placeholder-white/100'}  backdrop-blur-md border`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className={`absolute left-3 top-2.5 h-5 w-5 ${isDark ? 'text-white/50' : 'text-white/100'}`} />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setViewMode(viewMode === 'grid' ? 'stats' : 'grid')}
+                className="p-2 rounded-full glass-effect"
+              >
+                <BarChart className="h-5 w-5 text-white" />
+              </motion.button>
+            </div>
           </div>
-        </div>
         </ScrollAnimationWrapper>
 
         <AnimatePresence mode="wait">

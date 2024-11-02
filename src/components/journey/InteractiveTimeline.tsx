@@ -17,31 +17,31 @@ const timelineEvents: TimelineEvent[] = [
     date:"2024-10",
     title: "SDE I (L4) at Amazon",
     description: "Working as a Software Development Engineer at Amazon, building and optimizing scalable applications that impact millions of users globally.",
-    icon: "/amazon-svgrepo-com.svg"
+    icon: "/journey_logo/amazon.svg"
   },
   {
     date: "2024-07",
     title: "Software engineer at ProgressSoft",
     description: "Associate at ProgressSoft as Java Software Engineer, working on web application projects using Spring Boot.",
-    icon: "/progressoft.svg"
+    icon: "/journey_logo/progressoft.svg"
   },
   {
     date: "2024-03",
     title: "Microsoft Certified",
     description: "Achieved the Microsoft Certified: Azure AI fundamentals certification, demonstrating proficiency in AI and machine learning concepts.",
-    icon: "/azure-ai-fundamentals.svg"
+    icon: "/journey_logo/azure-ai-fundamentals.svg"
   },
   {
     date: "2023-09",
     title: "Internship at PwC",
     description: "Interned at PwC as Generative AI Engineer, working on AI projects and developing web applications.",
-    icon: "/pwc.svg"
+    icon: "/journey_logo/pwc.svg"
   },
   {
     date: "2022-07",
     title: "Internship at Arab Bank",
     description: "Gained practical experience working with data and analytics, and building machine learning models.",
-    icon: "/arabbank.svg"
+    icon: "/journey_logo/arabbank.svg"
   },
   {
     date: "2021-05",
@@ -53,7 +53,7 @@ const timelineEvents: TimelineEvent[] = [
     date: "2019-09",
     title: "University",
     description: "Embarked on a transformative journey in Data Science and Artificial Intelligence at Princess Sumaya University for Technology, culminating in a successful graduation in 2023 with a commendable 3.23 GPA.",
-    icon: "/psut.svg"
+    icon: "/journey_logo/psut.svg"
   },
 ]
 
