@@ -191,7 +191,7 @@ const SkillCard: React.FC<{
           </div>
           <div className="flex-grow">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xl font-bold text-white">{skill.name}</h3>
+              <h3 className="text-l font-bold text-white">{skill.name}</h3>
               <span className="text-sm text-indigo-200">
                 {skill.yearStarted ? `${years}+ years` : ''}
               </span>
@@ -236,7 +236,7 @@ const SkillsSection: React.FC = () => {
 
   return (
     <section id="skills" className="py-20">
-      <div className="container mx-auto px-4 sm:px-8 md:px-16">
+      <div className="container mx-auto p-8">
         <ScrollAnimationWrapper>
           <h2 className="text-4xl sm:text-5xl font-bold mb-12 text-center neon-text">
             Skills & Expertise
@@ -290,7 +290,7 @@ const SkillsSection: React.FC = () => {
           {viewMode === 'grid' ? (
             <motion.div
               key="grid"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
