@@ -4,6 +4,7 @@ import './globals.css'
 import FloatingNav from '@/components/general/FloatingNav'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
+import React from "react";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -84,6 +85,7 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com"
           crossOrigin="anonymous"
         />
+        <title>Tariq Amarneh - Web Developer & AI Enthusiast</title>
       </head>
       <body className="bg-gray-900 text-white flex flex-col min-h-screen antialiased font-sans">
         <SpeedInsights />

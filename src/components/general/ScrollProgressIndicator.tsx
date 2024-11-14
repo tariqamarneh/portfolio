@@ -31,7 +31,7 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > showAfter) {
+      if (window.scrollY > showAfter) {
         setIsVisible(true)
       } else {
         setIsVisible(false)

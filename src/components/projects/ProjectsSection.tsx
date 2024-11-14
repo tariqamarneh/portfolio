@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
-import { ExternalLink, Github } from 'lucide-react'
+import React, { useState } from 'react'
+import { ExternalLink } from 'lucide-react'
+import Github from '../../../public/Github'
 import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
 import { useTheme } from '@/components/general/GradientBackground'
 
@@ -104,14 +105,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        <div className="relative h-48 sm:h-64 overflow-hidden">
-          <motion.img
-            src={project.imageUrl}
-            alt={project.title}
-            className="w-full h-full object-contain"
-            animate={{ scale: isHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.4 }}
-          />
+        <div className="relative h-20 sm:h-20 overflow-hidden">
           <motion.div
             className="absolute inset-0 flex items-center justify-center bg-black/60"
             variants={overlayVariants}
@@ -124,7 +118,7 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-full hover:from-indigo-700 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
             >
-              {isGithubLink ? <Github className="w-5 h-5" /> : <ExternalLink className="w-5 h-5" />}
+              {isGithubLink ? <Github /> : <ExternalLink className="w-5 h-5" />}
               {isGithubLink ? 'View on GitHub' : 'Visit Project'}
             </a>
           </motion.div>

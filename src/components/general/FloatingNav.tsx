@@ -1,15 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronUp } from 'lucide-react'
 
 const navItems = [
-  { name: 'Home', href: '#home', icon: '🏠' },
-  { name: 'Journey', href: '#journey', icon: '🗺️' },
-  { name: 'Projects', href: '#projects', icon: '💻' },
-  { name: 'Skills', href: '#skills', icon: '🎯' },
-  { name: 'Contact', href: '#contact', icon: '📧' },
+  { name: 'Home', href: '#home' },
+  { name: 'Journey', href: '#journey' },
+  { name: 'Projects', href: '#projects'},
+  { name: 'Skills', href: '#skills'},
+  { name: 'Contact', href: '#contact' },
 ]
 
 export default function FloatingNav() {
@@ -18,7 +18,7 @@ export default function FloatingNav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollPos = window.pageYOffset
+      const currentScrollPos = window.scrollY
       setIsVisible(currentScrollPos > 100)
 
       const sections = navItems.map(item => item.href.slice(1))
@@ -91,7 +91,6 @@ export default function FloatingNav() {
                       whileTap={{ scale: 0.95 }}
                       aria-current={activeSection === item.href.slice(1) ? 'page' : undefined}
                     >
-                      <span className="hidden sm:inline mr-1">{item.icon}</span>
                       <span>{item.name}</span>
                     </motion.a>
                   </li>

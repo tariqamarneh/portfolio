@@ -1,6 +1,5 @@
 'use client'
 import Image from 'next/image'
-import { TypeAnimation } from 'react-type-animation'
 import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper'
 import TypingAnimation from '../general/TypingAnimation'
 import { motion, useInView } from 'framer-motion'
@@ -9,7 +8,7 @@ import ContactModal from '../contact/ContactModal'
 import { useTheme } from '@/components/general/GradientBackground'
 
 
-export default function HeroSection(): JSX.Element {
+export default function HeroSection() {
   const { isDark } = useTheme()
   const ref = React.useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
@@ -17,7 +16,6 @@ export default function HeroSection(): JSX.Element {
 
   const scrollToContact = () => {
     setIsModalOpen(true);
-    // Smooth scroll behavior
     window.scrollTo({ behavior: 'smooth', top: 0 });
   };
 
@@ -59,26 +57,14 @@ export default function HeroSection(): JSX.Element {
               <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text">
                 <TypingAnimation text='Tariq Amarneh' />
               </h1>
-              <p className={`text-lg ${isDark ? 'text-gray-400':'text-gray-600'} mb-4`}>
-                Crafting exceptional digital experiences through innovative web solutions
-              </p>
+              <div className={`text-lg ${isDark ? 'text-gray-400':'text-gray-600'} mb-4`}>
+                <TypingAnimation text='Software developer engineer based on Jordan' speed={0.015} />
+              </div>
             </ScrollAnimationWrapper>
 
             <ScrollAnimationWrapper animation="fade-up">
               <div className={`text-xl md:text-2xl mb-6 ${isDark ? 'text-blue-300':'text-blue-500'}`}>
-                <TypeAnimation
-                  sequence={[
-                    'Web Developer',
-                    2000,
-                    'Java And Python Expert',
-                    2000,
-                    'AI Enthusiast',
-                    2000
-                  ]}
-                  wrapper="span"
-                  speed={50}
-                  repeat={Infinity}
-                />
+                <TypingAnimation text='Amazonian' />
               </div>
             </ScrollAnimationWrapper>
 

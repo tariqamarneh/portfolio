@@ -11,7 +11,7 @@ import { useTheme } from '@/components/general/GradientBackground'
 type Skill = {
   name: string;
   level: string;
-  category: 'frontend' | 'backend' | 'database' | 'ai' | 'devops';
+  category: 'frontend' | 'backend' | 'database' | 'devops';
   icon: string;
   description?: string;
   yearStarted?: number;
@@ -75,27 +75,11 @@ const skills: Skill[] = [
     yearStarted: 2023
   },
   {
-    name: "redis",
-    level: 'Expert',
-    category: "database",
-    icon: "/skills_logo/redis-logo-svgrepo-com.svg",
-    description: "",
-    yearStarted: 2023
-  },
-  {
     name: "Next.js",
     level: 'Intermediate',
     category: "frontend",
     icon: "/skills_logo/nextjs_icon_dark.svg",
     description: "Simple frontend application development, clean code",
-    yearStarted: 2023
-  },
-  {
-    name: "TypeScript",
-    level: 'Intermediate',
-    category: "frontend",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/typescript-colored.svg",
-    description: "",
     yearStarted: 2023
   },
   {
@@ -105,30 +89,6 @@ const skills: Skill[] = [
     icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tailwindcss-colored.svg",
     description: "",
     yearStarted: 2023
-  },
-  {
-    name: "Langchain",
-    level: 'Expert',
-    category: "ai",
-    icon: "/skills_logo/langchain-logo.svg",
-    description: "Summarizing large pdf's, chatbots, AI applications",
-    yearStarted: 2023
-  },
-  {
-    name: "TensorFlow",
-    level: 'Intermediate',
-    category: "ai",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tensorflow-colored.svg",
-    description: "Machine learning models, computer vision",
-    yearStarted: 2020
-  },
-  {
-    name: "PyTorch",
-    level: 'Intermediate',
-    category: "ai",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/pytorch-colored.svg",
-    description: "NLP, pattern recognition",
-    yearStarted: 2020
   },
   {
     name: "Git",
@@ -153,14 +113,6 @@ const skills: Skill[] = [
     icon: "/skills_logo/azure-icon.svg",
     description: "Web service, container registry, CI/CD",
     yearStarted: 2023
-  },
-  {
-    name: "kubernetes",
-    level: 'Beginner',
-    category: "devops",
-    icon: "/skills_logo/kubernetes.svg",
-    description: "",
-    yearStarted: 2024
   },
 ];
 
@@ -214,7 +166,7 @@ const SkillCard: React.FC<{
 };
 
 const SkillsSection: React.FC = () => {
-  type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops' | 'ai';
+  type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops';
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'stats'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
@@ -246,7 +198,7 @@ const SkillsSection: React.FC = () => {
         <ScrollAnimationWrapper>
           <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="flex flex-wrap justify-center gap-2">
-              {(['all', 'frontend', 'backend', 'database', 'devops', 'ai'] as Category[]).map((category) => (
+              {(['all', 'frontend', 'backend', 'database', 'devops'] as Category[]).map((category) => (
                 <motion.button
                   key={category}
                   onClick={() => setActiveCategory(category)}
@@ -336,7 +288,7 @@ const SkillsSection: React.FC = () => {
 
               <div className="glass-effect rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-4 text-white">Category Distribution</h3>
-                {['frontend', 'backend', 'database', 'devops', 'ai'].map(category => {
+                {['frontend', 'backend', 'database', 'devops'].map(category => {
                   const count = filteredSkills.filter(s => s.category === category).length;
                   return (
                     <div key={category} className="mb-4">
