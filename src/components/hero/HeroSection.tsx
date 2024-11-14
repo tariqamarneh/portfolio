@@ -58,13 +58,13 @@ export default function HeroSection() {
                 <TypingAnimation text='Tariq Amarneh' />
               </h1>
               <div className={`text-lg ${isDark ? 'text-gray-400':'text-gray-600'} mb-4`}>
-                <TypingAnimation text='Software developer engineer based on Jordan' speed={0.015} />
+                <TypingAnimation text='Based in Jordan' />
               </div>
             </ScrollAnimationWrapper>
 
             <ScrollAnimationWrapper animation="fade-up">
               <div className={`text-xl md:text-2xl mb-6 ${isDark ? 'text-blue-300':'text-blue-500'}`}>
-                <TypingAnimation text='Amazonian' />
+                <TypingAnimation text='SDE at Amazon' />
               </div>
             </ScrollAnimationWrapper>
 
