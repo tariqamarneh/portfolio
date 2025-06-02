@@ -1,12 +1,10 @@
 'use client'
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { BarChart, Search } from 'lucide-react';
-import ScrollAnimationWrapper from '../general/ScrollAnimationWrapper';
 import Image from 'next/image';
+import ScrollAnimation from '@/components/general/ScrollAnimation';
 import { useTheme } from '@/components/general/GradientBackground'
-
-
 
 type Skill = {
   name: string;
@@ -119,49 +117,80 @@ const skills: Skill[] = [
 const SkillCard: React.FC<{
   skill: Skill,
   isDetailView: boolean,
-  onClick: () => void
-}> = ({ skill, isDetailView, onClick }) => {
+  onClick: () => void,
+  index: number
+}> = ({ skill, isDetailView, onClick, index }) => {
+  const cardRef = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"] // This means start tracking when the start of the element hits the end of the viewport, and stop when the end of the element hits the start of the viewport
+  });
+
+  const opacity = useTransform(scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0, 1, 1, 0] // Fade in from 0-20% of scroll progress, stay visible from 20-80%, fade out from 80-100%
+  );
+
+  const y = useTransform(scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [50, 0, 0, -50] // Move up from 50px to 0 during fade in, stay at 0, then move up -50px during fade out
+  );
+
+  const scale = useTransform(scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0.8, 1, 1, 0.8] // Scale up during fade in, stay at 1, scale down during fade out
+  );
+
   const years = new Date().getFullYear() - (skill.yearStarted || new Date().getFullYear());
 
   return (
-    <ScrollAnimationWrapper>
-      <motion.div
-        className={`glass-effect rounded-xl p-6 shadow-xl cursor-pointer
-          ${isDetailView ? 'col-span-2 sm:col-span-3 lg:col-span-5' : ''}`}
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.3 }}
-        onClick={onClick}
-      >
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0">
-            <Image
-              src={skill.icon}
-              width={46}
-              height={46}
-              alt={`${skill.name} Logo`}
-            />
-          </div>
-          <div className="flex-grow">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-l font-bold text-white">{skill.name}</h3>
-              <span className="text-sm text-indigo-200">
-                {skill.yearStarted ? `${years}+ years` : ''}
-              </span>
-            </div>
-            <p className="text-indigo-200 mb-2">{skill.level}</p>
-            {isDetailView && skill.description && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-blue-200 text-sm mt-2"
-              >
-                {skill.description}
-              </motion.p>
-            )}
-          </div>
+    <motion.div
+      ref={cardRef}
+      style={{
+        opacity,
+        y,
+        scale,
+        willChange: "transform, opacity"
+      }}
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className={`glass-effect rounded-xl p-6 shadow-xl cursor-pointer
+        ${isDetailView ? 'col-span-2 sm:col-span-3 lg:col-span-5' : ''}`}
+      whileHover={{ scale: 1.02 }}
+      onClick={onClick}
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex-shrink-0">
+          <Image
+            src={skill.icon}
+            width={46}
+            height={46}
+            alt={`${skill.name} Logo`}
+          />
         </div>
-      </motion.div>
-    </ScrollAnimationWrapper>
+        <div className="flex-grow">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-l font-bold text-white">{skill.name}</h3>
+            <span className="text-sm text-indigo-200">
+              {skill.yearStarted ? `${years}+ years` : ''}
+            </span>
+          </div>
+          <p className="text-indigo-200 mb-2">{skill.level}</p>
+          {isDetailView && skill.description && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-blue-200 text-sm mt-2"
+            >
+              {skill.description}
+            </motion.p>
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -189,73 +218,82 @@ const SkillsSection: React.FC = () => {
   return (
     <section id="skills" className="py-20">
       <div className="container mx-auto p-8">
-        <ScrollAnimationWrapper>
+        <ScrollAnimation>
           <h2 className="text-4xl sm:text-5xl font-bold mb-12 text-center neon-text">
             Skills & Expertise
           </h2>
-        </ScrollAnimationWrapper>
+        </ScrollAnimation>
 
-        <ScrollAnimationWrapper>
+        <ScrollAnimation delay={0.1}>
           <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-wrap justify-center gap-2">
-              {(['all', 'frontend', 'backend', 'database', 'devops'] as Category[]).map((category) => (
-                <motion.button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${activeCategory === category
+          <div className="flex flex-wrap justify-center gap-2">
+            {(['all', 'frontend', 'backend', 'database', 'devops'] as Category[]).map((category) => (
+              <motion.button
+                key={category}
+                onClick={() => {
+                  setExpandedSkill(null); // Reset expanded state when changing category
+                  setActiveCategory(category);
+                }}
+                className={`px-4 py-2 rounded-full text-sm md:text-base font-semibold ${
+                  activeCategory === category
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                     : 'glass-effect text-blue-200 hover:text-white'
-                    }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </motion.button>
-              ))}
-            </div>
-
-            <div className="flex gap-4 items-center">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search skills..."
-                  className={`pl-10 pr-4 py-2 rounded-full bg-opacity-20 ${isDark ? 'bg-white border-white/10 text-white placeholder-white/50' : 'bg-black border-white text-black placeholder-white/100'}  backdrop-blur-md border`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <Search className={`absolute left-3 top-2.5 h-5 w-5 ${isDark ? 'text-white/50' : 'text-white/100'}`} />
-              </div>
-
-              <motion.button
+                }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setViewMode(viewMode === 'grid' ? 'stats' : 'grid')}
-                className="p-2 rounded-full glass-effect"
               >
-                <BarChart className="h-5 w-5 text-white" />
+                {category.charAt(0).toUpperCase() + category.slice(1)}
               </motion.button>
-            </div>
+            ))}
           </div>
-        </ScrollAnimationWrapper>
+
+          <div className="flex gap-4 items-center">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search skills..."
+                className={`pl-10 pr-4 py-2 rounded-full bg-opacity-20 ${
+                  isDark ? 'bg-white border-white/10 text-white placeholder-white/50' : 'bg-black border-white text-black placeholder-white/100'
+                } backdrop-blur-md border`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className={`absolute left-3 top-2.5 h-5 w-5 ${isDark ? 'text-white/50' : 'text-white/100'}`} />
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setViewMode(viewMode === 'grid' ? 'stats' : 'grid')}
+              className="p-2 rounded-full glass-effect"
+            >
+              <BarChart className="h-5 w-5 text-white" />
+            </motion.button>
+          </div>
+        </div>
+        </ScrollAnimation>
 
         <AnimatePresence mode="wait">
           {viewMode === 'grid' ? (
             <motion.div
-              key="grid"
+              key={`grid-${activeCategory}-${searchQuery}`}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {filteredSkills.map((skill) => (
-                <SkillCard
-                  key={skill.name}
-                  skill={skill}
-                  isDetailView={expandedSkill === skill.name}
-                  onClick={() => setExpandedSkill(expandedSkill === skill.name ? null : skill.name)}
-                />
-              ))}
+              <AnimatePresence>
+                {filteredSkills.map((skill, index) => (
+                  <SkillCard
+                    key={`${skill.name}-${activeCategory}`}
+                    skill={skill}
+                    isDetailView={expandedSkill === skill.name}
+                    index={index}
+                    onClick={() => setExpandedSkill(expandedSkill === skill.name ? null : skill.name)}
+                  />
+                ))}
+              </AnimatePresence>
             </motion.div>
           ) : (
             <motion.div
