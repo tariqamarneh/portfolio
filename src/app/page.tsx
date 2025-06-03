@@ -1,26 +1,26 @@
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import Script from 'next/script'
-import HeroSection from '@/components/hero/HeroSection'
-import ScrollProgressIndicator from '@/components/general/ScrollProgressIndicator'
-import Footer from '@/components/footer/Footer'
-import { ThemeProvider, ThemeToggle } from '@/components/general/GradientBackground'
-import { ErrorBoundary } from '@/components/general/ErrorBoundary'
+import HeroSection from '../components/hero/HeroSection'
+import ScrollProgressIndicator from '../components/general/ScrollProgressIndicator'
+import Footer from '../components/footer/Footer'
+import { ThemeProvider, ThemeToggle } from '../components/general/GradientBackground'
+import { ErrorBoundary } from '../components/general/ErrorBoundary'
 
 // Lazy load components with loading states
-const ProjectsSection = dynamic(() => import('@/components/projects/ProjectsSection'), {
+const ProjectsSection = dynamic(() => import('../components/projects/ProjectsSection'), {
   loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
 })
-const SkillsSection = dynamic(() => import('@/components/skills/SkillsSection'), {
+const SkillsSection = dynamic(() => import('../components/skills/SkillsSection'), {
   loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
 })
-const JourneySection = dynamic(() => import('@/components/journey/JourneySection'), {
+const JourneySection = dynamic(() => import('../components/journey/JourneySection'), {
   loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
 })
-const ContactSection = dynamic(() => import('@/components/contact/ContactSection'), {
+const ContactSection = dynamic(() => import('../components/contact/ContactSection'), {
   loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
 })
-const GradientBackground = dynamic(() => import('@/components/general/GradientBackground'), {
+const GradientBackground = dynamic(() => import('../components/general/GradientBackground'), {
   ssr: false,
 })
 

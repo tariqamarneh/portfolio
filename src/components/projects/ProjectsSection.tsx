@@ -1,10 +1,9 @@
 'use client'
 
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import React, { useState, useRef } from 'react'
 import { ExternalLink, Github as GithubIcon } from 'lucide-react'
-import Github from '../../../public/Github'
-import { useTheme } from '@/components/general/GradientBackground'
+import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
 
 type Project = {

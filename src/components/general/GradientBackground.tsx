@@ -112,7 +112,7 @@ const GradientBackground: React.FC = () => {
       twinklePhase: Math.random() * Math.PI * 2
     }))
 
-    const drawGradient = (scrollPosition: number, time: number) => {
+    const drawGradient = (scrollPosition: number) => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       const scrollPercentage = Math.min(scrollPosition / maxScroll, 1)
 
@@ -141,7 +141,7 @@ const GradientBackground: React.FC = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
 
-    const drawStars = (time: number) => {
+    const drawStars = () => {
       ctx.save()
       stars.forEach(star => {
         // Calculate twinkling effect
@@ -165,7 +165,7 @@ const GradientBackground: React.FC = () => {
       ctx.restore()
     }
 
-    const drawParticles = (time: number) => {
+    const drawParticles = () => {
       ctx.save()
       particlesRef.current.forEach(particle => {
         // Update particle position
@@ -209,21 +209,20 @@ const GradientBackground: React.FC = () => {
     }
 
     const animate = (time: number) => {
-      const deltaTime = time - lastTimeRef.current
       lastTimeRef.current = time
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      drawGradient(window.scrollY, time)
-      drawStars(time)
+      drawGradient(window.scrollY)
+      drawStars()
       moveStars()
-      drawParticles(time)
+      drawParticles()
       requestAnimationFrame(animate)
     }
 
     animate(0)
 
     const handleScroll = () => {
-      drawGradient(window.scrollY, performance.now())
+      drawGradient(window.scrollY)
     }
 
     window.addEventListener('scroll', handleScroll)

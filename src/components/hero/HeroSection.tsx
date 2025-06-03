@@ -3,9 +3,11 @@ import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import React, { useState, useEffect, useRef } from 'react'
 import ContactModal from '../contact/ContactModal'
-import { useTheme } from '@/components/general/GradientBackground'
+import { useTheme } from '../general/GradientBackground'
+import { Variants } from 'framer-motion'
 
-const TypingAnimation = ({ text, speed = 0.05 }) => {
+
+const TypingAnimation = ({ text, speed = 0.05 } : { text: string; speed?: number }) => {
   const [isClient, setIsClient] = useState(false)
   const letters = text.split('')
 
@@ -100,7 +102,7 @@ export default function HeroSection() {
     }
   }
 
-  const glowVariants = {
+  const glowVariants: Variants = {
     initial: { scale: 1, opacity: 0.5 },
     animate: {
       scale: 1.2,

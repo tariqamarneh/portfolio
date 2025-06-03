@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { BarChart, Search, Star, Code2, Database, Cloud } from 'lucide-react'
 import Image from 'next/image'
-import { useTheme } from '@/components/general/GradientBackground'
+import { useTheme } from '../general/GradientBackground'
 
 type Skill = {
   name: string
@@ -145,7 +145,7 @@ const getCategoryIcon = (category: string) => {
 const SkillCard: React.FC<{
   skill: Skill
   index: number
-}> = ({ skill, index }) => {
+}> = ({ skill }) => {
   const { isDark } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef(null)

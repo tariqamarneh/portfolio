@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronUp, Home, Clock, FolderGit2, Code2, Mail } from 'lucide-react'
-import { useTheme } from '@/components/general/GradientBackground'
+import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
   { name: 'Home', href: '#home', icon: Home },

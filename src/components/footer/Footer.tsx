@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Heart, ChevronRight } from 'lucide-react'
-import { useTheme } from '@/components/general/GradientBackground'
+import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
   { name: 'About', href: '#home' },
@@ -86,7 +86,7 @@ const Footer: React.FC = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                {navItems.map((item, index) => (
+                {navItems.map((item) => (
                   <motion.a
                     key={item.name}
                     href={item.href}

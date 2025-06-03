@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { Loader2, Mail, MessageSquare, User, Send, Github, Linkedin } from 'lucide-react'
-import { motion, useInView } from 'framer-motion'
-import { useTheme } from '@/components/general/GradientBackground'
+import { motion } from 'framer-motion'
+import { useTheme } from '../general/GradientBackground'
 
 const ContactSection = () => {
   const [formState, setFormState] = useState({
