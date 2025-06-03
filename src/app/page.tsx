@@ -67,7 +67,7 @@ export default function Home() {
               <HeroSection />
             </ErrorBoundary>
             
-            <section className="space-y-32">
+            <section>
               <ErrorBoundary>
                 <JourneySection />
               </ErrorBoundary>

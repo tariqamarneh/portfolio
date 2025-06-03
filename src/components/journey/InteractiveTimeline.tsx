@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import Image from 'next/image';
+import { motion, useScroll, useTransform } from 'framer-motion'
+import Image from 'next/image'
 import { useTheme } from '@/components/general/GradientBackground'
 
 interface TimelineEvent {
@@ -57,48 +57,62 @@ const timelineEvents: TimelineEvent[] = [
   },
 ]
 
-const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft: boolean; index: number }> = ({ 
+const TimelineEvent: React.FC<{
+  event: TimelineEvent
+  isActive: boolean
+  isLeft: boolean
+  index: number
+}> = ({
   event, 
   isActive, 
   isLeft,
+  index
 }) => {
+  const { scrollYProgress } = useScroll()
+  const { isDark } = useTheme()
+
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [50, -50]
+  )
+
   const containerVariants = {
     offscreen: { 
       opacity: 0,
+      x: isLeft ? -50 : 50,
       y: 50
     },
     onscreen: { 
       opacity: 1,
+      x: 0,
       y: 0,
       transition: {
-        duration: 0.5,
-        delay: 0.1,
-        ease: "easeOut"
-      }
-    },
-    exit: {
-      opacity: 0,
-      y: -50,
-      transition: {
-        duration: 0.5,
-        ease: "easeIn"
+        type: "spring",
+        bounce: 0.4,
+        duration: 1.2,
+        delay: index * 0.2
       }
     }
   }
 
   const contentVariants = {
     inactive: {
-      scale: 1,
-      opacity: 0.9,
+      scale: 0.98,
+      opacity: 0.7,
+      filter: "blur(2px)",
       transition: {
-        duration: 0.3
+        duration: 0.4,
+        ease: "easeOut"
       }
     },
     active: {
-      scale: 1.02,
+      scale: 1,
       opacity: 1,
+      filter: "blur(0px)",
       transition: {
-        duration: 0.3
+        duration: 0.4,
+        ease: "easeOut"
       }
     }
   }
@@ -106,26 +120,48 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
   const iconVariants = {
     inactive: {
       scale: 1,
+      rotate: 0,
       transition: {
-        duration: 0.3
+        duration: 0.4
       }
     },
     active: {
-      scale: 1.1,
+      scale: 1.2,
+      rotate: 360,
       transition: {
-        duration: 0.3
+        duration: 0.8,
+        ease: "easeOut"
       }
     }
   }
-  const { isDark } = useTheme()
+
+  const glowVariants = {
+    inactive: {
+      opacity: 0,
+      scale: 1
+    },
+    active: {
+      opacity: [0.5, 0.7, 0.5],
+      scale: 1.5,
+      transition: {
+        opacity: {
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "reverse"
+        },
+        scale: {
+          duration: 0.4
+        }
+      }
+    }
+  }
 
   return (
     <motion.div 
-      className={`mb-12 flex items-center ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`mb-16 flex items-center ${isLeft ? 'flex-row-reverse' : 'flex-row'}`}
       variants={containerVariants}
       initial="offscreen"
       whileInView="onscreen"
-      exit="exit"
       viewport={{ 
         once: false, 
         margin: "-100px",
@@ -133,28 +169,68 @@ const TimelineEvent: React.FC<{ event: TimelineEvent; isActive: boolean; isLeft:
       }}
     >
       <motion.div 
-        className={`w-1/2 ${isLeft ? 'text-right pr-8' : 'text-left pl-8'}`}
+        className={`w-1/2 ${isLeft ? 'text-right pr-12' : 'text-left pl-12'}`}
         variants={contentVariants}
         animate={isActive ? "active" : "inactive"}
       >
-        <div className={`text-sm font-semibold ${isDark? 'text-indigo-400':'text-indigo-600'} mb-1`}>{event.date}</div>
-        <h3 className={`text-xl font-bold mb-2 ${isDark? 'text-white':'text-black'}`}>{event.title}</h3>
-        <p className={`${isDark? 'text-gray-300':'text-gray-500'} text-sm`}>{event.description}</p>
+        <motion.div
+          className={`inline-block mb-2 px-3 py-1 rounded-full ${
+            isDark
+              ? 'bg-blue-500/20 text-blue-300'
+              : 'bg-blue-100 text-blue-600'
+          }`}
+          whileHover={{ scale: 1.05 }}
+        >
+          <span className="text-sm font-semibold">{event.date}</span>
+        </motion.div>
+
+        <motion.h3
+          className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}
+          whileHover={{ x: isLeft ? -5 : 5 }}
+        >
+          {event.title}
+        </motion.h3>
+
+        <motion.p
+          className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-sm leading-relaxed`}
+          style={{ y }}
+        >
+          {event.description}
+        </motion.p>
       </motion.div>
-      <motion.div 
-        className={`flex items-center justify-center w-16 h-16 rounded-full ${isDark? 'bg-gray-800':'bg-gray-300'} border-4 border-indigo-700 text-2xl z-10 overflow-hidden`}
-        variants={iconVariants}
-        animate={isActive ? "active" : "inactive"}
-      >
-        <Image 
-          src={event.icon} 
-          width={36} 
-          height={36} 
-          alt="Logo" 
-          className="object-contain"
+
+      <div className="relative">
+        <motion.div
+          className={`absolute inset-0 rounded-full ${
+            isDark ? 'bg-blue-500' : 'bg-blue-400'
+          }`}
+          variants={glowVariants}
+          animate={isActive ? "active" : "inactive"}
+          style={{ filter: "blur(15px)" }}
         />
-      </motion.div>
-      <div className="w-1/2"></div>
+
+        <motion.div
+          className={`relative flex items-center justify-center w-16 h-16 rounded-full
+            ${isDark ? 'bg-gray-800' : 'bg-white'}
+            shadow-lg border-2 ${isActive ? 'border-blue-500' : 'border-gray-400'}
+            transition-colors duration-300
+          `}
+          variants={iconVariants}
+          animate={isActive ? "active" : "inactive"}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Image
+            src={event.icon}
+            width={36}
+            height={36}
+            alt={`${event.title} logo`}
+            className="object-contain"
+          />
+        </motion.div>
+      </div>
+
+      <div className="w-1/2" />
     </motion.div>
   )
 }
@@ -163,37 +239,48 @@ const InteractiveTimeline: React.FC = () => {
   const [activeEvent, setActiveEvent] = useState<string | null>(null)
 
   const lineVariants = {
-    offscreen: { 
-      height: 0, 
+    hidden: {
+      pathLength: 0,
       opacity: 0 
     },
-    onscreen: { 
-      height: "100%", 
+    visible: {
+      pathLength: 1,
       opacity: 1,
       transition: {
-        duration: 1,
-        delay: 0.2
-      }
-    },
-    exit: {
-      height: 0,
-      opacity: 0,
-      transition: {
-        duration: 0.5
+        duration: 2,
+        ease: "easeInOut"
       }
     }
   }
 
   return (
     <div className="relative py-8">
-      <motion.div 
-        className="absolute left-1/2 transform -translate-x-1/2 w-1 bg-gradient-to-r from-blue-600 to-purple-600"
-        variants={lineVariants}
-        initial="offscreen"
-        whileInView="onscreen"
-        exit="exit"
-        viewport={{ once: false }}
-      />
+      {/* Animated timeline line */}
+      <svg
+        className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-1 h-full"
+        viewBox="0 0 2 100"
+        preserveAspectRatio="none"
+      >
+        <motion.path
+          d="M1 0L1 100"
+          stroke="url(#gradient)"
+          strokeWidth="2"
+          fill="none"
+          variants={lineVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+        />
+        <defs>
+          <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="50%" stopColor="#8B5CF6" />
+            <stop offset="100%" stopColor="#3B82F6" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {/* Timeline events */}
       {timelineEvents.map((event, index) => (
         <div 
           key={event.date} 
