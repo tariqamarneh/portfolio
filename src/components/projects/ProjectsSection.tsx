@@ -1,221 +1,117 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
-import React, { useState, useRef } from 'react'
-import { ExternalLink, Github as GithubIcon } from 'lucide-react'
+import { motion } from 'framer-motion'
+import React from 'react'
+import { ExternalLink, Github as GithubIcon, Star, Calendar } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
+import { usePortfolioData } from '@/context/PortfolioDataContext'
 
-type Project = {
-  title: string
-  description: string
-  technologies: string[]
-  imageUrl: string
-  linkUrl: string
-  color: string
-}
-
-const projects: Project[] = [
-  {
-    title: "Hogwarts artifacts",
-    description: "Back-end application designed to demonstrate typical use cases and best practices in Spring Boot development",
-    technologies: ["Java", "Spring Boot", "CI/CD", "Azure"],
-    imageUrl: "/images/hogwarts.png",
-    linkUrl: "https://github.com/tariqamarneh/hogwarts-artifacts-online",
-    color: "#FF6B6B"
-  },
-  {
-    title: "DocViz",
-    description: "A web app that summarizes documents and extract key phrases and insights using the power of AI.",
-    technologies: ["Python", "Next.js", "FastAPI", "MongoDB"],
-    imageUrl: "/images/docviz.png",
-    linkUrl: "https://docviz.online",
-    color: "#4ECDC4"
-  },
-  {
-    title: "AiRefMe",
-    description: "A web app with three chatbots, normal chat, chat with your document, and weather API chatbot",
-    technologies: ["Python", "selenium", "FastAPI", "Langchain", "JavaScript"],
-    imageUrl: "/images/airefme.png",
-    linkUrl: "https://github.com/tariqamarneh/AI_Reference_Application",
-    color: "#45B7D1"
-  },
-  {
-    title: "AccesibilityHelper",
-    description: "Application that will add a little a button to any website you visit, that will perform any action you want, eather by writing it or by voice command.",
-    technologies: ["Python", "MongoDB", "FastAPI", "Langchain"],
-    imageUrl: "/images/accesHelp.png",
-    linkUrl: "https://github.com/tariqamarneh/AccesibilityHelper",
-    color: "#96CEB4"
-  },
-]
-
-const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, index }) => {
-  const [isHovered, setIsHovered] = useState(false)
+const ProjectCard: React.FC<{ project: Project; index: number; isFeatured?: boolean }> = ({ project, index, isFeatured }) => {
   const { isDark } = useTheme()
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["0 1", "1.2 1"]
-  })
-
-  const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1])
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1])
-
-  const cardVariants = {
-    initial: {
-      y: 60,
-      opacity: 0,
-      scale: 0.8,
-    },
-    animate: {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-        delay: index * 0.2
-      }
-    }
-  }
-
-  const overlayVariants = {
-    hidden: {
-      opacity: 0,
-      backdropFilter: "blur(0px)"
-    },
-    visible: {
-      opacity: 1,
-      backdropFilter: "blur(3px)",
-      transition: {
-        duration: 0.3
-      }
-    }
-  }
+  const isLive = !project.linkUrl.includes('github.com')
 
   return (
     <motion.div
-      ref={cardRef}
-      style={{ scale, opacity }}
-      variants={cardVariants}
-      initial="initial"
-      whileInView="animate"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       className={`
         group relative rounded-2xl overflow-hidden
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-        backdrop-blur-sm border border-gray-200/10
-        hover:border-${project.color}/30
-        transition-all duration-300 ease-out
-        shadow-[0_0_30px_rgba(0,0,0,0.1)]
-        hover:shadow-[0_0_50px_rgba(0,0,0,0.15)]
+        border ${isFeatured ? 'border-blue-500/50' : 'border-white/10'}
+        transition-all duration-300
+        ${isFeatured ? 'md:col-span-2' : ''}
       `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Glass Morphism Effect */}
-      <div
-        className="absolute inset-0 opacity-20 mix-blend-overlay"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at top left, ${project.color}40, transparent),
-            radial-gradient(circle at bottom right, ${project.color}20, transparent)
-          `
-        }}
-      />
+      {/* Badges Container */}
+      <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+        {/* Featured Badge */}
+        {isFeatured && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-semibold">
+            <Star className="w-3.5 h-3.5 fill-current" />
+            Featured
+          </div>
+        )}
+
+        {/* Status Badge */}
+        <span className={`
+          px-3 py-1.5 rounded-full text-xs font-medium
+          ${isLive
+            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+            : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+          }
+        `}>
+          {isLive ? '● Live Demo' : '◐ GitHub Only'}
+        </span>
+      </div>
+      {/* End Badges Container */}
 
       {/* Project Image */}
-      <div className="relative h-56 overflow-hidden">
+      <div className={`relative ${isFeatured ? 'h-72' : 'h-52'} overflow-hidden`}>
         <Image
           src={project.imageUrl}
           alt={project.title}
           fill
-          className="object-cover transform transition-transform duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 
-        <motion.div
-          className="absolute inset-0"
-          variants={overlayVariants}
-          initial="hidden"
-          animate={isHovered ? "visible" : "hidden"}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/80" />
-
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.a
-              href={project.linkUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                flex items-center gap-2 px-8 py-3 rounded-full
-                bg-white text-gray-900 font-semibold
-                hover:bg-gray-100 transform
-                transition-all duration-300
-                shadow-[0_0_20px_rgba(255,255,255,0.3)]
-                hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]
-              "
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              {project.linkUrl.includes('github.com') ? (
-                <>
-                  <GithubIcon className="w-5 h-5" />
-                  View on GitHub
-                </>
-              ) : (
-                <>
-                  <ExternalLink className="w-5 h-5" />
-                  Visit Project
-                </>
-              )}
-            </motion.a>
-          </div>
-        </motion.div>
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <a
+            href={project.linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors"
+          >
+            {project.linkUrl.includes('github.com') ? (
+              <>
+                <GithubIcon className="w-5 h-5" />
+                View on GitHub
+              </>
+            ) : (
+              <>
+                <ExternalLink className="w-5 h-5" />
+                Visit Project
+              </>
+            )}
+          </a>
+        </div>
 
         {/* Project Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 pt-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-          <motion.h3
-            className="text-2xl font-bold text-white mb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {project.title}
-          </motion.h3>
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+          <h3 className={`${isFeatured ? 'text-2xl' : 'text-xl'} font-bold text-white`}>{project.title}</h3>
         </div>
       </div>
 
       {/* Project Content */}
-      <div className="p-6">
-        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
+      <div className="p-5">
+        {/* Date */}
+        <div className={`flex items-center gap-1.5 mb-3 text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+          <Calendar className="w-4 h-4" />
+          {project.date}
+        </div>
+
+        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} mb-4 ${isFeatured ? 'text-base' : 'text-sm'}`}>
           {project.description}
         </p>
 
         <div className="flex flex-wrap gap-2">
           {project.technologies.map((tech, techIndex) => (
-            <motion.span
+            <span
               key={techIndex}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 + techIndex * 0.1 }}
               className={`
-                px-3 py-1 text-sm font-medium rounded-full
-                border backdrop-blur-sm
+                px-2.5 py-1 text-xs font-medium rounded-full
                 ${isDark
-                  ? 'bg-gray-800/50 text-gray-300 border-gray-700/50'
-                  : 'bg-gray-100/50 text-gray-800 border-gray-200/50'
+                  ? 'bg-gray-800 text-gray-300'
+                  : 'bg-gray-100 text-gray-700'
                 }
-                hover:border-${project.color}/50
-                transition-colors duration-300
               `}
             >
               {tech}
-            </motion.span>
+            </span>
           ))}
         </div>
       </div>
@@ -223,67 +119,51 @@ const ProjectCard: React.FC<{ project: Project; index: number }> = ({ project, i
   )
 }
 
+export interface Project {
+  id: string
+  title: string
+  description: string
+  technologies: string[]
+  imageUrl: string
+  linkUrl: string
+  date: string
+  isFeatured?: boolean
+}
+
 const ProjectsSection: React.FC = () => {
   const { isDark } = useTheme()
-  const sectionRef = useRef<HTMLElement>(null)
+  const { projects } = usePortfolioData()
+
+  const featuredProject = projects.find(p => p.isFeatured)
+  const otherProjects = projects.filter(p => !p.isFeatured)
 
   return (
-    <section
-      ref={sectionRef}
-      id="projects"
-      className="py-16 relative overflow-hidden"
-    >
-      {/* Modern Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#4F46E5,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#7C3AED,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-      </div>
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="projects" className="section-padding relative">
+      <div className="container mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 100,
-              damping: 20,
-            }}
-            className="inline-block"
-          >
-            <h2 className="text-6xl sm:text-7xl font-bold relative inline-block mb-4">
-              <span className={`
-                bg-clip-text text-transparent
-                ${isDark
-                  ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400'
-                  : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
-                }
-              `}>
-                My Projects
-              </span>
-            </h2>
-            <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`mt-6 text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}
-          >
-            Explore my latest projects and technical achievements
-          </motion.p>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
+              My Projects
+            </span>
+          </h2>
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
+            Building solutions that solve real problems
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.title} project={project} index={index} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {featuredProject && (
+            <ProjectCard project={featuredProject} index={0} isFeatured />
+          )}
+          {otherProjects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index + 1} />
           ))}
         </div>
       </div>

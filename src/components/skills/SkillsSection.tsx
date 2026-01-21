@@ -1,252 +1,107 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { BarChart, Search, Star, Code2, Database, Cloud } from 'lucide-react'
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Code2, Database, Cloud, Brain, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from '../general/GradientBackground'
-
-type Skill = {
-  name: string
-  level: string
-  category: 'frontend' | 'backend' | 'database' | 'devops'
-  icon: string
-  description?: string
-  yearStarted?: number
-  color?: string
-}
-
-const skills: Skill[] = [
-  {
-    name: "Java",
-    level: 'Expert',
-    category: "backend",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/java-colored.svg",
-    description: "Enterprise application development, Spring ecosystem",
-    yearStarted: 2024,
-    color: "#f89820"
-  },
-  {
-    name: "Spring Boot",
-    level: 'Intermediate',
-    category: "backend",
-    icon: "/skills_logo/spring-boot-logo.svg",
-    description: "Enterprise application development, Spring ecosystem",
-    yearStarted: 2024,
-    color: "#6db33f"
-  },
-  {
-    name: "Python",
-    level: 'Expert',
-    category: "backend",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/python-colored.svg",
-    description: "Web application development, machine learning",
-    yearStarted: 2020,
-    color: "#3776ab"
-  },
-  {
-    name: "FastAPI",
-    level: 'Expert',
-    category: "backend",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/fastapi-colored.svg",
-    description: "Backend web application, clean code",
-    yearStarted: 2022,
-    color: "#009688"
-  },
-  {
-    name: "MongoDB",
-    level: 'Expert',
-    category: "database",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/mongodb-colored.svg",
-    description: "NoSQL database design and optimization",
-    yearStarted: 2021,
-    color: "#47A248"
-  },
-  {
-    name: "Postgres",
-    level: 'Expert',
-    category: "database",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/postgresql-colored.svg",
-    description: "Relational database management and optimization",
-    yearStarted: 2023,
-    color: "#336791"
-  },
-  {
-    name: "MySQL",
-    level: 'Expert',
-    category: "database",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/mysql-colored.svg",
-    description: "Database design and performance tuning",
-    yearStarted: 2023,
-    color: "#4479A1"
-  },
-  {
-    name: "Next.js",
-    level: 'Intermediate',
-    category: "frontend",
-    icon: "/skills_logo/nextjs_icon_dark.svg",
-    description: "Modern frontend development with React",
-    yearStarted: 2023,
-    color: "#000000"
-  },
-  {
-    name: "Tailwind CSS",
-    level: 'Intermediate',
-    category: "frontend",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/tailwindcss-colored.svg",
-    description: "Utility-first CSS framework",
-    yearStarted: 2023,
-    color: "#38B2AC"
-  },
-  {
-    name: "Git",
-    level: 'Expert',
-    category: "devops",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/git-colored.svg",
-    description: "Version control and collaboration",
-    yearStarted: 2019,
-    color: "#F05032"
-  },
-  {
-    name: "Docker",
-    level: 'Expert',
-    category: "devops",
-    icon: "https://raw.githubusercontent.com/danielcranney/readme-generator/main/public/icons/skills/docker-colored.svg",
-    description: "Containerization and orchestration",
-    yearStarted: 2019,
-    color: "#2496ED"
-  },
-  {
-    name: "Azure",
-    level: 'Expert',
-    category: "devops",
-    icon: "/skills_logo/azure-icon.svg",
-    description: "Cloud services and infrastructure",
-    yearStarted: 2023,
-    color: "#0089D6"
-  },
-]
+import { usePortfolioData, Skill } from '@/context/PortfolioDataContext'
 
 const getCategoryIcon = (category: string) => {
   switch (category) {
     case 'frontend':
-      return <Code2 className="w-5 h-5" />
+      return <Code2 className="w-4 h-4" />
     case 'backend':
-      return <Code2 className="w-5 h-5" />
+      return <Code2 className="w-4 h-4" />
     case 'database':
-      return <Database className="w-5 h-5" />
+      return <Database className="w-4 h-4" />
     case 'devops':
-      return <Cloud className="w-5 h-5" />
+      return <Cloud className="w-4 h-4" />
+    case 'ai':
+      return <Brain className="w-4 h-4" />
     default:
-      return <Star className="w-5 h-5" />
+      return <Code2 className="w-4 h-4" />
   }
+}
+
+const ProficiencyDots: React.FC<{ level: string; isDark: boolean }> = ({ level, isDark }) => {
+  const dots = level === 'Expert' ? 5 : level === 'Intermediate' ? 3 : 1
+  const color = level === 'Expert' ? 'bg-green-500' : level === 'Intermediate' ? 'bg-blue-500' : 'bg-yellow-500'
+
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          className={`w-2 h-2 rounded-full transition-colors ${
+            i <= dots ? color : isDark ? 'bg-gray-700' : 'bg-gray-300'
+          }`}
+        />
+      ))}
+    </div>
+  )
 }
 
 const SkillCard: React.FC<{
   skill: Skill
   index: number
-}> = ({ skill }) => {
+}> = ({ skill, index }) => {
   const { isDark } = useTheme()
-  const [isHovered, setIsHovered] = useState(false)
-  const cardRef = useRef(null)
-  const isInView = useInView(cardRef, { once: false, margin: "-100px" })
-  const years = new Date().getFullYear() - (skill.yearStarted || new Date().getFullYear())
+  const years = new Date().getFullYear() - skill.yearStarted
 
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{
-        duration: 0.5,
-        type: "tween",
-        ease: "easeOut"
-      }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
       className={`
-        relative overflow-hidden rounded-2xl
+        rounded-xl p-4
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-        backdrop-blur-sm border border-gray-200/10
-        shadow-[0_0_30px_rgba(0,0,0,0.1)]
-        transition-all duration-300
+        border border-white/10
+        hover:border-white/20 transition-all duration-200
+        hover:scale-[1.02]
       `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Gradient */}
-      <div
-        className="absolute inset-0 opacity-10 mix-blend-overlay"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at top left, ${skill.color}40, transparent),
-            radial-gradient(circle at bottom right, ${skill.color}20, transparent)
-          `
-        }}
-      />
+      <div className="flex items-start gap-3">
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <Image
+            src={skill.icon}
+            width={28}
+            height={28}
+            alt={`${skill.name} Logo`}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+            }}
+          />
+        </div>
 
-      <div className="relative p-6">
-        <div className="flex items-start gap-4">
-          {/* Icon with Glow */}
-          <div className="relative">
-            <div
-              className="absolute inset-0 blur-xl opacity-40"
-              style={{ backgroundColor: skill.color }}
-            />
-            <div className="relative">
-              <Image
-                src={skill.icon}
-                width={46}
-                height={46}
-                alt={`${skill.name} Logo`}
-                className="transform transition-transform duration-300 hover:scale-110"
-              />
-            </div>
+        <div className="flex-grow min-w-0">
+          <div className="flex justify-between items-start mb-1">
+            <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              {skill.name}
+            </h3>
+            <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+              {years > 0 ? `${years}+ yrs` : '<1 yr'}
+            </span>
           </div>
-
-          <div className="flex-grow">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {skill.name}
-              </h3>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`text-sm px-2 py-1 rounded-full
-                    ${isDark ? 'bg-gray-800/50' : 'bg-gray-100/50'}
-                    ${isDark ? 'text-gray-300' : 'text-gray-600'}
-                  `}
-                >
-                  {skill.yearStarted ? `${years}+ years` : ''}
-                </span>
-                {getCategoryIcon(skill.category)}
-              </div>
-            </div>
-
-            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              {skill.description}
-            </p>
-          </div>
+          <p className={`text-xs mb-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            {skill.description}
+          </p>
+          <ProficiencyDots level={skill.level} isDark={isDark} />
         </div>
       </div>
-
-      {/* Hover Border Effect */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        animate={{
-          boxShadow: isHovered
-            ? `inset 0 0 0 1px ${skill.color}50`
-            : `inset 0 0 0 1px transparent`
-        }}
-        transition={{ duration: 0.3 }}
-      />
     </motion.div>
   )
 }
 
 const SkillsSection: React.FC = () => {
-  type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops'
+  type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops' | 'ai'
   const [activeCategory, setActiveCategory] = useState<Category>('all')
-  const [viewMode, setViewMode] = useState<'grid' | 'stats'>('grid')
   const [searchQuery, setSearchQuery] = useState('')
   const { isDark } = useTheme()
+  const { skills, learningItems } = usePortfolioData()
 
   const filteredSkills = skills
     .filter(skill => activeCategory === 'all' || skill.category === activeCategory)
@@ -255,207 +110,149 @@ const SkillsSection: React.FC = () => {
       skill.description?.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-  const categories = {
-    'frontend': filteredSkills.filter(s => s.category === 'frontend').length,
-    'backend': filteredSkills.filter(s => s.category === 'backend').length,
-    'database': filteredSkills.filter(s => s.category === 'database').length,
-    'devops': filteredSkills.filter(s => s.category === 'devops').length,
-  }
+  const primarySkills = filteredSkills.filter(s => s.isPrimary)
+  const secondarySkills = filteredSkills.filter(s => !s.isPrimary)
+
+  const categories: { key: Category; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'backend', label: 'Backend' },
+    { key: 'frontend', label: 'Frontend' },
+    { key: 'database', label: 'Database' },
+    { key: 'devops', label: 'DevOps' },
+    { key: 'ai', label: 'AI/ML' },
+  ]
 
   return (
-    <section id="skills" className="py-16 relative overflow-hidden">
-      {/* Modern Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#4F46E5,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#7C3AED,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-      </div>
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="skills" className="section-padding relative">
+      <div className="container mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 100,
-              damping: 20,
-            }}
-            className="inline-block"
-          >
-            <h2 className="text-6xl sm:text-7xl font-bold relative inline-block mb-4">
-              <span className={`
-                bg-clip-text text-transparent
-                ${isDark
-                  ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400'
-                  : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
-                }
-              `}>
-                Skills & Expertise
-              </span>
-            </h2>
-            <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`mt-6 text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}
-          >
-            Explore my technical skills and areas of expertise
-          </motion.p>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
+              Skills & Expertise
+            </span>
+          </h2>
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
+            Technologies I work with daily
+          </p>
         </motion.div>
 
-        <div className="mb-12 flex flex-col sm:flex-row gap-6 items-center justify-between">
-          <div className="flex flex-wrap justify-center gap-3">
-            {(['all', 'frontend', 'backend', 'database', 'devops'] as Category[]).map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setActiveCategory(category)}
+        {/* Filters */}
+        <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <button
+                key={category.key}
+                onClick={() => setActiveCategory(category.key)}
                 className={`
-                  px-6 py-2.5 rounded-full text-sm font-medium
-                  flex items-center gap-2
-                  transition-all duration-300
-                  ${activeCategory === category
-                    ? `bg-gradient-to-r from-blue-500 to-purple-600
-                       text-white shadow-lg shadow-blue-500/25`
-                    : `${isDark ? 'bg-gray-800/50' : 'bg-white/50'}
-                       backdrop-blur-sm border border-gray-200/10
-                       ${isDark ? 'text-gray-300' : 'text-gray-600'}
-                       hover:border-blue-500/30`
+                  px-4 py-2 rounded-full text-sm font-medium
+                  flex items-center gap-2 transition-colors duration-200
+                  ${activeCategory === category.key
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                    : `${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'} hover:bg-opacity-80`
                   }
                 `}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
-                {getCategoryIcon(category)}
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </motion.button>
+                {getCategoryIcon(category.key)}
+                {category.label}
+              </button>
             ))}
           </div>
 
-          <div className="flex gap-4 items-center">
-            <motion.div
-              className="relative"
-              initial={false}
-              animate={searchQuery ? { width: "240px" } : { width: "200px" }}
-              transition={{ duration: 0.3 }}
-            >
-              <input
-                type="text"
-                placeholder="Search skills..."
-                className={`
-                  w-full pl-10 pr-4 py-2.5 rounded-full
-                  ${isDark ? 'bg-gray-800/50' : 'bg-white/50'}
-                  backdrop-blur-sm border border-gray-200/10
-                  ${isDark ? 'text-white' : 'text-gray-900'}
-                  placeholder:${isDark ? 'text-gray-400' : 'text-gray-500'}
-                  focus:outline-none focus:ring-2 focus:ring-blue-500/40
-                  transition-all duration-300
-                `}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className={`absolute left-3 top-3 h-5 w-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
-            </motion.div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setViewMode(viewMode === 'grid' ? 'stats' : 'grid')}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search skills..."
               className={`
-                p-2.5 rounded-full
-                ${isDark ? 'bg-gray-800/50' : 'bg-white/50'}
-                backdrop-blur-sm border border-gray-200/10
-                hover:border-blue-500/30
-                transition-all duration-300
+                w-56 pl-10 pr-4 py-2 rounded-full text-sm
+                ${isDark ? 'bg-gray-800 text-white placeholder-gray-500' : 'bg-gray-100 text-gray-900 placeholder-gray-400'}
+                focus:outline-none focus:ring-2 focus:ring-blue-500/40
               `}
-            >
-              <BarChart className={`h-5 w-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} />
-            </motion.button>
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className={`absolute left-3 top-2.5 h-4 w-4 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
           </div>
         </div>
 
         <AnimatePresence mode="wait">
-          {viewMode === 'grid' ? (
-            <motion.div
-              key={`grid-${activeCategory}-${searchQuery}`}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              {filteredSkills.map((skill, index) => (
-                <SkillCard
-                  key={skill.name}
-                  skill={skill}
-                  index={index}
-                />
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="stats"
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              {/* Category Stats */}
-              <motion.div
-                className={`
-                  rounded-2xl p-8
-                  ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-                  backdrop-blur-sm border border-gray-200/10
-                `}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <h3 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  Category Distribution
+          <motion.div
+            key={`grid-${activeCategory}-${searchQuery}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Primary Skills */}
+            {primarySkills.length > 0 && (
+              <div className="mb-8">
+                <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600" />
+                  Primary Skills
                 </h3>
-                {Object.entries(categories).map(([category, count], index) => (
-                  <motion.div
-                    key={category}
-                    className="mb-6"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                  >
-                    <div className="flex justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        {getCategoryIcon(category)}
-                        <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </span>
-                      </div>
-                      <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-                        {count} skills
-                      </span>
-                    </div>
-                    <div className="h-3 bg-gray-200/10 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(count / filteredSkills.length) * 100}%` }}
-                        className="h-full bg-gradient-to-r from-blue-500 to-purple-600"
-                        transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-          )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {primarySkills.map((skill, index) => (
+                    <SkillCard key={skill.id} skill={skill} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Secondary Skills */}
+            {secondarySkills.length > 0 && (
+              <div className="mb-8">
+                <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <span className="w-2 h-2 rounded-full bg-gray-500" />
+                  Secondary Skills
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {secondarySkills.map((skill, index) => (
+                    <SkillCard key={skill.id} skill={skill} index={index} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
         </AnimatePresence>
+
+        {/* Currently Learning */}
+        {learningItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className={`mt-12 p-6 rounded-2xl ${isDark ? 'bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/20' : 'bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200'}`}
+          >
+            <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <Sparkles className="w-5 h-5 text-purple-500" />
+              Currently Learning
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {learningItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`
+                    px-4 py-2 rounded-full
+                    ${isDark ? 'bg-gray-800/80 text-gray-300' : 'bg-white text-gray-700'}
+                    border ${isDark ? 'border-gray-700' : 'border-gray-200'}
+                  `}
+                >
+                  <span className="font-medium">{item.name}</span>
+                  <span className={`ml-2 text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                    {item.description}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   )

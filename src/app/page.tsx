@@ -6,31 +6,44 @@ import ScrollProgressIndicator from '../components/general/ScrollProgressIndicat
 import Footer from '../components/footer/Footer'
 import { ThemeProvider, ThemeToggle } from '../components/general/GradientBackground'
 import { ErrorBoundary } from '../components/general/ErrorBoundary'
+import { PortfolioDataProvider } from '@/context/PortfolioDataContext'
 
 // Lazy load components with loading states
-const ProjectsSection = dynamic(() => import('../components/projects/ProjectsSection'), {
-  loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
+const AboutSection = dynamic(() => import('../components/about/AboutSection'), {
+  loading: () => <div className="h-96 animate-pulse" />,
 })
-const SkillsSection = dynamic(() => import('../components/skills/SkillsSection'), {
-  loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
+const StatsSection = dynamic(() => import('../components/stats/StatsSection'), {
+  loading: () => <div className="h-48 animate-pulse" />,
 })
 const JourneySection = dynamic(() => import('../components/journey/JourneySection'), {
-  loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
+  loading: () => <div className="h-screen animate-pulse" />,
+})
+const ProjectsSection = dynamic(() => import('../components/projects/ProjectsSection'), {
+  loading: () => <div className="h-screen animate-pulse" />,
+})
+const SkillsSection = dynamic(() => import('../components/skills/SkillsSection'), {
+  loading: () => <div className="h-screen animate-pulse" />,
+})
+const TestimonialsSection = dynamic(() => import('../components/testimonials/TestimonialsSection'), {
+  loading: () => <div className="h-96 animate-pulse" />,
 })
 const ContactSection = dynamic(() => import('../components/contact/ContactSection'), {
-  loading: () => <div className="h-screen animate-pulse bg-gray-800/20" />,
+  loading: () => <div className="h-screen animate-pulse" />,
 })
 const GradientBackground = dynamic(() => import('../components/general/GradientBackground'), {
   ssr: false,
 })
+const FloatingNav = dynamic(() => import('../components/general/FloatingNav'), {
+  ssr: false,
+})
 
 export const metadata: Metadata = {
-  title: 'Tariq Amarneh - Web Developer & AI Enthusiast',
-  description: 'Portfolio of a web developer specializing in Next.js, Python, and Generative AI',
-  keywords: ['web developer', 'Next.js', 'Python', 'AI', 'portfolio', 'Tariq Amarneh'],
+  title: 'Tariq Amarneh - Software Development Engineer',
+  description: 'Portfolio of Tariq Amarneh - Software Development Engineer at Amazon, specializing in Java, Spring Boot, Python, and AI/ML',
+  keywords: ['software engineer', 'Amazon', 'Java', 'Spring Boot', 'Python', 'AI', 'ML', 'portfolio', 'Tariq Amarneh'],
   authors: [{ name: 'Tariq Amarneh' }],
   alternates: {
-    canonical: 'https://tariqamarneh.vercer.app',
+    canonical: 'https://tariqamarneh.vercel.app',
   },
 }
 
@@ -45,11 +58,11 @@ export default function Home() {
             '@context': 'https://schema.org',
             '@type': 'Person',
             name: 'Tariq Amarneh',
-            url: 'https://tariqamarneh.vercer.app',
-            jobTitle: 'Web Developer',
-            description: 'Web developer specializing in Next.js, Python, and Generative AI',
-            knowsAbout: ['Web Development', 'Next.js', 'Python', 'Artificial Intelligence'],
-            image: 'https://tariqamarneh.vercer.app/images/my_photo.png',
+            url: 'https://tariqamarneh.vercel.app',
+            jobTitle: 'Software Development Engineer',
+            description: 'Software Development Engineer at Amazon, specializing in Java, Spring Boot, Python, and AI/ML',
+            knowsAbout: ['Software Engineering', 'Java', 'Spring Boot', 'Python', 'Artificial Intelligence', 'Machine Learning'],
+            image: 'https://tariqamarneh.vercel.app/images/my_photo.png',
             sameAs: [
               'https://github.com/tariqamarneh',
               'https://linkedin.com/in/tariq-naser',
@@ -58,38 +71,61 @@ export default function Home() {
         }}
       />
       <main className="relative">
-        <ThemeProvider>
-          <ThemeToggle />
-          <GradientBackground />
-          <div className="relative z-10">
+        <PortfolioDataProvider>
+          <ThemeProvider>
+            <ThemeToggle />
+            <GradientBackground />
+            <FloatingNav />
+            <div className="relative z-10">
             <ScrollProgressIndicator />
+
+            {/* Hero Section */}
             <ErrorBoundary>
               <HeroSection />
             </ErrorBoundary>
-            
-            <section>
-              <ErrorBoundary>
-                <JourneySection />
-              </ErrorBoundary>
-              
-              <ErrorBoundary>
-                <ProjectsSection />
-              </ErrorBoundary>
-              
-              <ErrorBoundary>
-                <SkillsSection />
-              </ErrorBoundary>
-              
-              <ErrorBoundary>
-                <ContactSection />
-              </ErrorBoundary>
-            </section>
-            
+
+            {/* About Section */}
+            <ErrorBoundary>
+              <AboutSection />
+            </ErrorBoundary>
+
+            {/* Stats Section */}
+            <ErrorBoundary>
+              <StatsSection />
+            </ErrorBoundary>
+
+            {/* Journey Section */}
+            <ErrorBoundary>
+              <JourneySection />
+            </ErrorBoundary>
+
+            {/* Projects Section */}
+            <ErrorBoundary>
+              <ProjectsSection />
+            </ErrorBoundary>
+
+            {/* Skills Section */}
+            <ErrorBoundary>
+              <SkillsSection />
+            </ErrorBoundary>
+
+            {/* Testimonials Section */}
+            <ErrorBoundary>
+              <TestimonialsSection />
+            </ErrorBoundary>
+
+            {/* Contact Section */}
+            <ErrorBoundary>
+              <ContactSection />
+            </ErrorBoundary>
+
+            {/* Footer */}
             <ErrorBoundary>
               <Footer />
             </ErrorBoundary>
           </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </PortfolioDataProvider>
       </main>
     </>
   )

@@ -111,69 +111,39 @@ const ContactSection = () => {
   ]
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden" aria-label="Contact section">
-      {/* Modern Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#4F46E5,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#7C3AED,transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
-      </div>
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section id="contact" className="section-padding relative" aria-label="Contact section">
+      <div className="container mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 100,
-              damping: 20,
-            }}
-            className="inline-block"
-          >
-            <h2 className="text-6xl sm:text-7xl font-bold relative inline-block mb-4">
-              <span className={`
-                bg-clip-text text-transparent
-                ${isDark
-                  ? 'bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400'
-                  : 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600'
-                }
-              `}>
-                Get in Touch
-              </span>
-            </h2>
-            <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`mt-6 text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}
-          >
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
+              Get in Touch
+            </span>
+          </h2>
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
             Have a question or want to work together? Feel free to reach out!
-          </motion.p>
+          </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
           {/* Contact Form */}
           <motion.form
             onSubmit={handleSubmit}
             className={`
-              lg:col-span-3 rounded-2xl p-8
+              lg:col-span-3 rounded-xl p-6
               ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-              backdrop-blur-sm border border-gray-200/10
-              shadow-[0_0_30px_rgba(0,0,0,0.1)]
+              border border-white/10
             `}
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
           >
             <div className="space-y-6">
               {formFields.map(({ name, label, type, placeholder, rows, icon }) => (
@@ -255,20 +225,17 @@ const ContactSection = () => {
                 </div>
               ))}
 
-              <motion.button
+              <button
                 type="submit"
                 disabled={isSubmitting}
                 className={`
                   w-full px-6 py-3 rounded-xl font-medium
                   bg-gradient-to-r from-blue-500 to-purple-600
-                  text-white shadow-lg shadow-blue-500/25
-                  hover:shadow-xl hover:shadow-blue-500/40
+                  text-white hover:opacity-90
                   disabled:opacity-50 disabled:cursor-not-allowed
-                  transition-all duration-300
+                  transition-opacity duration-200
                   flex items-center justify-center gap-2
                 `}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
                 {isSubmitting ? (
                   <>
@@ -281,7 +248,7 @@ const ContactSection = () => {
                     Send Message
                   </>
                 )}
-              </motion.button>
+              </button>
             </div>
 
             {submitMessage && (
@@ -309,85 +276,49 @@ const ContactSection = () => {
 
           {/* Contact Info */}
           <motion.div
-            className="lg:col-span-2 space-y-8"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            className="lg:col-span-2 space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.1 }}
           >
             {/* Connect Card */}
-            <div className={`
-              rounded-2xl p-8
-              ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-              backdrop-blur-sm border border-gray-200/10
-              shadow-[0_0_30px_rgba(0,0,0,0.1)]
-            `}>
-              <h3 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <div className={`rounded-xl p-6 ${isDark ? 'bg-gray-900/50' : 'bg-white/50'} border border-white/10`}>
+              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Connect with Me
               </h3>
-              <div className="space-y-6">
-                <motion.a
+              <div className="space-y-3">
+                <a
                   href="https://github.com/tariqamarneh"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`
-                    flex items-center gap-4 p-4 rounded-xl
-                    ${isDark ? 'bg-gray-800/50' : 'bg-gray-50/50'}
-                    backdrop-blur-sm border border-gray-200/10
-                    transition-all duration-300
-                    hover:border-blue-500/30
-                  `}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3 p-3 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors`}
                 >
-                  <Github className={`w-6 h-6 ${isDark ? 'text-gray-300' : 'text-gray-700'}`} />
+                  <Github className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`} />
                   <div>
-                    <div className={`font-medium ${isDark ? 'text-gray-200' : 'text-gray-900'}`}>
-                      GitHub
-                    </div>
-                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Check out my projects
-                    </div>
+                    <div className={`font-medium text-sm ${isDark ? 'text-gray-200' : 'text-gray-900'}`}>GitHub</div>
+                    <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Check out my projects</div>
                   </div>
-                </motion.a>
+                </a>
 
-                <motion.a
+                <a
                   href="https://www.linkedin.com/in/tariq-naser/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`
-                    flex items-center gap-4 p-4 rounded-xl
-                    ${isDark ? 'bg-gray-800/50' : 'bg-gray-50/50'}
-                    backdrop-blur-sm border border-gray-200/10
-                    transition-all duration-300
-                    hover:border-blue-500/30
-                  `}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3 p-3 rounded-lg ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors`}
                 >
-                  <Linkedin className={`w-6 h-6 ${isDark ? 'text-gray-300' : 'text-gray-700'}`} />
+                  <Linkedin className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`} />
                   <div>
-                    <div className={`font-medium ${isDark ? 'text-gray-200' : 'text-gray-900'}`}>
-                      LinkedIn
-                    </div>
-                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Connect professionally
-                    </div>
+                    <div className={`font-medium text-sm ${isDark ? 'text-gray-200' : 'text-gray-900'}`}>LinkedIn</div>
+                    <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Connect professionally</div>
                   </div>
-                </motion.a>
+                </a>
               </div>
             </div>
 
             {/* Additional Info Card */}
-            <div className={`
-              rounded-2xl p-8
-              ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-              backdrop-blur-sm border border-gray-200/10
-              shadow-[0_0_30px_rgba(0,0,0,0.1)]
-            `}>
-              <h3 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                Quick Response
-              </h3>
+            <div className={`rounded-xl p-6 ${isDark ? 'bg-gray-900/50' : 'bg-white/50'} border border-white/10`}>
+              <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Response</h3>
               <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 I typically respond within 24 hours. For urgent matters, consider reaching out via LinkedIn.
               </p>
