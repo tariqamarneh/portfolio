@@ -26,7 +26,7 @@ export default function HeroSection() {
       ref={containerRef}
       style={{ opacity }}
       id="home"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-h-dvh flex items-center justify-center relative overflow-hidden pt-16 pb-20 sm:pt-8 sm:pb-8"
       role="region"
       aria-label="Portfolio Introduction"
     >
@@ -38,7 +38,7 @@ export default function HeroSection() {
         style={{ y }}
         className="container mx-auto px-6 md:px-12 lg:px-20 relative z-10"
       >
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-20">
           {/* Profile Image Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -52,7 +52,7 @@ export default function HeroSection() {
 
             {/* Image container */}
             <div className="relative rounded-full p-1 bg-gradient-to-r from-blue-500 to-purple-600">
-              <div className="rounded-full overflow-hidden w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-gray-900">
+              <div className="rounded-full overflow-hidden w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-gray-900">
                 <Image
                   src="/images/my_photo.png"
                   alt="Tariq Amarneh"
@@ -101,7 +101,7 @@ export default function HeroSection() {
             </motion.p>
 
             {/* Name */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
               <span className={isDark ? 'text-white' : 'text-gray-900'}>Tariq</span>
               <br />
               <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
@@ -128,7 +128,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className={`flex items-center justify-center lg:justify-start gap-2 mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+              className={`flex items-center justify-center lg:justify-start gap-2 mb-6 sm:mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
             >
               <MapPin className="w-5 h-5" />
               <span>Based in Jordan</span>
@@ -212,7 +212,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 hidden sm:flex"
       >
         <span className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Scroll down</span>
         <motion.div

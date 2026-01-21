@@ -44,17 +44,12 @@ const ProficiencyDots: React.FC<{ level: string; isDark: boolean }> = ({ level, 
 
 const SkillCard: React.FC<{
   skill: Skill
-  index: number
-}> = ({ skill, index }) => {
+}> = ({ skill }) => {
   const { isDark } = useTheme()
   const years = new Date().getFullYear() - skill.yearStarted
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
+    <div
       className={`
         rounded-xl p-4
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
@@ -92,7 +87,7 @@ const SkillCard: React.FC<{
           <ProficiencyDots level={skill.level} isDark={isDark} />
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -197,8 +192,8 @@ const SkillsSection: React.FC = () => {
                   Primary Skills
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {primarySkills.map((skill, index) => (
-                    <SkillCard key={skill.id} skill={skill} index={index} />
+                  {primarySkills.map((skill) => (
+                    <SkillCard key={skill.id} skill={skill} />
                   ))}
                 </div>
               </div>
@@ -212,8 +207,8 @@ const SkillsSection: React.FC = () => {
                   Secondary Skills
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {secondarySkills.map((skill, index) => (
-                    <SkillCard key={skill.id} skill={skill} index={index} />
+                  {secondarySkills.map((skill) => (
+                    <SkillCard key={skill.id} skill={skill} />
                   ))}
                 </div>
               </div>

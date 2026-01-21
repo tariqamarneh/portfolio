@@ -7,16 +7,12 @@ import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 
-const ProjectCard: React.FC<{ project: Project; index: number; isFeatured?: boolean }> = ({ project, index, isFeatured }) => {
+const ProjectCard: React.FC<{ project: Project; isFeatured?: boolean }> = ({ project, isFeatured }) => {
   const { isDark } = useTheme()
   const isLive = !project.linkUrl.includes('github.com')
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
+    <div
       className={`
         group relative rounded-2xl overflow-hidden
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
@@ -115,7 +111,7 @@ const ProjectCard: React.FC<{ project: Project; index: number; isFeatured?: bool
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -160,10 +156,10 @@ const ProjectsSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {featuredProject && (
-            <ProjectCard project={featuredProject} index={0} isFeatured />
+            <ProjectCard project={featuredProject} isFeatured />
           )}
-          {otherProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index + 1} />
+          {otherProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>

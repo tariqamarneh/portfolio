@@ -16,11 +16,13 @@
 /* ===== Base Styles ===== */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   color: var(--text);
   background-color: var(--background);
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
