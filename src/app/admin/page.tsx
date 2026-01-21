@@ -11,13 +11,11 @@ import { usePortfolioData, Skill, LearningItem, Testimonial, JourneyEvent } from
 import { Project } from '@/components/projects/ProjectsSection'
 import Image from 'next/image'
 
-const ADMIN_USERNAME = process.env.NEXT_PUBLIC_ADMIN_USERNAME || ''
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || ''
-
 type Tab = 'projects' | 'skills' | 'learning' | 'testimonials' | 'journey' | 'cv'
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -25,26 +23,49 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('projects')
 
   useEffect(() => {
-    const auth = sessionStorage.getItem('admin_auth')
-    if (auth === 'true') {
-      setIsAuthenticated(true)
-    }
+    // Check if already authenticated via HTTP-only cookie
+    fetch('/api/auth')
+      .then(res => {
+        if (res.ok) {
+          setIsAuthenticated(true)
+        }
+      })
+      .finally(() => setIsLoading(false))
   }, [])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true)
-      sessionStorage.setItem('admin_auth', 'true')
-      setError('')
-    } else {
-      setError('Invalid credentials')
+    setError('')
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+
+      if (res.ok) {
+        setIsAuthenticated(true)
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Invalid credentials')
+      }
+    } catch {
+      setError('Login failed. Please try again.')
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch('/api/auth', { method: 'DELETE' })
     setIsAuthenticated(false)
-    sessionStorage.removeItem('admin_auth')
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
+        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   if (!isAuthenticated) {
