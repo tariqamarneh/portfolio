@@ -36,6 +36,12 @@ const GradientBackground = dynamic(() => import('../components/general/GradientB
 const FloatingNav = dynamic(() => import('../components/general/FloatingNav'), {
   ssr: false,
 })
+const CustomCursor = dynamic(() => import('../components/effects/CustomCursor'), {
+  ssr: false,
+})
+const SplashScreen = dynamic(() => import('../components/effects/SplashScreen'), {
+  ssr: false,
+})
 
 export const metadata: Metadata = {
   title: 'Tariq Amarneh - Software Development Engineer',
@@ -95,6 +101,8 @@ export default function Home() {
       <main className="relative">
         <PortfolioDataProvider>
           <ThemeProvider>
+            <CustomCursor />
+            <SplashScreen>
             <ThemeToggle />
             <GradientBackground />
             <FloatingNav />
@@ -146,6 +154,7 @@ export default function Home() {
               <Footer />
             </ErrorBoundary>
           </div>
+          </SplashScreen>
           </ThemeProvider>
         </PortfolioDataProvider>
       </main>

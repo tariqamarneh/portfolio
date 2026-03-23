@@ -62,7 +62,7 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
             fixed left-0 right-0 ${height} ${color} 
             ${positionClasses[position]} origin-left z-50
             ${shadow ? 'shadow-md' : ''}
-            ${gradient ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : ''}
+            ${gradient ? 'bg-gradient-to-r from-cyan-500 to-violet-600' : ''}
           `}
           style={{ 
             scaleX,

@@ -19,14 +19,14 @@ const stats: Stat[] = [
     value: 2.3,
     suffix: '+',
     label: 'Years Experience',
-    color: 'from-blue-500 to-cyan-500'
+    color: 'from-cyan-400 to-teal-400'
   },
   {
     icon: FolderGit2,
     value: 10,
     suffix: '+',
     label: 'Projects Completed',
-    color: 'from-purple-500 to-pink-500'
+    color: 'from-violet-500 to-fuchsia-500'
   },
   {
     icon: Award,

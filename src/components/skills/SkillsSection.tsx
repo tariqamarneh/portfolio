@@ -6,6 +6,7 @@ import { Search, Code2, Database, Cloud, Brain, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData, Skill } from '@/context/PortfolioDataContext'
+import { useTilt } from '@/hooks/useTilt'
 
 const getCategoryIcon = (category: string) => {
   switch (category) {
@@ -43,18 +44,25 @@ const ProficiencyDots = React.memo<{ level: string; isDark: boolean }>(({ level,
 })
 ProficiencyDots.displayName = 'ProficiencyDots'
 
-const SkillCard = React.memo<{ skill: Skill }>(({ skill }) => {
+const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index }) => {
   const { isDark } = useTheme()
   const years = new Date().getFullYear() - skill.yearStarted
+  const { ref, style: tiltStyle, onMouseMove, onMouseLeave } = useTilt(5)
 
   return (
-    <div
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      style={tiltStyle}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
       className={`
         rounded-xl p-4
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
         border border-white/10
-        hover:border-white/20 transition-all duration-200
-        hover:scale-[1.02]
+        hover:border-cyan-500/20 transition-all duration-200
       `}
     >
       <div className="flex items-start gap-3">
@@ -87,7 +95,7 @@ const SkillCard = React.memo<{ skill: Skill }>(({ skill }) => {
           <ProficiencyDots level={skill.level} isDark={isDark} />
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 })
 SkillCard.displayName = 'SkillCard'
@@ -131,12 +139,12 @@ const SkillsSection: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
               Skills & Expertise
             </span>
           </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
           <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
             Technologies I work with daily
           </p>
@@ -153,7 +161,7 @@ const SkillsSection: React.FC = () => {
                   px-4 py-2 rounded-full text-sm font-medium
                   flex items-center gap-2 transition-colors duration-200
                   ${activeCategory === category.key
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                    ? 'bg-gradient-to-r from-cyan-500 to-violet-600 text-white'
                     : `${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'} hover:bg-opacity-80`
                   }
                 `}
@@ -180,24 +188,30 @@ const SkillsSection: React.FC = () => {
           </div>
         </div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
         <AnimatePresence mode="wait">
           <motion.div
             key={`grid-${activeCategory}-${searchQuery}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
             {/* Primary Skills */}
             {primarySkills.length > 0 && (
               <div className="mb-8">
                 <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600" />
+                  <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600" />
                   Primary Skills
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {primarySkills.map((skill) => (
-                    <SkillCard key={skill.id} skill={skill} />
+                  {primarySkills.map((skill, index) => (
+                    <SkillCard key={skill.id} skill={skill} index={index} />
                   ))}
                 </div>
               </div>
@@ -211,14 +225,15 @@ const SkillsSection: React.FC = () => {
                   Secondary Skills
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {secondarySkills.map((skill) => (
-                    <SkillCard key={skill.id} skill={skill} />
+                  {secondarySkills.map((skill, index) => (
+                    <SkillCard key={skill.id} skill={skill} index={index} />
                   ))}
                 </div>
               </div>
             )}
           </motion.div>
         </AnimatePresence>
+        </motion.div>
 
         {/* Currently Learning */}
         {learningItems.length > 0 && (
@@ -227,7 +242,7 @@ const SkillsSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className={`mt-12 p-6 rounded-2xl ${isDark ? 'bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/20' : 'bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200'}`}
+            className={`mt-12 p-6 rounded-2xl ${isDark ? 'bg-gradient-to-br from-violet-900/20 to-cyan-900/20 border border-violet-500/20' : 'bg-gradient-to-br from-violet-50 to-cyan-50 border border-violet-200'}`}
           >
             <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
               <Sparkles className="w-5 h-5 text-purple-500" />

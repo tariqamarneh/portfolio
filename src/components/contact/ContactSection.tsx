@@ -119,25 +119,25 @@ const ContactSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
               Get in Touch
             </span>
           </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
-          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
-            Have a question or want to work together? Feel free to reach out!
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
+          <p className={`mt-6 text-lg lg:text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
+            Let&apos;s build something great together
           </p>
         </motion.div>
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-          {/* Contact Form */}
+          {/* Contact Form with animated gradient border */}
           <motion.form
             onSubmit={handleSubmit}
             className={`
               lg:col-span-3 rounded-xl p-6
-              ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-              border border-white/10
+              ${isDark ? 'bg-[#0a0a1a]/90' : 'bg-white/90'}
+              animated-gradient-border
             `}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -176,7 +176,7 @@ const ContactSection = () => {
                             backdrop-blur-sm border border-gray-200/10
                             ${isDark ? 'text-white' : 'text-gray-900'}
                             placeholder:${isDark ? 'text-gray-500' : 'text-gray-400'}
-                            focus:outline-none focus:ring-2 focus:ring-blue-500/40
+                            focus:outline-none focus:ring-2 focus:ring-cyan-500/40
                             transition-all duration-300
                             ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}
                           `}
@@ -202,7 +202,7 @@ const ContactSection = () => {
                           backdrop-blur-sm border border-gray-200/10
                           ${isDark ? 'text-white' : 'text-gray-900'}
                           placeholder:${isDark ? 'text-gray-500' : 'text-gray-400'}
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/40
+                          focus:outline-none focus:ring-2 focus:ring-cyan-500/40
                           transition-all duration-300
                           ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}
                         `}
@@ -229,7 +229,7 @@ const ContactSection = () => {
                 disabled={isSubmitting}
                 className={`
                   w-full px-6 py-3 rounded-xl font-medium
-                  bg-gradient-to-r from-blue-500 to-purple-600
+                  bg-gradient-to-r from-cyan-500 to-violet-600
                   text-white hover:opacity-90
                   disabled:opacity-50 disabled:cursor-not-allowed
                   transition-opacity duration-200

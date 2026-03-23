@@ -6,12 +6,22 @@ import { MapPin, Terminal, Github, Linkedin, ArrowDown } from 'lucide-react'
 import ContactModal from '../contact/ContactModal'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
+import { useTypingEffect } from '@/hooks/useTypingEffect'
+import GradientMeshOrbs from '../effects/GradientMeshOrbs'
+
+const roles = [
+  'Software Development Engineer',
+  'AI Enthusiast',
+  'Full Stack Developer',
+  'Problem Solver',
+]
 
 export default function HeroSection() {
   const { isDark } = useTheme()
   const { cvUrl } = usePortfolioData()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const containerRef = useRef(null)
+  const { displayText } = useTypingEffect({ roles, typingSpeed: 70, deletingSpeed: 35, pauseDuration: 2500 })
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -20,6 +30,9 @@ export default function HeroSection() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 100])
+
+  const nameLetters = 'Tariq'.split('')
+  const lastNameLetters = 'Amarneh'.split('')
 
   return (
     <motion.section
@@ -30,9 +43,8 @@ export default function HeroSection() {
       role="region"
       aria-label="Portfolio Introduction"
     >
-      {/* Subtle accent glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+      {/* Gradient Mesh Orbs Background */}
+      <GradientMeshOrbs />
 
       <motion.div
         style={{ y }}
@@ -47,11 +59,11 @@ export default function HeroSection() {
             className="relative"
           >
             {/* Animated ring */}
-            <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 animate-pulse-glow" />
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-40 blur-md" />
+            <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 opacity-20 animate-pulse-glow" />
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 opacity-40 blur-md" />
 
             {/* Image container */}
-            <div className="relative rounded-full p-1 bg-gradient-to-r from-blue-500 to-purple-600">
+            <div className="relative rounded-full p-1 bg-gradient-to-r from-cyan-500 to-violet-600">
               <div className="rounded-full overflow-hidden w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 bg-gray-900">
                 <Image
                   src="/images/my_photo.png"
@@ -76,7 +88,7 @@ export default function HeroSection() {
                 flex items-center gap-2
               `}
             >
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 Available for work
               </span>
@@ -100,34 +112,67 @@ export default function HeroSection() {
               Hello, I&apos;m
             </motion.p>
 
-            {/* Name */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-              <span className={isDark ? 'text-white' : 'text-gray-900'}>Tariq</span>
+            {/* Name - Letter by letter reveal with display font */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 font-display">
+              <span className="inline-flex overflow-hidden">
+                {nameLetters.map((letter, i) => (
+                  <motion.span
+                    key={`first-${i}`}
+                    initial={{ y: '100%', opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.5 + i * 0.06,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    }}
+                    className={isDark ? 'text-white' : 'text-gray-900'}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
+              </span>
               <br />
-              <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
-                Amarneh
+              <span className="inline-flex overflow-hidden">
+                {lastNameLetters.map((letter, i) => (
+                  <motion.span
+                    key={`last-${i}`}
+                    initial={{ y: '100%', opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.8 + i * 0.06,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    }}
+                    className={isDark ? 'gradient-text' : 'gradient-text-light'}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
               </span>
             </h1>
 
-            {/* Role */}
+            {/* Typing Role Effect */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 1.4 }}
               className={`
                 inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6
-                ${isDark ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-600'}
+                ${isDark ? 'bg-cyan-500/10 text-cyan-400' : 'bg-cyan-50 text-cyan-600'}
               `}
             >
               <Terminal className="w-5 h-5" />
-              <span className="font-medium">Software Development Engineer at Amazon</span>
+              <span className="font-medium">
+                {displayText}
+                <span className="animate-blink ml-0.5 text-cyan-400">|</span>
+              </span>
             </motion.div>
 
             {/* Location */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 1.5 }}
               className={`flex items-center justify-center lg:justify-start gap-2 mb-6 sm:mb-8 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
             >
               <MapPin className="w-5 h-5" />
@@ -138,15 +183,15 @@ export default function HeroSection() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: 1.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center"
             >
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="
                   px-8 py-3.5 rounded-full font-semibold
-                  bg-gradient-to-r from-blue-600 to-purple-600 text-white
-                  hover:shadow-lg hover:shadow-blue-500/25
+                  bg-gradient-to-r from-cyan-500 to-violet-600 text-white
+                  hover:shadow-lg hover:shadow-cyan-500/25
                   transition-all duration-300
                   accent-glow-hover
                 "
@@ -161,8 +206,8 @@ export default function HeroSection() {
                   px-8 py-3.5 rounded-full font-semibold
                   border-2 transition-all duration-300
                   ${isDark
-                    ? 'border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400'
-                    : 'border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600'
+                    ? 'border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400'
+                    : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600'
                   }
                 `}
               >
@@ -211,7 +256,7 @@ export default function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 2 }}
         className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 hidden sm:flex"
       >
         <span className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Scroll down</span>

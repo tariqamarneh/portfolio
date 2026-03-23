@@ -34,12 +34,12 @@ const TestimonialsSection: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl font-display font-bold mb-4">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
               What People Say
             </span>
           </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
           <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             Recommendations from colleagues and collaborators
           </p>
@@ -60,7 +60,7 @@ const TestimonialsSection: React.FC = () => {
           `}>
             {/* Quote Icon */}
             <div className="absolute -top-6 left-8">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center">
                 <Quote className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -72,10 +72,10 @@ const TestimonialsSection: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="pt-4"
+                className="pt-4 h-[280px] flex flex-col justify-between"
               >
                 {/* Content */}
-                <p className={`text-lg md:text-xl leading-relaxed mb-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`text-lg md:text-xl leading-relaxed mb-8 overflow-y-auto flex-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                   &ldquo;{testimonials[currentIndex]?.content}&rdquo;
                 </p>
 
@@ -117,7 +117,7 @@ const TestimonialsSection: React.FC = () => {
                     className={`
                       w-2 h-2 rounded-full transition-all duration-300
                       ${index === currentIndex
-                        ? 'w-8 bg-gradient-to-r from-blue-500 to-purple-600'
+                        ? 'w-8 bg-gradient-to-r from-cyan-500 to-violet-600'
                         : isDark ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-300 hover:bg-gray-400'
                       }
                     `}

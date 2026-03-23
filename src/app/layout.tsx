@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import FloatingNav from '../components/general/FloatingNav'
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -13,6 +13,13 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-display',
+})
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -20,7 +27,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: dark)', color: '#050510' },
   ],
 }
 
@@ -61,10 +68,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  // Add real verification tokens when available
-  // verification: {
-  //   google: 'your-actual-google-verification-token',
-  // },
 }
 
 export default function RootLayout({
@@ -73,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`scroll-smooth ${inter.variable}`}>
+    <html lang="en" className={`scroll-smooth ${inter.variable} ${spaceGrotesk.variable}`}>
       <head>
         <link
           rel="preconnect"
@@ -86,7 +89,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="bg-gray-900 text-white flex flex-col min-h-screen antialiased font-sans">
+      <body className="bg-[#050510] text-white flex flex-col min-h-screen antialiased font-sans">
         <SpeedInsights />
         <Analytics />
         <main className="flex-grow relative">

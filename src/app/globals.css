@@ -5,10 +5,10 @@
 
 /* ===== CSS Variables ===== */
 :root {
-  --primary: #6366f1;
+  --primary: #06b6d4;
   --secondary: #8b5cf6;
-  --accent: #3b82f6;
-  --background: #0f172a;
+  --accent: #d946ef;
+  --background: #050510;
   --text: #e2e8f0;
   --scroll-progress: 0;
 }
@@ -26,19 +26,24 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Custom cursor - hide default when active */
+.custom-cursor-active * {
+  cursor: none !important;
+}
+
 /* ===== Gradient Backgrounds ===== */
 .gradient-bg-dark {
-  --top-r: calc(30 - 27 * var(--scroll-progress));
-  --top-g: calc(58 - 51 * var(--scroll-progress));
-  --top-b: calc(95 - 77 * var(--scroll-progress));
-  --mid-r: calc(15 - 12 * var(--scroll-progress));
-  --mid-g: calc(23 - 17 * var(--scroll-progress));
-  --mid-b: calc(42 - 19 * var(--scroll-progress));
+  --top-r: calc(8 - 5 * var(--scroll-progress));
+  --top-g: calc(8 - 5 * var(--scroll-progress));
+  --top-b: calc(24 - 14 * var(--scroll-progress));
+  --mid-r: calc(5 - 3 * var(--scroll-progress));
+  --mid-g: calc(5 - 3 * var(--scroll-progress));
+  --mid-b: calc(16 - 6 * var(--scroll-progress));
   background: linear-gradient(
     180deg,
     rgb(var(--top-r), var(--top-g), var(--top-b)) 0%,
     rgb(var(--mid-r), var(--mid-g), var(--mid-b)) 50%,
-    #020617 100%
+    #020205 100%
   );
 }
 
@@ -64,8 +69,8 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
 }
@@ -80,7 +85,7 @@ body {
 @layer components {
   .glass-card {
     @apply rounded-2xl border border-white/10;
-    background: rgba(17, 25, 40, 0.75);
+    background: rgba(10, 10, 30, 0.75);
   }
 
   .glass-card-light {
@@ -91,22 +96,22 @@ body {
   /* Only apply backdrop-blur on elements that truly need it (nav, modals) */
   .glass-card-blur {
     @apply rounded-2xl border border-white/10;
-    background: rgba(17, 25, 40, 0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(10, 10, 30, 0.6);
+    backdrop-filter: blur(12px);
   }
 
   .glass-card-blur-light {
     @apply rounded-2xl border border-gray-200/50;
     background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400;
   }
 
   .gradient-text-light {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-violet-600 to-fuchsia-600;
   }
 
   .section-padding {
@@ -114,11 +119,11 @@ body {
   }
 
   .accent-glow {
-    box-shadow: 0 0 60px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 60px rgba(6, 182, 212, 0.08), 0 0 120px rgba(139, 92, 246, 0.05);
   }
 
   .accent-glow-hover:hover {
-    box-shadow: 0 0 80px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 0 80px rgba(6, 182, 212, 0.15), 0 0 120px rgba(139, 92, 246, 0.1);
   }
 }
 
@@ -126,27 +131,27 @@ body {
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
     width: 10px;
-    background-color: #0f172a;
+    background-color: #050510;
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(6, 182, 212, 0.05);
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #6366f1, #8b5cf6);
+    background: linear-gradient(180deg, #06b6d4, #8b5cf6);
     border-radius: 10px;
-    border: 2px solid #0f172a;
+    border: 2px solid #050510;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #818cf8, #a78bfa);
+    background: linear-gradient(180deg, #22d3ee, #a78bfa);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: #6366f1 #0f172a;
+    scrollbar-color: #06b6d4 #050510;
   }
 }
 
@@ -167,6 +172,75 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+/* Orb floating animations */
+@keyframes orb-float-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(80px, -60px, 0) scale(1.1); }
+  50% { transform: translate3d(40px, 40px, 0) scale(0.95); }
+  75% { transform: translate3d(-30px, 20px, 0) scale(1.05); }
+}
+
+@keyframes orb-float-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(-60px, 50px, 0) scale(1.08); }
+  66% { transform: translate3d(40px, -30px, 0) scale(0.92); }
+}
+
+@keyframes orb-float-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(70px, -50px, 0) scale(1.12); }
+}
+
+@keyframes orb-float-4 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-40px, 30px, 0); }
+  75% { transform: translate3d(30px, -20px, 0); }
+}
+
+.animate-orb-1 { animation: orb-float-1 20s ease-in-out infinite; }
+.animate-orb-2 { animation: orb-float-2 25s ease-in-out infinite; }
+.animate-orb-3 { animation: orb-float-3 30s ease-in-out infinite; }
+.animate-orb-4 { animation: orb-float-4 18s ease-in-out infinite; }
+
+/* Gradient border animation */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-gradient {
+  to { --angle: 360deg; }
+}
+
+.animated-gradient-border {
+  position: relative;
+  background: transparent;
+}
+
+.animated-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), #06b6d4, #8b5cf6, #d946ef, #06b6d4);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotate-gradient 4s linear infinite;
+}
+
+/* Typing cursor blink */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -182,7 +256,7 @@ body {
 
 /* ===== Selection Styling ===== */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(6, 182, 212, 0.3);
   color: #fff;
 }
 
@@ -199,6 +273,6 @@ body {
 
 /* ===== Focus States ===== */
 :focus-visible {
-  outline: 2px solid #6366f1;
+  outline: 2px solid #06b6d4;
   outline-offset: 2px;
 }

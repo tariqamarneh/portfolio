@@ -209,7 +209,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                 <div key={name} className="mb-6">
                                     <label
                                         htmlFor={name}
-                                        className="block mb-2 text-sm font-medium text-indigo-200"
+                                        className="block mb-2 text-sm font-medium text-gray-300"
                                     >
                                         {label}
                                     </label>
@@ -223,14 +223,14 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                                 required
                                                 rows={rows}
                                                 maxLength={MESSAGE_MAX_LENGTH}
-                                                className={`w-full px-3 py-2 text-indigo-200 bg-indigo-900 bg-opacity-50 rounded-md 
-                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                                                className={`w-full px-3 py-2 text-gray-300 bg-gray-800/50 rounded-md 
+                      focus:outline-none focus:ring-2 focus:ring-cyan-500
                       ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
                                                 placeholder={placeholder}
                                                 aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
                                                 aria-describedby={`${name}-error`}
                                             />
-                                            <div className="mt-1 text-sm text-indigo-300">
+                                            <div className="mt-1 text-sm text-gray-400">
                                                 {formData.message.length}/{MESSAGE_MAX_LENGTH} characters
                                             </div>
                                         </div>
@@ -242,8 +242,8 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                             value={formData[name as keyof typeof formData]}
                                             onChange={handleChange}
                                             required
-                                            className={`w-full px-3 py-2 text-indigo-200 bg-indigo-900 bg-opacity-50 rounded-md 
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                                            className={`w-full px-3 py-2 text-gray-300 bg-gray-800/50 rounded-md 
+                    focus:outline-none focus:ring-2 focus:ring-cyan-500
                     ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
                                             placeholder={placeholder}
                                             aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
@@ -265,9 +265,9 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                             <motion.button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full px-5 py-3 text-white bg-gradient-to-r from-indigo-500 to-purple-600 
-              rounded-md hover:from-indigo-600 hover:to-purple-700 focus:outline-none 
-              focus:ring-2 focus:ring-indigo-500 disabled:opacity-50
+                                className="w-full px-5 py-3 text-white bg-gradient-to-r from-cyan-500 to-violet-600 
+              rounded-md hover:from-cyan-600 hover:to-violet-700 focus:outline-none 
+              focus:ring-2 focus:ring-cyan-500 disabled:opacity-50
               flex items-center justify-center"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
@@ -319,7 +319,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                     href="https://github.com/tariqamarneh"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-indigo-500 hover:text-white transition-colors duration-300"
+                                    className="text-cyan-400 hover:text-white transition-colors duration-300"
                                     whileHover={{ scale: 1.1, rotate: 5 }}
                                     whileTap={{ scale: 0.9 }}
                                 >
@@ -331,7 +331,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                     href="https://www.linkedin.com/in/tariq-naser/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-indigo-500 hover:text-white transition-colors duration-300"
+                                    className="text-cyan-400 hover:text-white transition-colors duration-300"
                                     whileHover={{ scale: 1.1, rotate: -5 }}
                                     whileTap={{ scale: 0.9 }}
                                 >

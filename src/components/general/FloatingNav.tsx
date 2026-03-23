@@ -15,13 +15,30 @@ const navItems = [
   { name: 'Contact', href: '#contact', icon: Mail },
 ]
 
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.04, delayChildren: 0.1 },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -10, scale: 0.8 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 400, damping: 25 },
+  },
+}
+
 export default function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const { isDark } = useTheme()
   const activeSectionRef = useRef('')
 
-  // Use IntersectionObserver for section detection instead of getBoundingClientRect on scroll
+  // Use IntersectionObserver for section detection
   useEffect(() => {
     const sectionIds = navItems.map(item => item.href.slice(1))
     const observers: IntersectionObserver[] = []
@@ -51,7 +68,7 @@ export default function FloatingNav() {
     }
   }, [])
 
-  // Separate lightweight scroll handler only for visibility toggle
+  // Lightweight scroll handler only for visibility toggle
   useEffect(() => {
     let ticking = false
 
@@ -99,13 +116,18 @@ export default function FloatingNav() {
                 px-1.5 sm:px-2 py-1.5 sm:py-2 rounded-2xl
                 ${isDark ? 'glass-card-blur' : 'glass-card-blur-light'}
               `}>
-                <ul className="flex items-center gap-1">
+                <motion.ul
+                  className="flex items-center gap-1"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                >
                 {navItems.map((item) => {
                   const Icon = item.icon
                   const isActive = activeSection === item.href.slice(1)
 
                   return (
-                    <li key={item.name}>
+                    <motion.li key={item.name} variants={itemVariants}>
                       <a
                         href={item.href}
                         onClick={(e) => handleNavClick(e, item.href)}
@@ -113,7 +135,7 @@ export default function FloatingNav() {
                           relative flex items-center justify-center p-2 sm:p-2.5 rounded-xl
                           transition-all duration-200 group
                           ${isActive
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                            ? 'bg-gradient-to-r from-cyan-500 to-violet-600 text-white shadow-lg shadow-cyan-500/20'
                             : isDark
                               ? 'text-gray-400 hover:text-white hover:bg-white/10'
                               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -134,10 +156,10 @@ export default function FloatingNav() {
                           {item.name}
                         </span>
                       </a>
-                    </li>
+                    </motion.li>
                   )
                 })}
-                </ul>
+                </motion.ul>
               </div>
             </motion.nav>
           </div>
