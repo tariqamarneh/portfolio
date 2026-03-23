@@ -12,17 +12,7 @@ function sanitizeInput(input: string): string {
 
 export async function POST(req: Request) {
   try {
-    const emailUser = process.env.EMAIL_USER
-    const emailPass = process.env.EMAIL_PASS
-    const contactEmail = process.env.CONTACT_EMAIL || emailUser
-
-    if (!emailUser || !emailPass) {
-      return NextResponse.json(
-        { error: 'Email service is not configured' },
-        { status: 503 }
-      )
-    }
-
+    // Parse and validate input first
     let body: unknown
     try {
       body = await req.json()
@@ -74,6 +64,18 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: `Message must be between 10 and ${MAX_MESSAGE_LENGTH} characters` },
         { status: 400 }
+      )
+    }
+
+    // Check email service config after validation
+    const emailUser = process.env.EMAIL_USER
+    const emailPass = process.env.EMAIL_PASS
+    const contactEmail = process.env.CONTACT_EMAIL || emailUser
+
+    if (!emailUser || !emailPass) {
+      return NextResponse.json(
+        { error: 'Email service is not configured' },
+        { status: 503 }
       )
     }
 
