@@ -1,16 +1,16 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData, JourneyEvent } from '@/context/PortfolioDataContext'
 
-const TimelineEventCard: React.FC<{
+const TimelineEventCard = React.memo<{
   event: JourneyEvent
   isLeft: boolean
   index: number
-}> = ({ event, isLeft, index }) => {
+}>(({ event, isLeft, index }) => {
   const { isDark } = useTheme()
 
   return (
@@ -52,16 +52,18 @@ const TimelineEventCard: React.FC<{
       <div className="w-1/2" />
     </motion.div>
   )
-}
+})
+TimelineEventCard.displayName = 'TimelineEventCard'
 
 const InteractiveTimeline: React.FC = () => {
   const { isDark } = useTheme()
   const { journeyEvents } = usePortfolioData()
 
   // Sort events by date (newest first)
-  const sortedEvents = [...journeyEvents].sort((a, b) => {
-    return b.date.localeCompare(a.date)
-  })
+  const sortedEvents = useMemo(
+    () => [...journeyEvents].sort((a, b) => b.date.localeCompare(a.date)),
+    [journeyEvents]
+  )
 
   if (sortedEvents.length === 0) {
     return null

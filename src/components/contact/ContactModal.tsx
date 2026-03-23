@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { MESSAGE_MAX_LENGTH } from '@/lib/constants';
 
 
 interface ContactModalProps {
@@ -30,7 +31,21 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         message: ''
     });
 
-    const MESSAGE_MAX_LENGTH = 500;
+    // Close modal on Escape key
+    const handleEscape = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+    }, [onClose]);
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = '';
+        };
+    }, [isOpen, handleEscape]);
 
     const validateField = (name: string, value: string) => {
         switch (name) {

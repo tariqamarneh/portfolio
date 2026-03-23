@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronUp, Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
@@ -19,30 +19,46 @@ export default function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const { isDark } = useTheme()
+  const activeSectionRef = useRef('')
 
+  // Use IntersectionObserver for section detection instead of getBoundingClientRect on scroll
+  useEffect(() => {
+    const sectionIds = navItems.map(item => item.href.slice(1))
+    const observers: IntersectionObserver[] = []
+
+    sectionIds.forEach(sectionId => {
+      const element = document.getElementById(sectionId)
+      if (!element) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              activeSectionRef.current = sectionId
+              setActiveSection(sectionId)
+            }
+          })
+        },
+        { rootMargin: '-33% 0px -66% 0px', threshold: 0 }
+      )
+
+      observer.observe(element)
+      observers.push(observer)
+    })
+
+    return () => {
+      observers.forEach(observer => observer.disconnect())
+    }
+  }, [])
+
+  // Separate lightweight scroll handler only for visibility toggle
   useEffect(() => {
     let ticking = false
 
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const currentScrollPos = window.scrollY
-          setIsVisible(currentScrollPos > 100)
-
-          const sections = navItems.map(item => item.href.slice(1))
-          let current = ''
-
-          for (const section of sections) {
-            const element = document.getElementById(section)
-            if (element) {
-              const rect = element.getBoundingClientRect()
-              if (rect.top <= window.innerHeight / 3 && rect.bottom >= window.innerHeight / 3) {
-                current = section
-              }
-            }
-          }
-
-          setActiveSection(current)
+          setIsVisible(window.scrollY > 100)
           ticking = false
         })
         ticking = true
@@ -53,17 +69,17 @@ export default function FloatingNav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [])
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const element = document.querySelector(href)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
-  }
+  }, [])
 
   return (
     <AnimatePresence>
@@ -81,7 +97,7 @@ export default function FloatingNav() {
             >
               <div className={`
                 px-1.5 sm:px-2 py-1.5 sm:py-2 rounded-2xl
-                ${isDark ? 'glass-card' : 'glass-card-light'}
+                ${isDark ? 'glass-card-blur' : 'glass-card-blur-light'}
               `}>
                 <ul className="flex items-center gap-1">
                 {navItems.map((item) => {
@@ -131,7 +147,7 @@ export default function FloatingNav() {
             onClick={scrollToTop}
             className={`
               fixed bottom-6 right-6 z-50 p-3 rounded-xl
-              ${isDark ? 'glass-card' : 'glass-card-light'}
+              ${isDark ? 'glass-card-blur' : 'glass-card-blur-light'}
               hover:scale-110 transition-transform duration-200
             `}
             initial={{ opacity: 0, scale: 0 }}

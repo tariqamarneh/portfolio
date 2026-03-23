@@ -44,7 +44,7 @@ const stats: Stat[] = [
   }
 ]
 
-const AnimatedCounter: React.FC<{ value: number; suffix: string; isInView: boolean }> = ({
+const AnimatedCounter = React.memo<{ value: number; suffix: string; isInView: boolean }>(({
   value,
   suffix,
   isInView
@@ -79,7 +79,8 @@ const AnimatedCounter: React.FC<{ value: number; suffix: string; isInView: boole
       {suffix}
     </span>
   )
-}
+})
+AnimatedCounter.displayName = 'AnimatedCounter'
 
 const StatsSection: React.FC = () => {
   const { isDark } = useTheme()

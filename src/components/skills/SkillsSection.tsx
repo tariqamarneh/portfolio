@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Code2, Database, Cloud, Brain, Sparkles } from 'lucide-react'
 import Image from 'next/image'
@@ -24,7 +24,7 @@ const getCategoryIcon = (category: string) => {
   }
 }
 
-const ProficiencyDots: React.FC<{ level: string; isDark: boolean }> = ({ level, isDark }) => {
+const ProficiencyDots = React.memo<{ level: string; isDark: boolean }>(({ level, isDark }) => {
   const dots = level === 'Expert' ? 5 : level === 'Intermediate' ? 3 : 1
   const color = level === 'Expert' ? 'bg-green-500' : level === 'Intermediate' ? 'bg-blue-500' : 'bg-yellow-500'
 
@@ -40,11 +40,10 @@ const ProficiencyDots: React.FC<{ level: string; isDark: boolean }> = ({ level, 
       ))}
     </div>
   )
-}
+})
+ProficiencyDots.displayName = 'ProficiencyDots'
 
-const SkillCard: React.FC<{
-  skill: Skill
-}> = ({ skill }) => {
+const SkillCard = React.memo<{ skill: Skill }>(({ skill }) => {
   const { isDark } = useTheme()
   const years = new Date().getFullYear() - skill.yearStarted
 
@@ -65,6 +64,7 @@ const SkillCard: React.FC<{
             width={28}
             height={28}
             alt={`${skill.name} Logo`}
+            loading="lazy"
             onError={(e) => {
               const target = e.target as HTMLImageElement
               target.style.display = 'none'
@@ -89,7 +89,8 @@ const SkillCard: React.FC<{
       </div>
     </div>
   )
-}
+})
+SkillCard.displayName = 'SkillCard'
 
 const SkillsSection: React.FC = () => {
   type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops' | 'ai'
@@ -98,15 +99,18 @@ const SkillsSection: React.FC = () => {
   const { isDark } = useTheme()
   const { skills, learningItems } = usePortfolioData()
 
-  const filteredSkills = skills
-    .filter(skill => activeCategory === 'all' || skill.category === activeCategory)
-    .filter(skill =>
-      skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      skill.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const filteredSkills = useMemo(() =>
+    skills
+      .filter(skill => activeCategory === 'all' || skill.category === activeCategory)
+      .filter(skill =>
+        skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        skill.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [skills, activeCategory, searchQuery]
+  )
 
-  const primarySkills = filteredSkills.filter(s => s.isPrimary)
-  const secondarySkills = filteredSkills.filter(s => !s.isPrimary)
+  const primarySkills = useMemo(() => filteredSkills.filter(s => s.isPrimary), [filteredSkills])
+  const secondarySkills = useMemo(() => filteredSkills.filter(s => !s.isPrimary), [filteredSkills])
 
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: 'All' },

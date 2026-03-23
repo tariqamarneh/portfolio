@@ -61,10 +61,10 @@ export const metadata: Metadata = {
       },
     ],
   },
-  verification: {
-    google: 'your-google-site-verification',
-    yandex: 'your-yandex-verification',
-  },
+  // Add real verification tokens when available
+  // verification: {
+  //   google: 'your-actual-google-verification-token',
+  // },
 }
 
 export default function RootLayout({
@@ -85,7 +85,6 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com"
           crossOrigin="anonymous"
         />
-        <title>Tariq Amarneh - Web Developer & AI Enthusiast</title>
       </head>
       <body className="bg-gray-900 text-white flex flex-col min-h-screen antialiased font-sans">
         <SpeedInsights />

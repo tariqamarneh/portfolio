@@ -425,10 +425,10 @@ function ProjectsManager() {
               <p className="text-xs text-gray-500">{project.date}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => handleEdit(project)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700">
+              <button onClick={() => handleEdit(project)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${project.title}`}>
                 <Edit2 className="w-4 h-4" />
               </button>
-              <button onClick={() => deleteProject(project.id)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700">
+              <button onClick={() => { if (window.confirm(`Delete "${project.title}"?`)) deleteProject(project.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${project.title}`}>
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -508,8 +508,8 @@ function SkillsManager() {
               <p className="text-sm text-gray-400">{skill.category} - {skill.level}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => handleEdit(skill)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"><Edit2 className="w-4 h-4" /></button>
-              <button onClick={() => deleteSkill(skill.id)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700"><Trash2 className="w-4 h-4" /></button>
+              <button onClick={() => handleEdit(skill)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${skill.name}`}><Edit2 className="w-4 h-4" /></button>
+              <button onClick={() => { if (window.confirm(`Delete "${skill.name}"?`)) deleteSkill(skill.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${skill.name}`}><Trash2 className="w-4 h-4" /></button>
             </div>
           </div>
         ))}
@@ -551,7 +551,7 @@ function LearningManager() {
           <div key={item.id} className="bg-gray-900 rounded-xl p-4 border border-gray-800 flex items-center gap-4">
             <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex-shrink-0 flex items-center justify-center"><Sparkles className="w-5 h-5 text-purple-400" /></div>
             <div className="flex-grow min-w-0"><h3 className="font-semibold text-white">{item.name}</h3><p className="text-sm text-gray-400">{item.description}</p></div>
-            <button onClick={() => deleteLearningItem(item.id)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700 flex-shrink-0"><Trash2 className="w-4 h-4" /></button>
+            <button onClick={() => { if (window.confirm(`Delete "${item.name}"?`)) deleteLearningItem(item.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700 flex-shrink-0" aria-label={`Delete ${item.name}`}><Trash2 className="w-4 h-4" /></button>
           </div>
         ))}
       </div>
@@ -615,8 +615,8 @@ function TestimonialsManager() {
                 <p className="text-sm text-gray-300 line-clamp-2">&ldquo;{testimonial.content}&rdquo;</p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
-                <button onClick={() => handleEdit(testimonial)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"><Edit2 className="w-4 h-4" /></button>
-                <button onClick={() => deleteTestimonial(testimonial.id)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700"><Trash2 className="w-4 h-4" /></button>
+                <button onClick={() => handleEdit(testimonial)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${testimonial.name}'s testimonial`}><Edit2 className="w-4 h-4" /></button>
+                <button onClick={() => { if (window.confirm(`Delete ${testimonial.name}'s testimonial?`)) deleteTestimonial(testimonial.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${testimonial.name}'s testimonial`}><Trash2 className="w-4 h-4" /></button>
               </div>
             </div>
           </div>
@@ -683,8 +683,8 @@ function JourneyManager() {
               <p className="text-sm text-gray-400 line-clamp-1">{event.description}</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => handleEdit(event)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"><Edit2 className="w-4 h-4" /></button>
-              <button onClick={() => deleteJourneyEvent(event.id)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700"><Trash2 className="w-4 h-4" /></button>
+              <button onClick={() => handleEdit(event)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${event.title}`}><Edit2 className="w-4 h-4" /></button>
+              <button onClick={() => { if (window.confirm(`Delete "${event.title}"?`)) deleteJourneyEvent(event.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${event.title}`}><Trash2 className="w-4 h-4" /></button>
             </div>
           </div>
         ))}

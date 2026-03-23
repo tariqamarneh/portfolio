@@ -15,7 +15,6 @@
 
 /* ===== Base Styles ===== */
 html {
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
@@ -81,11 +80,22 @@ body {
 @layer components {
   .glass-card {
     @apply rounded-2xl border border-white/10;
+    background: rgba(17, 25, 40, 0.75);
+  }
+
+  .glass-card-light {
+    @apply rounded-2xl border border-gray-200/50;
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Only apply backdrop-blur on elements that truly need it (nav, modals) */
+  .glass-card-blur {
+    @apply rounded-2xl border border-white/10;
     background: rgba(17, 25, 40, 0.6);
     backdrop-filter: blur(10px);
   }
 
-  .glass-card-light {
+  .glass-card-blur-light {
     @apply rounded-2xl border border-gray-200/50;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);

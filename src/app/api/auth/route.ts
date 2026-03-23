@@ -1,8 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
+
+function timingSafeCompare(a: string, b: string): boolean {
+  try {
+    const bufA = Buffer.from(a)
+    const bufB = Buffer.from(b)
+    if (bufA.length !== bufB.length) {
+      // Still do a comparison to avoid leaking length info via timing
+      crypto.timingSafeEqual(bufA, bufA)
+      return false
+    }
+    return crypto.timingSafeEqual(bufA, bufB)
+  } catch {
+    return false
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password } = await request.json()
+    const body = await request.json()
+    const { username, password } = body as Record<string, unknown>
+
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return NextResponse.json(
+        { error: 'Invalid credentials format' },
+        { status: 400 }
+      )
+    }
+
+    if (username.length > 200 || password.length > 200) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      )
+    }
 
     // These are server-side only - not exposed to browser
     const validUsername = process.env.ADMIN_USERNAME
@@ -15,9 +46,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (username === validUsername && password === validPassword) {
-      // Create a simple token (in production, use proper JWT)
-      const token = Buffer.from(`${username}:${Date.now()}`).toString('base64')
+    if (timingSafeCompare(username, validUsername) && timingSafeCompare(password, validPassword)) {
+      // Cryptographically secure random token
+      const token = crypto.randomBytes(32).toString('hex')
 
       const response = NextResponse.json({ success: true })
 
@@ -48,7 +79,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   const token = request.cookies.get('admin_token')
 
-  if (token) {
+  if (token?.value) {
     return NextResponse.json({ authenticated: true })
   }
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Loader2, Mail, MessageSquare, User, Send, Github, Linkedin } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useTheme } from '../general/GradientBackground'
+import { MESSAGE_MAX_LENGTH } from '@/lib/constants'
 
 const ContactSection = () => {
   const [formState, setFormState] = useState({
@@ -20,8 +21,6 @@ const ContactSection = () => {
     message: ''
   })
   const { isDark } = useTheme()
-
-  const MESSAGE_MAX_LENGTH = 500
 
   const validateField = (name: string, value: string) => {
     switch (name) {

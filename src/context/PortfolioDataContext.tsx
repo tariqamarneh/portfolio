@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Project } from '@/components/projects/ProjectsSection'
 
@@ -443,34 +443,37 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     setCvUrlState(url)
   }
 
+  const contextValue = useMemo(() => ({
+    projects,
+    skills,
+    learningItems,
+    testimonials,
+    journeyEvents,
+    cvUrl,
+    isLoading,
+    addProject,
+    updateProject,
+    deleteProject,
+    addSkill,
+    updateSkill,
+    deleteSkill,
+    addLearningItem,
+    deleteLearningItem,
+    addTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    addJourneyEvent,
+    updateJourneyEvent,
+    deleteJourneyEvent,
+    setCvUrl,
+    refreshData: fetchData,
+  }), [projects, skills, learningItems, testimonials, journeyEvents, cvUrl, isLoading, fetchData,
+    addProject, updateProject, deleteProject, addSkill, updateSkill, deleteSkill,
+    addLearningItem, deleteLearningItem, addTestimonial, updateTestimonial, deleteTestimonial,
+    addJourneyEvent, updateJourneyEvent, deleteJourneyEvent, setCvUrl])
+
   return (
-    <PortfolioDataContext.Provider
-      value={{
-        projects,
-        skills,
-        learningItems,
-        testimonials,
-        journeyEvents,
-        cvUrl,
-        isLoading,
-        addProject,
-        updateProject,
-        deleteProject,
-        addSkill,
-        updateSkill,
-        deleteSkill,
-        addLearningItem,
-        deleteLearningItem,
-        addTestimonial,
-        updateTestimonial,
-        deleteTestimonial,
-        addJourneyEvent,
-        updateJourneyEvent,
-        deleteJourneyEvent,
-        setCvUrl,
-        refreshData: fetchData,
-      }}
-    >
+    <PortfolioDataContext.Provider value={contextValue}>
       {children}
     </PortfolioDataContext.Provider>
   )

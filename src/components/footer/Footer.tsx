@@ -111,7 +111,7 @@ const Footer: React.FC = () => {
             </h4>
             <div className="space-y-3">
               <a
-                href="mailto:tariq@example.com"
+                href="mailto:tariqamarneh0@gmail.com"
                 className={`
                   inline-flex items-center gap-1 text-sm transition-colors duration-200
                   ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}

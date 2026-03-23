@@ -30,15 +30,19 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
   })
 
   useEffect(() => {
+    let ticking = false
+
     const toggleVisibility = () => {
-      if (window.scrollY > showAfter) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsVisible(window.scrollY > showAfter)
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    window.addEventListener('scroll', toggleVisibility)
+    window.addEventListener('scroll', toggleVisibility, { passive: true })
     return () => window.removeEventListener('scroll', toggleVisibility)
   }, [showAfter])
 

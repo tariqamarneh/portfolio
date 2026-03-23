@@ -7,7 +7,7 @@ import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 
-const ProjectCard: React.FC<{ project: Project; isFeatured?: boolean }> = ({ project, isFeatured }) => {
+const ProjectCard = React.memo<{ project: Project; isFeatured?: boolean }>(({ project, isFeatured }) => {
   const { isDark } = useTheme()
   const isLive = !project.linkUrl.includes('github.com')
 
@@ -52,6 +52,7 @@ const ProjectCard: React.FC<{ project: Project; isFeatured?: boolean }> = ({ pro
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loading="lazy"
         />
 
         {/* Hover overlay */}
@@ -113,7 +114,8 @@ const ProjectCard: React.FC<{ project: Project; isFeatured?: boolean }> = ({ pro
       </div>
     </div>
   )
-}
+})
+ProjectCard.displayName = 'ProjectCard'
 
 export interface Project {
   id: string

@@ -45,6 +45,28 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://tariqamarneh.vercel.app',
   },
+  openGraph: {
+    title: 'Tariq Amarneh - Software Development Engineer',
+    description: 'Portfolio of Tariq Amarneh - Software Development Engineer at Amazon, specializing in Java, Spring Boot, Python, and AI/ML',
+    url: 'https://tariqamarneh.vercel.app',
+    siteName: 'Tariq Amarneh Portfolio',
+    images: [
+      {
+        url: 'https://tariqamarneh.vercel.app/images/my_photo.png',
+        width: 288,
+        height: 288,
+        alt: 'Tariq Amarneh',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Tariq Amarneh - Software Development Engineer',
+    description: 'Software Development Engineer at Amazon, specializing in Java, Spring Boot, Python, and AI/ML',
+    images: ['https://tariqamarneh.vercel.app/images/my_photo.png'],
+  },
 }
 
 export default function Home() {
