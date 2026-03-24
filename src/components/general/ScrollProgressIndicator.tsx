@@ -30,15 +30,19 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
   })
 
   useEffect(() => {
+    let ticking = false
+
     const toggleVisibility = () => {
-      if (window.scrollY > showAfter) {
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsVisible(window.scrollY > showAfter)
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    window.addEventListener('scroll', toggleVisibility)
+    window.addEventListener('scroll', toggleVisibility, { passive: true })
     return () => window.removeEventListener('scroll', toggleVisibility)
   }, [showAfter])
 
@@ -58,7 +62,7 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
             fixed left-0 right-0 ${height} ${color} 
             ${positionClasses[position]} origin-left z-50
             ${shadow ? 'shadow-md' : ''}
-            ${gradient ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : ''}
+            ${gradient ? 'bg-gradient-to-r from-cyan-500 to-violet-600' : ''}
           `}
           style={{ 
             scaleX,

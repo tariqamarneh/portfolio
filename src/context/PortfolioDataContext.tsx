@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Project } from '@/components/projects/ProjectsSection'
 
@@ -154,7 +154,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         setCvUrlState(settingsRes.data.value)
       }
     } catch (error) {
-      console.error('Error fetching data:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching data:', error)
+      }
     } finally {
       setIsLoading(false)
     }
@@ -165,7 +167,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   }, [fetchData])
 
   // Project CRUD
-  const addProject = async (project: Omit<Project, 'id'>) => {
+  const addProject = useCallback(async (project: Omit<Project, 'id'>) => {
     const { data, error } = await supabase
       .from('projects')
       .insert({
@@ -181,7 +183,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .single()
 
     if (error) {
-      console.error('Error adding project:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error adding project:', error)
       return
     }
 
@@ -197,9 +199,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         isFeatured: data.is_featured
       }, ...prev])
     }
-  }
+  }, [])
 
-  const updateProject = async (id: string, updates: Partial<Project>) => {
+  const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
     const dbUpdates: Record<string, unknown> = {}
     if (updates.title !== undefined) dbUpdates.title = updates.title
     if (updates.description !== undefined) dbUpdates.description = updates.description
@@ -215,24 +217,24 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .eq('id', id)
 
     if (error) {
-      console.error('Error updating project:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error updating project:', error)
       return
     }
 
     setProjects(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p))
-  }
+  }, [])
 
-  const deleteProject = async (id: string) => {
+  const deleteProject = useCallback(async (id: string) => {
     const { error } = await supabase.from('projects').delete().eq('id', id)
     if (error) {
-      console.error('Error deleting project:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error deleting project:', error)
       return
     }
     setProjects(prev => prev.filter(p => p.id !== id))
-  }
+  }, [])
 
   // Skill CRUD
-  const addSkill = async (skill: Omit<Skill, 'id'>) => {
+  const addSkill = useCallback(async (skill: Omit<Skill, 'id'>) => {
     const { data, error } = await supabase
       .from('skills')
       .insert({
@@ -248,7 +250,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .single()
 
     if (error) {
-      console.error('Error adding skill:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error adding skill:', error)
       return
     }
 
@@ -264,9 +266,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         isPrimary: data.is_primary
       }])
     }
-  }
+  }, [])
 
-  const updateSkill = async (id: string, updates: Partial<Skill>) => {
+  const updateSkill = useCallback(async (id: string, updates: Partial<Skill>) => {
     const dbUpdates: Record<string, unknown> = {}
     if (updates.name !== undefined) dbUpdates.name = updates.name
     if (updates.level !== undefined) dbUpdates.level = updates.level
@@ -278,23 +280,23 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
 
     const { error } = await supabase.from('skills').update(dbUpdates).eq('id', id)
     if (error) {
-      console.error('Error updating skill:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error updating skill:', error)
       return
     }
     setSkills(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s))
-  }
+  }, [])
 
-  const deleteSkill = async (id: string) => {
+  const deleteSkill = useCallback(async (id: string) => {
     const { error } = await supabase.from('skills').delete().eq('id', id)
     if (error) {
-      console.error('Error deleting skill:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error deleting skill:', error)
       return
     }
     setSkills(prev => prev.filter(s => s.id !== id))
-  }
+  }, [])
 
   // Learning Item CRUD
-  const addLearningItem = async (item: Omit<LearningItem, 'id'>) => {
+  const addLearningItem = useCallback(async (item: Omit<LearningItem, 'id'>) => {
     const { data, error } = await supabase
       .from('learning_items')
       .insert({ name: item.name, description: item.description })
@@ -302,26 +304,26 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .single()
 
     if (error) {
-      console.error('Error adding learning item:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error adding learning item:', error)
       return
     }
 
     if (data) {
       setLearningItems(prev => [...prev, { id: data.id, name: data.name, description: data.description }])
     }
-  }
+  }, [])
 
-  const deleteLearningItem = async (id: string) => {
+  const deleteLearningItem = useCallback(async (id: string) => {
     const { error } = await supabase.from('learning_items').delete().eq('id', id)
     if (error) {
-      console.error('Error deleting learning item:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error deleting learning item:', error)
       return
     }
     setLearningItems(prev => prev.filter(i => i.id !== id))
-  }
+  }, [])
 
   // Testimonial CRUD
-  const addTestimonial = async (testimonial: Omit<Testimonial, 'id'>) => {
+  const addTestimonial = useCallback(async (testimonial: Omit<Testimonial, 'id'>) => {
     const { data, error } = await supabase
       .from('testimonials')
       .insert({
@@ -335,7 +337,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .single()
 
     if (error) {
-      console.error('Error adding testimonial:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error adding testimonial:', error)
       return
     }
 
@@ -349,9 +351,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         linkedinUrl: data.linkedin_url
       }])
     }
-  }
+  }, [])
 
-  const updateTestimonial = async (id: string, updates: Partial<Testimonial>) => {
+  const updateTestimonial = useCallback(async (id: string, updates: Partial<Testimonial>) => {
     const dbUpdates: Record<string, unknown> = {}
     if (updates.name !== undefined) dbUpdates.name = updates.name
     if (updates.role !== undefined) dbUpdates.role = updates.role
@@ -361,23 +363,23 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
 
     const { error } = await supabase.from('testimonials').update(dbUpdates).eq('id', id)
     if (error) {
-      console.error('Error updating testimonial:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error updating testimonial:', error)
       return
     }
     setTestimonials(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t))
-  }
+  }, [])
 
-  const deleteTestimonial = async (id: string) => {
+  const deleteTestimonial = useCallback(async (id: string) => {
     const { error } = await supabase.from('testimonials').delete().eq('id', id)
     if (error) {
-      console.error('Error deleting testimonial:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error deleting testimonial:', error)
       return
     }
     setTestimonials(prev => prev.filter(t => t.id !== id))
-  }
+  }, [])
 
   // Journey Event CRUD
-  const addJourneyEvent = async (event: Omit<JourneyEvent, 'id'>) => {
+  const addJourneyEvent = useCallback(async (event: Omit<JourneyEvent, 'id'>) => {
     const { data, error } = await supabase
       .from('journey_events')
       .insert({
@@ -390,7 +392,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       .single()
 
     if (error) {
-      console.error('Error adding journey event:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error adding journey event:', error)
       return
     }
 
@@ -403,9 +405,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         icon: data.icon
       }])
     }
-  }
+  }, [])
 
-  const updateJourneyEvent = async (id: string, updates: Partial<JourneyEvent>) => {
+  const updateJourneyEvent = useCallback(async (id: string, updates: Partial<JourneyEvent>) => {
     const dbUpdates: Record<string, unknown> = {}
     if (updates.date !== undefined) dbUpdates.date = updates.date
     if (updates.title !== undefined) dbUpdates.title = updates.title
@@ -414,63 +416,66 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
 
     const { error } = await supabase.from('journey_events').update(dbUpdates).eq('id', id)
     if (error) {
-      console.error('Error updating journey event:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error updating journey event:', error)
       return
     }
     setJourneyEvents(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e))
-  }
+  }, [])
 
-  const deleteJourneyEvent = async (id: string) => {
+  const deleteJourneyEvent = useCallback(async (id: string) => {
     const { error } = await supabase.from('journey_events').delete().eq('id', id)
     if (error) {
-      console.error('Error deleting journey event:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error deleting journey event:', error)
       return
     }
     setJourneyEvents(prev => prev.filter(e => e.id !== id))
-  }
+  }, [])
 
   // CV URL
-  const setCvUrl = async (url: string) => {
+  const setCvUrl = useCallback(async (url: string) => {
     const { error } = await supabase
       .from('settings')
       .update({ value: url })
       .eq('key', 'cv_url')
 
     if (error) {
-      console.error('Error updating CV URL:', error)
+      if (process.env.NODE_ENV === 'development') console.error('Error updating CV URL:', error)
       return
     }
     setCvUrlState(url)
-  }
+  }, [])
+
+  const contextValue = useMemo(() => ({
+    projects,
+    skills,
+    learningItems,
+    testimonials,
+    journeyEvents,
+    cvUrl,
+    isLoading,
+    addProject,
+    updateProject,
+    deleteProject,
+    addSkill,
+    updateSkill,
+    deleteSkill,
+    addLearningItem,
+    deleteLearningItem,
+    addTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    addJourneyEvent,
+    updateJourneyEvent,
+    deleteJourneyEvent,
+    setCvUrl,
+    refreshData: fetchData,
+  }), [projects, skills, learningItems, testimonials, journeyEvents, cvUrl, isLoading, fetchData,
+    addProject, updateProject, deleteProject, addSkill, updateSkill, deleteSkill,
+    addLearningItem, deleteLearningItem, addTestimonial, updateTestimonial, deleteTestimonial,
+    addJourneyEvent, updateJourneyEvent, deleteJourneyEvent, setCvUrl])
 
   return (
-    <PortfolioDataContext.Provider
-      value={{
-        projects,
-        skills,
-        learningItems,
-        testimonials,
-        journeyEvents,
-        cvUrl,
-        isLoading,
-        addProject,
-        updateProject,
-        deleteProject,
-        addSkill,
-        updateSkill,
-        deleteSkill,
-        addLearningItem,
-        deleteLearningItem,
-        addTestimonial,
-        updateTestimonial,
-        deleteTestimonial,
-        addJourneyEvent,
-        updateJourneyEvent,
-        deleteJourneyEvent,
-        setCvUrl,
-        refreshData: fetchData,
-      }}
-    >
+    <PortfolioDataContext.Provider value={contextValue}>
       {children}
     </PortfolioDataContext.Provider>
   )

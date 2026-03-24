@@ -16,12 +16,12 @@ const JourneySection: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="w-full text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl font-display font-bold mb-4">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
               My Professional Journey
             </span>
           </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
           <p className={`mt-6 max-w-2xl mx-auto text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             Explore my professional path and key milestones that have shaped my career in software development and technology.
           </p>

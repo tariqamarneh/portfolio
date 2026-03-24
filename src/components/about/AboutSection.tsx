@@ -46,12 +46,12 @@ const AboutSection: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl font-display font-bold mb-4">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
               About Me
             </span>
           </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -64,7 +64,7 @@ const AboutSection: React.FC = () => {
             className="space-y-6"
           >
             <p className={`text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-              Hi! I&apos;m <span className="font-semibold text-blue-500">Tariq Amarneh</span>, a Software Development Engineer
+              Hi! I&apos;m <span className="font-semibold text-cyan-400">Tariq Amarneh</span>, a Software Development Engineer
               at Amazon with a passion for building impactful technology solutions.
             </p>
 

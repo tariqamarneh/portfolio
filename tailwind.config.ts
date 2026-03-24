@@ -11,6 +11,9 @@ const config: Config = {
       screens: {
         'laptop': '1024px',
       },
+      fontFamily: {
+        display: ['var(--font-display)', 'sans-serif'],
+      },
       colors: {
         blue: {
           400: '#60A5FA',
@@ -40,6 +43,5 @@ const config: Config = {
     },
   },
   plugins: [],
-
 };
 export default config;

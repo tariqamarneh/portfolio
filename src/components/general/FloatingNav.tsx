@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronUp, Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
+import { Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
@@ -15,34 +15,67 @@ const navItems = [
   { name: 'Contact', href: '#contact', icon: Mail },
 ]
 
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.04, delayChildren: 0.1 },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -10, scale: 0.8 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 400, damping: 25 },
+  },
+}
+
 export default function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('')
   const { isDark } = useTheme()
+  const activeSectionRef = useRef('')
 
+  // Use IntersectionObserver for section detection
+  useEffect(() => {
+    const sectionIds = navItems.map(item => item.href.slice(1))
+    const observers: IntersectionObserver[] = []
+
+    sectionIds.forEach(sectionId => {
+      const element = document.getElementById(sectionId)
+      if (!element) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              activeSectionRef.current = sectionId
+              setActiveSection(sectionId)
+            }
+          })
+        },
+        { rootMargin: '-33% 0px -66% 0px', threshold: 0 }
+      )
+
+      observer.observe(element)
+      observers.push(observer)
+    })
+
+    return () => {
+      observers.forEach(observer => observer.disconnect())
+    }
+  }, [])
+
+  // Lightweight scroll handler only for visibility toggle
   useEffect(() => {
     let ticking = false
 
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const currentScrollPos = window.scrollY
-          setIsVisible(currentScrollPos > 100)
-
-          const sections = navItems.map(item => item.href.slice(1))
-          let current = ''
-
-          for (const section of sections) {
-            const element = document.getElementById(section)
-            if (element) {
-              const rect = element.getBoundingClientRect()
-              if (rect.top <= window.innerHeight / 3 && rect.bottom >= window.innerHeight / 3) {
-                current = section
-              }
-            }
-          }
-
-          setActiveSection(current)
+          setIsVisible(window.scrollY > 100)
           ticking = false
         })
         ticking = true
@@ -53,17 +86,13 @@ export default function FloatingNav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const element = document.querySelector(href)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
-  }
+  }, [])
 
   return (
     <AnimatePresence>
@@ -81,23 +110,28 @@ export default function FloatingNav() {
             >
               <div className={`
                 px-1.5 sm:px-2 py-1.5 sm:py-2 rounded-2xl
-                ${isDark ? 'glass-card' : 'glass-card-light'}
+                ${isDark ? 'glass-card-blur' : 'glass-card-blur-light'}
               `}>
-                <ul className="flex items-center gap-1">
+                <motion.ul
+                  className="flex items-center gap-1"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                >
                 {navItems.map((item) => {
                   const Icon = item.icon
                   const isActive = activeSection === item.href.slice(1)
 
                   return (
-                    <li key={item.name}>
+                    <motion.li key={item.name} variants={itemVariants}>
                       <a
                         href={item.href}
                         onClick={(e) => handleNavClick(e, item.href)}
                         className={`
                           relative flex items-center justify-center p-2 sm:p-2.5 rounded-xl
-                          transition-all duration-200 group
+                          transition-colors duration-200 group
                           ${isActive
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                            ? 'text-white'
                             : isDark
                               ? 'text-gray-400 hover:text-white hover:bg-white/10'
                               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -105,7 +139,16 @@ export default function FloatingNav() {
                         `}
                         aria-current={isActive ? 'page' : undefined}
                       >
-                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        {/* Animated sliding indicator */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="active-nav"
+                            className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 shadow-lg shadow-cyan-500/20"
+                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          />
+                        )}
+
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 relative z-10" />
 
                         {/* Tooltip */}
                         <span className={`
@@ -118,29 +161,14 @@ export default function FloatingNav() {
                           {item.name}
                         </span>
                       </a>
-                    </li>
+                    </motion.li>
                   )
                 })}
-                </ul>
+                </motion.ul>
               </div>
             </motion.nav>
           </div>
 
-          {/* Scroll to Top Button */}
-          <motion.button
-            onClick={scrollToTop}
-            className={`
-              fixed bottom-6 right-6 z-50 p-3 rounded-xl
-              ${isDark ? 'glass-card' : 'glass-card-light'}
-              hover:scale-110 transition-transform duration-200
-            `}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            aria-label="Scroll to top"
-          >
-            <ChevronUp className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
-          </motion.button>
         </>
       )}
     </AnimatePresence>
