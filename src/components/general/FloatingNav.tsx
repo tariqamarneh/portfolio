@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronUp, Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
+import { Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
@@ -86,10 +86,6 @@ export default function FloatingNav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
-
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const element = document.querySelector(href)
@@ -133,9 +129,9 @@ export default function FloatingNav() {
                         onClick={(e) => handleNavClick(e, item.href)}
                         className={`
                           relative flex items-center justify-center p-2 sm:p-2.5 rounded-xl
-                          transition-all duration-200 group
+                          transition-colors duration-200 group
                           ${isActive
-                            ? 'bg-gradient-to-r from-cyan-500 to-violet-600 text-white shadow-lg shadow-cyan-500/20'
+                            ? 'text-white'
                             : isDark
                               ? 'text-gray-400 hover:text-white hover:bg-white/10'
                               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -143,7 +139,16 @@ export default function FloatingNav() {
                         `}
                         aria-current={isActive ? 'page' : undefined}
                       >
-                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        {/* Animated sliding indicator */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="active-nav"
+                            className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 shadow-lg shadow-cyan-500/20"
+                            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          />
+                        )}
+
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 relative z-10" />
 
                         {/* Tooltip */}
                         <span className={`
@@ -164,21 +169,6 @@ export default function FloatingNav() {
             </motion.nav>
           </div>
 
-          {/* Scroll to Top Button */}
-          <motion.button
-            onClick={scrollToTop}
-            className={`
-              fixed bottom-6 right-6 z-50 p-3 rounded-xl
-              ${isDark ? 'glass-card-blur' : 'glass-card-blur-light'}
-              hover:scale-110 transition-transform duration-200
-            `}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            aria-label="Scroll to top"
-          >
-            <ChevronUp className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
-          </motion.button>
         </>
       )}
     </AnimatePresence>

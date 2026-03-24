@@ -49,6 +49,15 @@ const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index })
   const years = new Date().getFullYear() - skill.yearStarted
   const { ref, style: tiltStyle, onMouseMove, onMouseLeave } = useTilt(5)
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    onMouseMove(e)
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      ref.current.style.setProperty('--glow-x', `${e.clientX - rect.left}px`)
+      ref.current.style.setProperty('--glow-y', `${e.clientY - rect.top}px`)
+    }
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -56,16 +65,24 @@ const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index })
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       style={tiltStyle}
-      onMouseMove={onMouseMove}
+      onMouseMove={handleMouseMove}
       onMouseLeave={onMouseLeave}
       className={`
-        rounded-xl p-4
+        group relative rounded-xl p-4
         ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
         border border-white/10
         hover:border-cyan-500/20 transition-all duration-200
       `}
     >
-      <div className="flex items-start gap-3">
+      {/* Hover glow effect */}
+      <div
+        className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(300px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(6, 182, 212, 0.1), transparent 60%)`
+        }}
+      />
+
+      <div className="relative flex items-start gap-3">
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
           <Image
             src={skill.icon}

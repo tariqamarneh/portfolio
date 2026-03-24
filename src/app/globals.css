@@ -48,17 +48,17 @@ body {
 }
 
 .gradient-bg-light {
-  --top-r: calc(224 + 24 * var(--scroll-progress));
-  --top-g: calc(242 + 6 * var(--scroll-progress));
-  --top-b: calc(254 - 2 * var(--scroll-progress));
-  --mid-r: calc(240 + 15 * var(--scroll-progress));
-  --mid-g: calc(249 + 6 * var(--scroll-progress));
-  --mid-b: 255;
+  --top-r: calc(245 + 5 * var(--scroll-progress));
+  --top-g: calc(243 + 6 * var(--scroll-progress));
+  --top-b: calc(238 + 10 * var(--scroll-progress));
+  --mid-r: calc(250 + 4 * var(--scroll-progress));
+  --mid-g: calc(248 + 5 * var(--scroll-progress));
+  --mid-b: calc(244 + 8 * var(--scroll-progress));
   background: linear-gradient(
     180deg,
     rgb(var(--top-r), var(--top-g), var(--top-b)) 0%,
     rgb(var(--mid-r), var(--mid-g), var(--mid-b)) 50%,
-    #ffffff 100%
+    #faf9f7 100%
   );
 }
 
@@ -77,8 +77,8 @@ body {
 
 .gradient-bg-light::after {
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.018) 1px, transparent 1px);
 }
 
 /* ===== Glass Effect Components ===== */
@@ -89,8 +89,8 @@ body {
   }
 
   .glass-card-light {
-    @apply rounded-2xl border border-gray-200/50;
-    background: rgba(255, 255, 255, 0.8);
+    @apply rounded-2xl border border-stone-200/30;
+    background: rgba(255, 254, 252, 0.55);
   }
 
   /* Only apply backdrop-blur on elements that truly need it (nav, modals) */
@@ -101,8 +101,8 @@ body {
   }
 
   .glass-card-blur-light {
-    @apply rounded-2xl border border-gray-200/50;
-    background: rgba(255, 255, 255, 0.7);
+    @apply rounded-2xl border border-stone-200/30;
+    background: rgba(255, 254, 252, 0.55);
     backdrop-filter: blur(12px);
   }
 
@@ -111,7 +111,7 @@ body {
   }
 
   .gradient-text-light {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-violet-600 to-fuchsia-600;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 via-blue-600 to-indigo-600;
   }
 
   .section-padding {
@@ -124,6 +124,14 @@ body {
 
   .accent-glow-hover:hover {
     box-shadow: 0 0 80px rgba(6, 182, 212, 0.15), 0 0 120px rgba(139, 92, 246, 0.1);
+  }
+
+  .project-img-pan {
+    transition: transform 3s ease-out;
+  }
+
+  .group:hover .project-img-pan {
+    transform: scale(1.15) translateX(-3%) translateY(-2%);
   }
 }
 

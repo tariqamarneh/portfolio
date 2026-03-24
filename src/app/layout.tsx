@@ -89,7 +89,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="bg-[#050510] text-white flex flex-col min-h-screen antialiased font-sans">
+      <body className="relative bg-[#050510] text-white flex flex-col min-h-screen antialiased font-sans">
         <SpeedInsights />
         <Analytics />
         <main className="flex-grow relative">

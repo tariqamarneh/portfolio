@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useMemo, useRef } from 'react'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import React, { useMemo, useRef, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData, JourneyEvent } from '@/context/PortfolioDataContext'
@@ -46,6 +46,7 @@ const TimelineEventCard = React.memo<{
           height={28}
           alt={`${event.title} logo`}
           className="object-contain"
+          style={{ width: 'auto', height: 'auto' }}
         />
       </div>
 
@@ -59,23 +60,34 @@ const InteractiveTimeline: React.FC = () => {
   const { isDark } = useTheme()
   const { journeyEvents } = usePortfolioData()
   const containerRef = useRef<HTMLDivElement>(null)
+  const lineRef = useRef<HTMLDivElement>(null)
+  const dotRef = useRef<HTMLDivElement>(null)
 
   const sortedEvents = useMemo(
     () => [...journeyEvents].sort((a, b) => b.date.localeCompare(a.date)),
     [journeyEvents]
   )
 
-  // Scroll-linked progress for the glowing dot
-  // "start center" = 0% when container top reaches viewport center
-  // "end center" = 100% when container bottom reaches viewport center
-  // This works regardless of how tall the container is
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"]
-  })
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 25 })
-  const lineHeight = useTransform(smoothProgress, [0, 1], ['0%', '100%'])
+  // Pure vanilla scroll handler — no framer-motion, no stale observers
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current || !lineRef.current || !dotRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const h = containerRef.current.offsetHeight
+      const vh = window.innerHeight
+      const start = vh * 0.15
+      const end = vh * 0.85
+      const range = h - (end - start)
+      if (range <= 0) return
+      const progress = Math.min(Math.max((start - rect.top) / range, 0), 1)
+      const pct = `${progress * 100}%`
+      lineRef.current.style.height = pct
+      dotRef.current.style.top = pct
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   if (sortedEvents.length === 0) {
     return null
@@ -88,25 +100,28 @@ const InteractiveTimeline: React.FC = () => {
         isDark ? 'bg-gray-800' : 'bg-gray-200'
       }`} />
 
-      {/* Timeline filled portion (scroll-linked) */}
-      <motion.div
-        className="absolute left-1/2 top-0 w-0.5 -translate-x-1/2 origin-top"
+      {/* Timeline filled portion */}
+      <div
+        ref={lineRef}
+        className="absolute left-1/2 top-0 w-0.5 -translate-x-1/2"
         style={{
-          height: lineHeight,
+          height: '0%',
           background: isDark
             ? 'linear-gradient(180deg, #06b6d4, #8b5cf6, #d946ef)'
             : 'linear-gradient(180deg, #0891b2, #7c3aed, #c026d3)',
         }}
-      >
-        {/* Glowing dot at the bottom of filled line */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-3 h-3 rounded-full"
-          style={{
-            background: '#06b6d4',
-            boxShadow: '0 0 12px rgba(6,182,212,0.6), 0 0 30px rgba(139,92,246,0.3)',
-          }}
-        />
-      </motion.div>
+      />
+
+      {/* Glowing dot */}
+      <div
+        ref={dotRef}
+        className="absolute left-1/2 w-3 h-3 rounded-full z-[5] pointer-events-none -translate-x-1/2 -translate-y-1/2"
+        style={{
+          top: '0%',
+          background: '#06b6d4',
+          boxShadow: '0 0 12px rgba(6,182,212,0.6), 0 0 30px rgba(139,92,246,0.3)',
+        }}
+      />
 
       {/* Timeline events */}
       {sortedEvents.map((event, index) => (

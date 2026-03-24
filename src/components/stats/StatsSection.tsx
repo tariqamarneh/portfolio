@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Briefcase, FolderGit2, Award, Layers } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
@@ -44,43 +44,46 @@ const stats: Stat[] = [
   }
 ]
 
-const AnimatedCounter = React.memo<{ value: number; suffix: string; isInView: boolean }>(({
-  value,
-  suffix,
-  isInView
+const SlotDigit = React.memo<{ digit: number; delay: number; isInView: boolean }>(({ digit, delay, isInView }) => (
+  <span className="relative inline-block overflow-hidden align-bottom" style={{ height: '1em', lineHeight: 1 }}>
+    <motion.span
+      className="block"
+      style={{ lineHeight: 1 }}
+      initial={{ y: 0 }}
+      animate={isInView ? { y: `${-digit}em` } : { y: 0 }}
+      transition={{
+        duration: 0.8 + digit * 0.1,
+        delay,
+        ease: [0.16, 1, 0.3, 1]
+      }}
+    >
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+        <span key={n} className="block text-center" style={{ height: '1em', lineHeight: 1 }}>{n}</span>
+      ))}
+    </motion.span>
+  </span>
+))
+SlotDigit.displayName = 'SlotDigit'
+
+const SlotMachineCounter = React.memo<{ value: number; suffix: string; isInView: boolean }>(({
+  value, suffix, isInView
 }) => {
-  const [count, setCount] = useState(0)
   const isDecimal = value % 1 !== 0
-
-  useEffect(() => {
-    if (!isInView) return
-
-    const duration = 2000
-    const steps = 60
-    const stepValue = value / steps
-    let current = 0
-
-    const timer = setInterval(() => {
-      current += stepValue
-      if (current >= value) {
-        setCount(value)
-        clearInterval(timer)
-      } else {
-        setCount(current)
-      }
-    }, duration / steps)
-
-    return () => clearInterval(timer)
-  }, [isInView, value])
+  const displayStr = isDecimal ? value.toFixed(1) : Math.floor(value).toString()
+  const chars = (displayStr + suffix).split('')
 
   return (
-    <span className="tabular-nums">
-      {isDecimal ? count.toFixed(1) : Math.floor(count)}
-      {suffix}
+    <span className="inline-flex tabular-nums">
+      {chars.map((char, i) => {
+        if (/\d/.test(char)) {
+          return <SlotDigit key={i} digit={parseInt(char)} delay={i * 0.12} isInView={isInView} />
+        }
+        return <span key={i} className="inline-block" style={{ lineHeight: 1 }}>{char}</span>
+      })}
     </span>
   )
 })
-AnimatedCounter.displayName = 'AnimatedCounter'
+SlotMachineCounter.displayName = 'SlotMachineCounter'
 
 const StatsSection: React.FC = () => {
   const { isDark } = useTheme()
@@ -121,7 +124,7 @@ const StatsSection: React.FC = () => {
                   </div>
 
                   <div className={`text-4xl md:text-5xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} isInView={isInView} />
+                    <SlotMachineCounter value={stat.value} suffix={stat.suffix} isInView={isInView} />
                   </div>
 
                   <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>

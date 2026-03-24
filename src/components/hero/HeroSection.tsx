@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import React, { useState, useRef } from 'react'
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import React, { useState, useRef, useEffect } from 'react'
 import { MapPin, Terminal, Github, Linkedin, ArrowDown } from 'lucide-react'
 import ContactModal from '../contact/ContactModal'
 import { useTheme } from '../general/GradientBackground'
@@ -15,6 +15,58 @@ const roles = [
   'Full Stack Developer',
   'Problem Solver',
 ]
+
+const MagneticIcon = ({ children, href, ariaLabel, className }: {
+  children: React.ReactNode
+  href: string
+  ariaLabel: string
+  className: string
+}) => {
+  const iconRef = useRef<HTMLDivElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 200, damping: 15 })
+  const springY = useSpring(y, { stiffness: 200, damping: 15 })
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!iconRef.current) return
+      const rect = iconRef.current.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const distX = e.clientX - centerX
+      const distY = e.clientY - centerY
+      const distance = Math.sqrt(distX * distX + distY * distY)
+      const threshold = 100
+
+      if (distance < threshold) {
+        const strength = (1 - distance / threshold) * 0.35
+        x.set(distX * strength)
+        y.set(distY * strength)
+      } else {
+        x.set(0)
+        y.set(0)
+      }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [x, y])
+
+  return (
+    <motion.div ref={iconRef} style={{ x: springX, y: springY, display: 'inline-flex' }}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        aria-label={ariaLabel}
+      >
+        {children}
+      </a>
+    </motion.div>
+  )
+}
 
 export default function HeroSection() {
   const { isDark } = useTheme()
@@ -76,14 +128,17 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Status badge */}
-            <motion.div
+            {/* Status badge - clickable, opens contact modal */}
+            <motion.button
+              onClick={() => setIsModalOpen(true)}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
               transition={{ delay: 0.5 }}
               className={`
                 absolute -bottom-2 left-1/2 -translate-x-1/2
-                px-4 py-2 rounded-full
+                px-4 py-2 rounded-full cursor-pointer
                 ${isDark ? 'glass-card' : 'glass-card-light'}
                 flex items-center gap-2
               `}
@@ -92,7 +147,7 @@ export default function HeroSection() {
               <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 Available for work
               </span>
-            </motion.div>
+            </motion.button>
           </motion.div>
 
           {/* Content Section */}
@@ -214,12 +269,11 @@ export default function HeroSection() {
                 Download CV
               </a>
 
-              {/* Social Links */}
+              {/* Social Links - Magnetic */}
               <div className="flex gap-3">
-                <a
+                <MagneticIcon
                   href="https://github.com/tariqamarneh"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  ariaLabel="GitHub Profile"
                   className={`
                     p-3 rounded-xl transition-all duration-300
                     ${isDark
@@ -227,14 +281,12 @@ export default function HeroSection() {
                       : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                     }
                   `}
-                  aria-label="GitHub Profile"
                 >
                   <Github className="w-5 h-5" />
-                </a>
-                <a
+                </MagneticIcon>
+                <MagneticIcon
                   href="https://www.linkedin.com/in/tariq-naser/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  ariaLabel="LinkedIn Profile"
                   className={`
                     p-3 rounded-xl transition-all duration-300
                     ${isDark
@@ -242,10 +294,9 @@ export default function HeroSection() {
                       : 'bg-gray-100 text-gray-600 hover:text-[#0a66c2] hover:bg-gray-200'
                     }
                   `}
-                  aria-label="LinkedIn Profile"
                 >
                   <Linkedin className="w-5 h-5" />
-                </a>
+                </MagneticIcon>
               </div>
             </motion.div>
           </motion.div>
