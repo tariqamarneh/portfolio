@@ -94,10 +94,10 @@ const StatsSection: React.FC = () => {
     <section ref={ref} className="py-16 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ clipPath: 'circle(0% at 50% 50%)', opacity: 0 }}
+          whileInView={{ clipPath: 'circle(100% at 50% 50%)', opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
           className={`
             rounded-3xl p-8 md:p-12
             ${isDark ? 'glass-card' : 'glass-card-light'}

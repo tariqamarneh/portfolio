@@ -268,6 +268,28 @@ body {
   color: #fff;
 }
 
+/* ===== Mobile Performance ===== */
+@media (max-width: 767px) {
+  /* Disable decorative orb animations — saves significant GPU on mobile */
+  .animate-orb-1,
+  .animate-orb-2,
+  .animate-orb-3,
+  .animate-orb-4 {
+    animation: none !important;
+  }
+
+  /* Reduce backdrop-filter cost on mobile Safari */
+  .glass-card-blur,
+  .glass-card-blur-light {
+    backdrop-filter: blur(4px) !important;
+  }
+
+  /* Disable the slow pan on project images — causes jank during scroll */
+  .group:hover .project-img-pan {
+    transform: none;
+  }
+}
+
 /* ===== Accessibility ===== */
 @media (prefers-reduced-motion: reduce) {
   *,

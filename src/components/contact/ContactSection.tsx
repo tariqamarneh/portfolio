@@ -113,10 +113,10 @@ const ContactSection = () => {
     <section id="contact" className="section-padding relative" aria-label="Contact section">
       <div className="container mx-auto max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
+          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
@@ -139,10 +139,10 @@ const ContactSection = () => {
               ${isDark ? 'bg-[#0a0a1a]/90' : 'bg-white/90'}
               animated-gradient-border
             `}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }}
+            whileInView={{ clipPath: 'inset(0 0 0% 0)', opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           >
             <div className="space-y-6">
               {formFields.map(({ name, label, type, placeholder, rows, icon }) => (
@@ -276,10 +276,10 @@ const ContactSection = () => {
           {/* Contact Info */}
           <motion.div
             className="lg:col-span-2 space-y-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ clipPath: 'inset(0 0 0 100%)', opacity: 0 }}
+            whileInView={{ clipPath: 'inset(0 0 0 0%)', opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1], delay: 0.15 }}
           >
             {/* Connect Card */}
             <div className={`rounded-xl p-6 ${isDark ? 'bg-gray-900/50' : 'bg-white/50'} border border-white/10`}>

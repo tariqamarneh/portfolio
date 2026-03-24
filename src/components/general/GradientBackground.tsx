@@ -62,10 +62,9 @@ const GradientBackground: React.FC = () => {
         className={`fixed inset-0 -z-10 transition-colors duration-300 ${
           isDark ? 'gradient-bg-dark' : 'gradient-bg-light'
         }`}
-        style={{ willChange: 'background' }}
       />
-      {/* Noise texture overlay for premium editorial feel */}
-      <svg className="fixed inset-0 -z-[9] pointer-events-none w-full h-full opacity-[0.03]" aria-hidden="true">
+      {/* Noise texture overlay for premium editorial feel (hidden on mobile — feTurbulence is GPU-heavy) */}
+      <svg className="hidden md:block fixed inset-0 -z-[9] pointer-events-none w-full h-full opacity-[0.03]" aria-hidden="true">
         <filter id="noise-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
         </filter>
