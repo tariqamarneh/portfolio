@@ -278,7 +278,7 @@ const ProjectsSection: React.FC = () => {
           whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-          className="text-center pt-20 pb-6 px-4 shrink-0"
+          className="text-center pt-12 md:pt-20 pb-4 md:pb-6 px-4 shrink-0"
         >
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
             <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
@@ -286,7 +286,7 @@ const ProjectsSection: React.FC = () => {
             </span>
           </h2>
           <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
-          <p className={`mt-4 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
+          <p className={`mt-4 text-lg hidden md:block ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
             Building solutions that solve real problems
           </p>
         </motion.div>
@@ -295,7 +295,7 @@ const ProjectsSection: React.FC = () => {
         <div className="flex-1 min-h-0 flex items-center overflow-hidden">
           <div
             ref={trackRef}
-            className="flex gap-6 h-[70%] pl-[8vw] pr-[8vw]"
+            className="flex gap-6 h-[85%] md:h-[70%] pl-[8vw] pr-[8vw]"
             style={{ willChange: 'transform' }}
           >
             {allProjects.map((project, index) => (
