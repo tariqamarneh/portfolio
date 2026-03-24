@@ -68,21 +68,28 @@ const InteractiveTimeline: React.FC = () => {
     [journeyEvents]
   )
 
-  // Pure vanilla scroll handler — no framer-motion, no stale observers
+  // Pure vanilla scroll handler with RAF throttle
   useEffect(() => {
+    let ticking = false
+
     const handleScroll = () => {
-      if (!containerRef.current || !lineRef.current || !dotRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      const h = containerRef.current.offsetHeight
-      const vh = window.innerHeight
-      const start = vh * 0.15
-      const end = vh * 0.85
-      const range = h - (end - start)
-      if (range <= 0) return
-      const progress = Math.min(Math.max((start - rect.top) / range, 0), 1)
-      const pct = `${progress * 100}%`
-      lineRef.current.style.height = pct
-      dotRef.current.style.top = pct
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        ticking = false
+        if (!containerRef.current || !lineRef.current || !dotRef.current) return
+        const rect = containerRef.current.getBoundingClientRect()
+        const h = containerRef.current.offsetHeight
+        const vh = window.innerHeight
+        const start = vh * 0.15
+        const end = vh * 0.85
+        const range = h - (end - start)
+        if (range <= 0) return
+        const progress = Math.min(Math.max((start - rect.top) / range, 0), 1)
+        const pct = `${progress * 100}%`
+        lineRef.current.style.height = pct
+        dotRef.current.style.top = pct
+      })
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()

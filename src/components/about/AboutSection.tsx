@@ -40,10 +40,10 @@ const AboutSection: React.FC = () => {
       <div className="container mx-auto max-w-6xl">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
+          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl font-display font-bold mb-4">

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { ExternalLink, Github as GithubIcon, Star, Calendar, ArrowRight } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
@@ -120,6 +120,7 @@ const ProjectsSection: React.FC = () => {
   const { isDark } = useTheme()
   const { projects } = usePortfolioData()
   const sectionRef = useRef<HTMLDivElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const featuredProject = projects.find(p => p.isFeatured)
@@ -127,66 +128,120 @@ const ProjectsSection: React.FC = () => {
   const allProjects = [...(featuredProject ? [featuredProject] : []), ...otherProjects]
   const numCards = allProjects.length || 1
 
-  const [pinState, setPinState] = useState<'before' | 'pinned' | 'after'>('before')
   const [sectionHeight, setSectionHeight] = useState('400vh')
 
   useEffect(() => {
     const updateHeight = () => {
       const isMobile = window.innerWidth < 768
-      setSectionHeight(isMobile ? '200vh' : `${numCards * 100}vh`)
+      setSectionHeight(isMobile ? `${numCards * 80}vh` : `${numCards * 100}vh`)
     }
     updateHeight()
     window.addEventListener('resize', updateHeight)
     return () => window.removeEventListener('resize', updateHeight)
   }, [numCards])
 
-  // No pre-calculation — measured live from the DOM in the scroll handler
-
-  // Single scroll handler: pinning + horizontal translation + progress bar
-  const handleScroll = useCallback(() => {
-    if (!sectionRef.current) return
-    const rect = sectionRef.current.getBoundingClientRect()
-    const vh = window.innerHeight
-    const sectionHeight = sectionRef.current.offsetHeight
-    const scrollDistance = sectionHeight - vh
-
-    // Pin logic
-    if (rect.top <= 0 && rect.bottom > vh) {
-      setPinState('pinned')
-    } else if (rect.bottom <= vh) {
-      setPinState('after')
-    } else {
-      setPinState('before')
-    }
-
-    // Horizontal translation + progress bar
-    if (scrollDistance > 0) {
-      const progress = Math.min(Math.max(-rect.top / scrollDistance, 0), 1)
-      if (trackRef.current) {
-        const maxT = Math.max(trackRef.current.scrollWidth - window.innerWidth + 40, 0)
-        trackRef.current.style.transform = `translateX(${-progress * maxT}px)`
-      }
-      if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${progress})`
-      }
-    }
-  }, [])
-
+  // Single scroll handler: pinning (direct DOM) + lerp-smoothed horizontal translation + progress bar
+  // Pinning is done via direct style mutations instead of React state to avoid re-renders/flashing
+  // Horizontal movement uses lerp interpolation (inspired by Codrops parallax gallery) for buttery motion
   useEffect(() => {
+    let lastPinState = ''
+    let targetX = 0
+    let currentX = 0
+    let targetProgress = 0
+    let currentProgress = 0
+    let rafId: number
+    const LERP_EASE = 0.08
+
+    const lerp = (start: number, end: number, factor: number) =>
+      start + (end - start) * factor
+
+    // Scroll listener: reads scroll position and computes targets (cheap, runs on scroll)
+    const handleScroll = () => {
+      if (!sectionRef.current || !innerRef.current) return
+      const rect = sectionRef.current.getBoundingClientRect()
+      const vh = window.innerHeight
+      const scrollDistance = sectionRef.current.offsetHeight - vh
+
+      // Pinning via direct DOM mutations (no React state = no re-renders)
+      let pinState: string
+      if (rect.top <= 0 && rect.bottom > vh) {
+        pinState = 'pinned'
+      } else if (rect.bottom <= vh) {
+        pinState = 'after'
+      } else {
+        pinState = 'before'
+      }
+
+      if (pinState !== lastPinState) {
+        lastPinState = pinState
+        const el = innerRef.current
+        if (pinState === 'pinned') {
+          el.style.position = 'fixed'
+          el.style.top = '0'
+          el.style.bottom = ''
+        } else if (pinState === 'after') {
+          el.style.position = 'absolute'
+          el.style.top = ''
+          el.style.bottom = '0'
+        } else {
+          el.style.position = 'relative'
+          el.style.top = ''
+          el.style.bottom = ''
+        }
+      }
+
+      // Update targets for lerp loop
+      if (scrollDistance > 0) {
+        const progress = Math.min(Math.max(-rect.top / scrollDistance, 0), 1)
+        if (trackRef.current) {
+          const maxT = Math.max(trackRef.current.scrollWidth - window.innerWidth + 40, 0)
+          targetX = -progress * maxT
+        }
+        targetProgress = progress
+      }
+    }
+
+    // Render loop: lerps currentX toward targetX every frame (smooth motion)
+    const tick = () => {
+      currentX = lerp(currentX, targetX, LERP_EASE)
+      currentProgress = lerp(currentProgress, targetProgress, LERP_EASE)
+
+      // Only write to DOM if still moving (> 0.5px from target)
+      if (Math.abs(currentX - targetX) > 0.5) {
+        if (trackRef.current) {
+          trackRef.current.style.transform = `translate3d(${currentX}px, 0, 0)`
+        }
+        if (progressBarRef.current) {
+          progressBarRef.current.style.transform = `scaleX(${currentProgress})`
+        }
+      } else if (currentX !== targetX) {
+        // Snap to final position
+        currentX = targetX
+        currentProgress = targetProgress
+        if (trackRef.current) {
+          trackRef.current.style.transform = `translate3d(${targetX}px, 0, 0)`
+        }
+        if (progressBarRef.current) {
+          progressBarRef.current.style.transform = `scaleX(${targetProgress})`
+        }
+      }
+
+      rafId = requestAnimationFrame(tick)
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    rafId = requestAnimationFrame(tick)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      cancelAnimationFrame(rafId)
+    }
+  }, [])
 
   if (allProjects.length === 0) {
     return <section id="projects" className="section-padding" />
   }
-
-  const innerClassName = pinState === 'pinned'
-    ? 'fixed top-0 left-0 right-0 h-screen z-30'
-    : pinState === 'after'
-      ? 'absolute bottom-0 left-0 right-0 h-screen'
-      : 'relative h-screen'
 
   return (
     <section
@@ -195,13 +250,13 @@ const ProjectsSection: React.FC = () => {
       className="relative"
       style={{ height: sectionHeight }}
     >
-      <div className={`${innerClassName} flex flex-col overflow-hidden`}>
+      <div ref={innerRef} className="left-0 right-0 h-screen z-30 flex flex-col overflow-hidden">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
+          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
           className="text-center pt-20 pb-6 px-4 shrink-0"
         >
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
