@@ -7,6 +7,7 @@ import ContactModal from '../contact/ContactModal'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 import { useTypingEffect } from '@/hooks/useTypingEffect'
+import { useGyroscopeTilt } from '@/hooks/useGyroscopeTilt'
 import GradientMeshOrbs from '../effects/GradientMeshOrbs'
 
 const roles = [
@@ -74,6 +75,7 @@ export default function HeroSection() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const containerRef = useRef(null)
   const { displayText } = useTypingEffect({ roles, typingSpeed: 70, deletingSpeed: 35, pauseDuration: 2500 })
+  const gyro = useGyroscopeTilt(15)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -103,12 +105,18 @@ export default function HeroSection() {
         className="container mx-auto px-6 md:px-12 lg:px-20 relative z-10"
       >
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 sm:gap-12 lg:gap-20">
-          {/* Profile Image Section */}
+          {/* Profile Image Section — outer div handles gyroscope tilt, inner handles entrance animation */}
+          <div
+            className="relative"
+            style={gyro.supported ? {
+              transform: `translate3d(${gyro.x * 12}px, ${gyro.y * 8}px, 0)`,
+              willChange: 'transform',
+            } : undefined}
+          >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="relative"
           >
             {/* Animated ring */}
             <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 opacity-20 animate-pulse-glow" />
@@ -149,6 +157,7 @@ export default function HeroSection() {
               </span>
             </motion.button>
           </motion.div>
+          </div>
 
           {/* Content Section */}
           <motion.div

@@ -4,8 +4,8 @@ import Script from 'next/script'
 import HeroSection from '../components/hero/HeroSection'
 import ScrollProgressIndicator from '../components/general/ScrollProgressIndicator'
 import Footer from '../components/footer/Footer'
-import { ThemeProvider, ThemeToggle } from '../components/general/GradientBackground'
-import { ErrorBoundary } from '../components/general/ErrorBoundary'
+import { ThemeProvider, ThemeToggle } from '@/components/general/GradientBackground'
+import { ErrorBoundary } from '@/components/general/ErrorBoundary'
 import { PortfolioDataProvider } from '@/context/PortfolioDataContext'
 
 // Lazy load components with polished skeleton loaders
@@ -157,6 +157,9 @@ const SplashScreen = dynamic(() => import('../components/effects/SplashScreen'),
 const CommandPalette = dynamic(() => import('../components/general/CommandPalette'), {
   ssr: false,
 })
+const PullToContact = dynamic(() => import('../components/effects/PullToContact'), {
+  ssr: false,
+})
 
 export const metadata: Metadata = {
   title: 'Tariq Amarneh - Software Development Engineer',
@@ -270,6 +273,7 @@ export default function Home() {
               <Footer />
             </ErrorBoundary>
           </div>
+          <PullToContact />
           </SplashScreen>
           </ThemeProvider>
         </PortfolioDataProvider>
