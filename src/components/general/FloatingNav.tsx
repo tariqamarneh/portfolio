@@ -50,9 +50,11 @@ export default function FloatingNav() {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && activeSectionRef.current !== sectionId) {
               activeSectionRef.current = sectionId
               setActiveSection(sectionId)
+              // Subtle haptic tap on section change (Android; iOS ignores gracefully)
+              navigator.vibrate?.(10)
             }
           })
         },

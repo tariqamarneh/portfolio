@@ -150,13 +150,32 @@ const ProjectsSection: React.FC = () => {
     let targetProgress = 0
     let currentProgress = 0
     let rafId: number
-    const LERP_EASE = 0.08
+    let dynamicEase = 0.08
+    let lastScrollY = window.scrollY
+    let lastScrollTime = performance.now()
+
+    const EASE_MIN = 0.04  // slow/precise drag
+    const EASE_MAX = 0.14  // fast flick momentum
+    const EASE_DECAY = 0.92 // how fast ease returns to baseline
 
     const lerp = (start: number, end: number, factor: number) =>
       start + (end - start) * factor
 
-    // Scroll listener: reads scroll position and computes targets (cheap, runs on scroll)
+    // Scroll listener: reads scroll position, measures velocity, computes targets
     const handleScroll = () => {
+      // Measure scroll velocity to scale lerp ease dynamically
+      const now = performance.now()
+      const dt = now - lastScrollTime
+      const dy = Math.abs(window.scrollY - lastScrollY)
+      lastScrollTime = now
+      lastScrollY = window.scrollY
+
+      if (dt > 0) {
+        const velocity = dy / dt // px per ms
+        // Map velocity (0..3 px/ms) to ease range
+        const velocityFactor = Math.min(velocity / 3, 1)
+        dynamicEase = EASE_MIN + (EASE_MAX - EASE_MIN) * velocityFactor
+      }
       if (!sectionRef.current || !innerRef.current) return
       const rect = sectionRef.current.getBoundingClientRect()
       const vh = window.innerHeight
@@ -202,9 +221,11 @@ const ProjectsSection: React.FC = () => {
     }
 
     // Render loop: lerps currentX toward targetX every frame (smooth motion)
+    // Ease decays toward baseline between scroll events for natural deceleration
     const tick = () => {
-      currentX = lerp(currentX, targetX, LERP_EASE)
-      currentProgress = lerp(currentProgress, targetProgress, LERP_EASE)
+      dynamicEase = lerp(dynamicEase, EASE_MIN, 1 - EASE_DECAY)
+      currentX = lerp(currentX, targetX, dynamicEase)
+      currentProgress = lerp(currentProgress, targetProgress, dynamicEase)
 
       // Only write to DOM if still moving (> 0.5px from target)
       if (Math.abs(currentX - targetX) > 0.5) {

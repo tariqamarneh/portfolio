@@ -1,23 +1,41 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Quote, ChevronLeft, ChevronRight, Linkedin } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 
+const SWIPE_THRESHOLD = 50
+
 const TestimonialsSection: React.FC = () => {
   const { isDark } = useTheme()
   const { testimonials } = usePortfolioData()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [swipeDir, setSwipeDir] = useState<'left' | 'right'>('right')
+  const touchStartX = useRef(0)
 
-  const nextTestimonial = () => {
+  const nextTestimonial = useCallback(() => {
+    setSwipeDir('left')
     setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }
+  }, [testimonials.length])
 
-  const prevTestimonial = () => {
+  const prevTestimonial = useCallback(() => {
+    setSwipeDir('right')
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
+  }, [testimonials.length])
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }, [])
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      if (deltaX < 0) nextTestimonial()
+      else prevTestimonial()
+    }
+  }, [nextTestimonial, prevTestimonial])
 
   if (testimonials.length === 0) {
     return null
@@ -65,14 +83,22 @@ const TestimonialsSection: React.FC = () => {
               </div>
             </div>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={swipeDir}>
               <motion.div
                 key={currentIndex}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                custom={swipeDir}
+                variants={{
+                  enter: (dir: string) => ({ opacity: 0, x: dir === 'left' ? 40 : -40 }),
+                  center: { opacity: 1, x: 0 },
+                  exit: (dir: string) => ({ opacity: 0, x: dir === 'left' ? -40 : 40 }),
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
                 transition={{ duration: 0.3 }}
                 className="pt-4 h-[280px] flex flex-col justify-between"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
               >
                 {/* Content */}
                 <p className={`text-lg md:text-xl leading-relaxed mb-8 overflow-y-auto flex-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -106,6 +132,11 @@ const TestimonialsSection: React.FC = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
+
+            {/* Swipe hint (mobile only) */}
+            <p className={`text-center text-xs mt-4 md:hidden ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+              Swipe to navigate
+            </p>
 
             {/* Navigation */}
             <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
