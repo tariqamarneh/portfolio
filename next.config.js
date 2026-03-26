@@ -17,6 +17,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.credly.com',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/**',
       }
     ],
   },

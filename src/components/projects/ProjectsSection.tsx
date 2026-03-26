@@ -6,6 +6,7 @@ import { ExternalLink, Github as GithubIcon, Star, Calendar, ArrowRight } from '
 import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
+import ReactMarkdown from 'react-markdown'
 
 export interface Project {
   id: string
@@ -16,12 +17,15 @@ export interface Project {
   linkUrl: string
   date: string
   isFeatured?: boolean
+  sortOrder: number
+  linkType: 'live' | 'github' | 'both'
+  githubUrl?: string
 }
 
 const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolean; index: number; total: number }>(
   ({ project, isFeatured, index, total }) => {
     const { isDark } = useTheme()
-    const isLive = !project.linkUrl.includes('github.com')
+    const linkType = project.linkType || (project.linkUrl.includes('github.com') ? 'github' : 'live')
 
     return (
       <div
@@ -52,13 +56,16 @@ const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolea
                 Featured
               </div>
             )}
-            <span className={`px-3 py-1.5 rounded-full text-xs font-medium ${
-              isLive
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
-            }`}>
-              {isLive ? '● Live Demo' : '◐ GitHub Only'}
-            </span>
+            {(linkType === 'live' || linkType === 'both') && (
+              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                ● Live Demo
+              </span>
+            )}
+            {linkType === 'github' && (
+              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-500/20 text-gray-300 border border-gray-500/30">
+                ◐ GitHub Only
+              </span>
+            )}
           </div>
 
           <div className={`absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium ${
@@ -79,9 +86,11 @@ const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolea
             {project.date}
           </div>
 
-          <p className={`mb-3 md:mb-6 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-            {project.description}
-          </p>
+          <div className={`mb-3 md:mb-6 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none prose prose-sm max-w-none ${
+            isDark ? 'text-gray-300 prose-invert prose-a:text-cyan-400' : 'text-gray-600 prose-a:text-cyan-600'
+          } prose-p:my-0`}>
+            <ReactMarkdown>{project.description}</ReactMarkdown>
+          </div>
 
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-6">
             {project.technologies.map((tech, i) => (
@@ -93,22 +102,37 @@ const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolea
             ))}
           </div>
 
-          <a
-            href={project.linkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`
-              inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-200
-              ${isDark ? 'text-cyan-400 hover:text-cyan-300' : 'text-cyan-600 hover:text-cyan-500'}
-            `}
-          >
-            {project.linkUrl.includes('github.com') ? (
-              <><GithubIcon className="w-4 h-4" /> View on GitHub</>
-            ) : (
-              <><ExternalLink className="w-4 h-4" /> Visit Project</>
+          <div className="flex items-center gap-4">
+            <a
+              href={project.linkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`
+                inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-200
+                ${isDark ? 'text-cyan-400 hover:text-cyan-300' : 'text-cyan-600 hover:text-cyan-500'}
+              `}
+            >
+              {linkType === 'github' ? (
+                <><GithubIcon className="w-4 h-4" /> View on GitHub</>
+              ) : (
+                <><ExternalLink className="w-4 h-4" /> Visit Project</>
+              )}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            {linkType === 'both' && project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`
+                  inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200
+                  ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'}
+                `}
+              >
+                <GithubIcon className="w-4 h-4" /> GitHub
+              </a>
             )}
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          </div>
         </div>
       </div>
     )
@@ -123,9 +147,7 @@ const ProjectsSection: React.FC = () => {
   const innerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
-  const featuredProject = projects.find(p => p.isFeatured)
-  const otherProjects = projects.filter(p => !p.isFeatured)
-  const allProjects = [...(featuredProject ? [featuredProject] : []), ...otherProjects]
+  const allProjects = [...projects].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
   const numCards = allProjects.length || 1
 
   const [sectionHeight, setSectionHeight] = useState('400vh')
