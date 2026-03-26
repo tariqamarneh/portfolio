@@ -76,20 +76,25 @@ const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolea
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-4 md:p-8 flex flex-col justify-center">
+        <div className="flex-1 p-4 md:p-8 flex flex-col justify-center min-w-0 overflow-hidden">
           <h3 className={`text-xl md:text-3xl font-bold mb-2 md:mb-3 font-display ${isDark ? 'text-white' : 'text-gray-900'}`}>
             {project.title}
           </h3>
 
-          <div className={`flex items-center gap-1.5 mb-2 md:mb-4 text-xs md:text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-            <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4" />
+          <div className={`flex items-center gap-1.5 mb-2 md:mb-4 text-xs md:text-sm shrink-0 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+            <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
             {project.date}
           </div>
 
-          <div className={`mb-3 md:mb-6 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none prose prose-sm max-w-none ${
-            isDark ? 'text-gray-300 prose-invert prose-a:text-cyan-400' : 'text-gray-600 prose-a:text-cyan-600'
-          } prose-p:my-0`}>
-            <ReactMarkdown>{project.description}</ReactMarkdown>
+          <div className={`mb-3 md:mb-6 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none ${
+            isDark ? 'text-gray-300' : 'text-gray-600'
+          }`}>
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => <p className="my-0">{children}</p>,
+                a: ({ children, href }) => <a href={href} className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>{children}</a>,
+              }}
+            >{project.description}</ReactMarkdown>
           </div>
 
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-6">
@@ -317,7 +322,7 @@ const ProjectsSection: React.FC = () => {
         <div className="flex-1 min-h-0 flex items-center overflow-hidden">
           <div
             ref={trackRef}
-            className="flex gap-6 h-[85%] md:h-[70%] pl-[8vw] pr-[8vw]"
+            className="flex gap-6 h-[90%] md:h-[82%] pl-[8vw] pr-[8vw]"
             style={{ willChange: 'transform' }}
           >
             {allProjects.map((project, index) => (

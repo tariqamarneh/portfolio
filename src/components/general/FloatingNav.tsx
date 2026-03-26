@@ -38,35 +38,47 @@ export default function FloatingNav() {
   const { isDark } = useTheme()
   const activeSectionRef = useRef('')
 
-  // Use IntersectionObserver for section detection
+  // Scroll-based section detection: pick the section whose top is closest to 40% of viewport
   useEffect(() => {
     const sectionIds = navItems.map(item => item.href.slice(1))
-    const observers: IntersectionObserver[] = []
+    let rafId: number
 
-    sectionIds.forEach(sectionId => {
-      const element = document.getElementById(sectionId)
-      if (!element) return
+    const detect = () => {
+      const target = window.innerHeight * 0.4
+      let best = ''
+      let bestDist = Infinity
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && activeSectionRef.current !== sectionId) {
-              activeSectionRef.current = sectionId
-              setActiveSection(sectionId)
-              // Subtle haptic tap on section change (Android; iOS ignores gracefully)
-              navigator.vibrate?.(10)
-            }
-          })
-        },
-        { rootMargin: '-33% 0px -66% 0px', threshold: 0 }
-      )
+      for (const id of sectionIds) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const rect = el.getBoundingClientRect()
+        // Section must be at least partially visible
+        if (rect.bottom < 0 || rect.top > window.innerHeight) continue
+        const dist = Math.abs(rect.top - target)
+        if (dist < bestDist) {
+          bestDist = dist
+          best = id
+        }
+      }
 
-      observer.observe(element)
-      observers.push(observer)
-    })
+      if (best && activeSectionRef.current !== best) {
+        activeSectionRef.current = best
+        setActiveSection(best)
+        try { navigator.vibrate?.(10) } catch {}
+      }
+    }
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(detect)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    detect()
 
     return () => {
-      observers.forEach(observer => observer.disconnect())
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(rafId)
     }
   }, [])
 
