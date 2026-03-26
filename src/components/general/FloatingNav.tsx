@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
+import { Home, User, FolderGit2, Code2, MessageSquare, Mail } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
   { name: 'Home', href: '#home', icon: Home },
-  { name: 'About', href: '#about', icon: User },
-  { name: 'Journey', href: '#journey', icon: Clock },
+  { name: 'My Story', href: '#story', icon: User },
   { name: 'Projects', href: '#projects', icon: FolderGit2 },
   { name: 'Skills', href: '#skills', icon: Code2 },
   { name: 'Testimonials', href: '#testimonials', icon: MessageSquare },
