@@ -265,7 +265,7 @@ function SortableProjectItem({ project, onEdit, onDelete }: {
 }
 
 function ProjectsManager() {
-  const { projects, addProject, updateProject, deleteProject, reorderProjects, uploadProjectImage } = usePortfolioData()
+  const { projects, addProject, updateProject, deleteProject, reorderProjects, uploadImage } = usePortfolioData()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [descTab, setDescTab] = useState<'write' | 'preview'>('write')
@@ -352,12 +352,12 @@ function ProjectsManager() {
   const handleImageUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) return
     setUploading(true)
-    const url = await uploadProjectImage(file)
+    const url = await uploadImage(file, 'project-images')
     if (url) {
       setFormData(prev => ({ ...prev, imageUrl: url }))
     }
     setUploading(false)
-  }, [uploadProjectImage])
+  }, [uploadImage])
 
   const handleFileDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -678,30 +678,110 @@ function ProjectsManager() {
   )
 }
 
+function SortableSkillItem({ skill, onEdit, onDelete }: {
+  skill: Skill
+  onEdit: (skill: Skill) => void
+  onDelete: (id: string) => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: skill.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} className="bg-gray-900 rounded-xl p-4 border border-gray-800 flex items-center gap-4">
+      <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 flex-shrink-0 touch-none">
+        <GripVertical className="w-5 h-5" />
+      </button>
+      <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0 flex items-center justify-center">
+        <Image src={skill.icon} alt={skill.name} width={28} height={28} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+      </div>
+      <div className="flex-grow min-w-0">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-white">{skill.name}</h3>
+          <span className={`text-xs px-2 py-0.5 rounded-full ${skill.isPrimary ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-700 text-gray-400'}`}>
+            {skill.isPrimary ? 'Primary' : 'Secondary'}
+          </span>
+          <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+            skill.level === 'Expert' ? 'bg-emerald-500/20 text-emerald-400' :
+            skill.level === 'Intermediate' ? 'bg-blue-500/20 text-blue-400' :
+            'bg-yellow-500/20 text-yellow-400'
+          }`}>{skill.level}</span>
+        </div>
+        <p className="text-sm text-gray-400">{skill.category} &middot; since {skill.yearStarted}</p>
+      </div>
+      <div className="flex gap-2 flex-shrink-0">
+        <button onClick={() => onEdit(skill)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${skill.name}`}><Edit2 className="w-4 h-4" /></button>
+        <button onClick={() => { if (window.confirm(`Delete "${skill.name}"?`)) onDelete(skill.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${skill.name}`}><Trash2 className="w-4 h-4" /></button>
+      </div>
+    </div>
+  )
+}
+
 function SkillsManager() {
-  const { skills, addSkill, updateSkill, deleteSkill } = usePortfolioData()
+  const { skills, addSkill, updateSkill, deleteSkill, reorderSkills, uploadImage } = usePortfolioData()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [descTab, setDescTab] = useState<'write' | 'preview'>('write')
+  const [uploading, setUploading] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState<Omit<Skill, 'id'>>({
-    name: '', level: 'Intermediate', category: 'backend', icon: '', description: '', yearStarted: new Date().getFullYear(), isPrimary: true
+    name: '', level: 'Intermediate', category: 'backend', icon: '', description: '', yearStarted: new Date().getFullYear(), isPrimary: true, sortOrder: 0
   })
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
+
   const resetForm = () => {
-    setFormData({ name: '', level: 'Intermediate', category: 'backend', icon: '', description: '', yearStarted: new Date().getFullYear(), isPrimary: true })
+    setFormData({ name: '', level: 'Intermediate', category: 'backend', icon: '', description: '', yearStarted: new Date().getFullYear(), isPrimary: true, sortOrder: 0 })
     setEditingId(null)
     setShowForm(false)
+    setDescTab('write')
   }
 
   const handleEdit = (skill: Skill) => {
-    setFormData({ name: skill.name, level: skill.level, category: skill.category, icon: skill.icon, description: skill.description, yearStarted: skill.yearStarted, isPrimary: skill.isPrimary })
+    setFormData({ name: skill.name, level: skill.level, category: skill.category, icon: skill.icon, description: skill.description, yearStarted: skill.yearStarted, isPrimary: skill.isPrimary, sortOrder: skill.sortOrder })
     setEditingId(skill.id)
     setShowForm(true)
+    setDescTab('write')
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (editingId) { updateSkill(editingId, formData) } else { addSkill(formData) }
     resetForm()
+  }
+
+  const handleIconUpload = useCallback(async (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    setUploading(true)
+    const url = await uploadImage(file, 'skill-icons')
+    if (url) {
+      setFormData(prev => ({ ...prev, icon: url }))
+    }
+    setUploading(false)
+  }, [uploadImage])
+
+  const handleIconDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleIconUpload(file)
+  }, [handleIconUpload])
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = skills.findIndex(s => s.id === active.id)
+      const newIndex = skills.findIndex(s => s.id === over.id)
+      const newOrder = arrayMove(skills, oldIndex, newIndex)
+      reorderSkills(newOrder.map(s => s.id))
+    }
   }
 
   return (
@@ -721,37 +801,129 @@ function SkillsManager() {
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><label className="block text-sm font-medium text-gray-300 mb-1">Name</label><input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" required /></div>
-              <div><label className="block text-sm font-medium text-gray-300 mb-1">Icon URL</label><input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" placeholder="/skills_logo/icon.svg" required /></div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Icon</label>
+                <div className="flex gap-3">
+                  <div
+                    className={`flex-1 relative border-2 border-dashed rounded-lg p-3 text-center transition-colors cursor-pointer ${
+                      dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:border-gray-600'
+                    }`}
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleIconDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => { const file = e.target.files?.[0]; if (file) handleIconUpload(file) }}
+                    />
+                    {uploading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm text-gray-400">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <Upload className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm text-gray-400">Drop icon or click</span>
+                      </div>
+                    )}
+                  </div>
+                  {formData.icon && (
+                    <div className="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0 border border-gray-700 relative group">
+                      <Image src={formData.icon} alt="Preview" width={32} height={32} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, icon: '' })}
+                        className="absolute -top-1 -right-1 p-0.5 rounded-full bg-gray-700 text-gray-300 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="text-xs text-gray-500">or URL:</span>
+                  <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className="flex-1 px-3 py-1 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" placeholder="/skills_logo/icon.svg" />
+                </div>
+              </div>
             </div>
-            <div><label className="block text-sm font-medium text-gray-300 mb-1">Description</label><input type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" required /></div>
+
+            {/* Markdown Description */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-300">Description</label>
+                <div className="flex rounded-lg overflow-hidden border border-gray-700">
+                  <button type="button" onClick={() => setDescTab('write')} className={`px-3 py-1 text-xs font-medium transition-colors ${descTab === 'write' ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-gray-300'}`}>Write</button>
+                  <button type="button" onClick={() => setDescTab('preview')} className={`px-3 py-1 text-xs font-medium transition-colors ${descTab === 'preview' ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-gray-300'}`}>Preview</button>
+                </div>
+              </div>
+              {descTab === 'write' ? (
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white font-mono text-sm"
+                  rows={2}
+                  placeholder="Supports **bold**, *italic*, and `code`"
+                  required
+                />
+              ) : (
+                <div className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 min-h-[3.5rem] prose prose-invert prose-sm max-w-none prose-p:my-0 prose-a:text-cyan-400">
+                  {formData.description ? <ReactMarkdown>{formData.description}</ReactMarkdown> : <p className="text-gray-500 italic">Nothing to preview</p>}
+                </div>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div><label className="block text-sm font-medium text-gray-300 mb-1">Category</label><select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value as Skill['category'] })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"><option value="backend">Backend</option><option value="frontend">Frontend</option><option value="database">Database</option><option value="devops">DevOps</option><option value="ai">AI/ML</option></select></div>
-              <div><label className="block text-sm font-medium text-gray-300 mb-1">Level</label><select value={formData.level} onChange={(e) => setFormData({ ...formData, level: e.target.value as Skill['level'] })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"><option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Expert">Expert</option></select></div>
-              <div><label className="block text-sm font-medium text-gray-300 mb-1">Year Started</label><input type="number" value={formData.yearStarted} onChange={(e) => setFormData({ ...formData, yearStarted: parseInt(e.target.value) })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" min="2000" max={new Date().getFullYear()} required /></div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
+                <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value as Skill['category'] })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white">
+                  <option value="backend">Backend</option><option value="frontend">Frontend</option><option value="database">Database</option><option value="devops">DevOps</option><option value="ai">AI/ML</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Level</label>
+                <select value={formData.level} onChange={(e) => setFormData({ ...formData, level: e.target.value as Skill['level'] })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white">
+                  <option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Expert">Expert</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Year Started</label>
+                <input type="number" value={formData.yearStarted} onChange={(e) => setFormData({ ...formData, yearStarted: parseInt(e.target.value) })} className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white" min="2000" max={new Date().getFullYear()} required />
+              </div>
             </div>
-            <div className="flex items-center gap-2"><input type="checkbox" id="isPrimary" checked={formData.isPrimary} onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })} className="w-4 h-4 rounded" /><label htmlFor="isPrimary" className="text-sm text-gray-300">Primary Skill</label></div>
-            <div className="flex gap-2 justify-end"><button type="button" onClick={resetForm} className="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Cancel</button><button type="submit" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"><Save className="w-4 h-4" />{editingId ? 'Update' : 'Save'}</button></div>
+
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="isPrimary" checked={formData.isPrimary} onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })} className="w-4 h-4 rounded" />
+              <label htmlFor="isPrimary" className="text-sm text-gray-300">Primary Skill</label>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <button type="button" onClick={resetForm} className="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600">Cancel</button>
+              <button type="submit" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"><Save className="w-4 h-4" />{editingId ? 'Update' : 'Save'}</button>
+            </div>
           </form>
         </motion.div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {skills.map((skill) => (
-          <div key={skill.id} className="bg-gray-900 rounded-xl p-4 border border-gray-800 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0 flex items-center justify-center">
-              <Image src={skill.icon} alt={skill.name} width={28} height={28} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+      <div className="space-y-2">
+        <p className="text-xs text-gray-500">Drag to reorder skills</p>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={skills.map(s => s.id)} strategy={verticalListSortingStrategy}>
+            <div className="grid gap-3">
+              {skills.map((skill) => (
+                <SortableSkillItem key={skill.id} skill={skill} onEdit={handleEdit} onDelete={deleteSkill} />
+              ))}
             </div>
-            <div className="flex-grow min-w-0">
-              <div className="flex items-center gap-2"><h3 className="font-semibold text-white">{skill.name}</h3><span className={`text-xs px-2 py-0.5 rounded-full ${skill.isPrimary ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-700 text-gray-400'}`}>{skill.isPrimary ? 'Primary' : 'Secondary'}</span></div>
-              <p className="text-sm text-gray-400">{skill.category} - {skill.level}</p>
-            </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => handleEdit(skill)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${skill.name}`}><Edit2 className="w-4 h-4" /></button>
-              <button onClick={() => { if (window.confirm(`Delete "${skill.name}"?`)) deleteSkill(skill.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${skill.name}`}><Trash2 className="w-4 h-4" /></button>
-            </div>
-          </div>
-        ))}
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   )

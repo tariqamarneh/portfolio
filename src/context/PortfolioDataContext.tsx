@@ -13,6 +13,7 @@ export interface Skill {
   description: string
   yearStarted: number
   isPrimary: boolean
+  sortOrder: number
 }
 
 export interface LearningItem {
@@ -50,10 +51,11 @@ interface PortfolioDataContextType {
   updateProject: (id: string, project: Partial<Project>) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   reorderProjects: (orderedIds: string[]) => Promise<void>
-  uploadProjectImage: (file: File) => Promise<string | null>
+  uploadImage: (file: File, bucket: string) => Promise<string | null>
   addSkill: (skill: Omit<Skill, 'id'>) => Promise<void>
   updateSkill: (id: string, skill: Partial<Skill>) => Promise<void>
   deleteSkill: (id: string) => Promise<void>
+  reorderSkills: (orderedIds: string[]) => Promise<void>
   addLearningItem: (item: Omit<LearningItem, 'id'>) => Promise<void>
   deleteLearningItem: (id: string) => Promise<void>
   addTestimonial: (testimonial: Omit<Testimonial, 'id'>) => Promise<void>
@@ -90,7 +92,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         settingsRes
       ] = await Promise.all([
         supabase.from('projects').select('*').order('sort_order', { ascending: true }),
-        supabase.from('skills').select('*').order('created_at', { ascending: true }),
+        supabase.from('skills').select('*').order('sort_order', { ascending: true }),
         supabase.from('learning_items').select('*').order('created_at', { ascending: true }),
         supabase.from('testimonials').select('*').order('created_at', { ascending: true }),
         supabase.from('journey_events').select('*').order('date', { ascending: false }),
@@ -122,7 +124,8 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
           icon: s.icon,
           description: s.description,
           yearStarted: s.year_started,
-          isPrimary: s.is_primary
+          isPrimary: s.is_primary,
+          sortOrder: s.sort_order ?? 0
         })))
       }
 
@@ -260,22 +263,23 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     )
   }, [])
 
-  const uploadProjectImage = useCallback(async (file: File): Promise<string | null> => {
+  const uploadImage = useCallback(async (file: File, bucket: string = 'project-images'): Promise<string | null> => {
     const ext = file.name.split('.').pop()
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`
     const { error } = await supabase.storage
-      .from('project-images')
+      .from(bucket)
       .upload(fileName, file, { cacheControl: '3600', upsert: false })
     if (error) {
-      if (process.env.NODE_ENV === 'development') console.error('Error uploading image:', error)
+      console.error(`Error uploading to ${bucket}:`, error)
       return null
     }
-    const { data: urlData } = supabase.storage.from('project-images').getPublicUrl(fileName)
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName)
     return urlData.publicUrl
   }, [])
 
   // Skill CRUD
   const addSkill = useCallback(async (skill: Omit<Skill, 'id'>) => {
+    const maxOrder = skills.length > 0 ? Math.max(...skills.map(s => s.sortOrder)) + 1 : 0
     const { data, error } = await supabase
       .from('skills')
       .insert({
@@ -285,7 +289,8 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         icon: skill.icon,
         description: skill.description,
         year_started: skill.yearStarted,
-        is_primary: skill.isPrimary
+        is_primary: skill.isPrimary,
+        sort_order: skill.sortOrder ?? maxOrder
       })
       .select()
       .single()
@@ -304,10 +309,11 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         icon: data.icon,
         description: data.description,
         yearStarted: data.year_started,
-        isPrimary: data.is_primary
+        isPrimary: data.is_primary,
+        sortOrder: data.sort_order ?? 0
       }])
     }
-  }, [])
+  }, [skills])
 
   const updateSkill = useCallback(async (id: string, updates: Partial<Skill>) => {
     const dbUpdates: Record<string, unknown> = {}
@@ -318,6 +324,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     if (updates.description !== undefined) dbUpdates.description = updates.description
     if (updates.yearStarted !== undefined) dbUpdates.year_started = updates.yearStarted
     if (updates.isPrimary !== undefined) dbUpdates.is_primary = updates.isPrimary
+    if (updates.sortOrder !== undefined) dbUpdates.sort_order = updates.sortOrder
 
     const { error } = await supabase.from('skills').update(dbUpdates).eq('id', id)
     if (error) {
@@ -334,6 +341,18 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       return
     }
     setSkills(prev => prev.filter(s => s.id !== id))
+  }, [])
+
+  const reorderSkills = useCallback(async (orderedIds: string[]) => {
+    setSkills(prev => {
+      const map = new Map(prev.map(s => [s.id, s]))
+      return orderedIds.map((id, i) => ({ ...map.get(id)!, sortOrder: i }))
+    })
+    await Promise.all(
+      orderedIds.map((id, index) =>
+        supabase.from('skills').update({ sort_order: index }).eq('id', id)
+      )
+    )
   }, [])
 
   // Learning Item CRUD
@@ -498,10 +517,11 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     updateProject,
     deleteProject,
     reorderProjects,
-    uploadProjectImage,
+    uploadImage,
     addSkill,
     updateSkill,
     deleteSkill,
+    reorderSkills,
     addLearningItem,
     deleteLearningItem,
     addTestimonial,
@@ -513,7 +533,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     setCvUrl,
     refreshData: fetchData,
   }), [projects, skills, learningItems, testimonials, journeyEvents, cvUrl, isLoading, fetchData,
-    addProject, updateProject, deleteProject, reorderProjects, uploadProjectImage, addSkill, updateSkill, deleteSkill,
+    addProject, updateProject, deleteProject, reorderProjects, uploadImage, addSkill, updateSkill, deleteSkill, reorderSkills,
     addLearningItem, deleteLearningItem, addTestimonial, updateTestimonial, deleteTestimonial,
     addJourneyEvent, updateJourneyEvent, deleteJourneyEvent, setCvUrl])
 
