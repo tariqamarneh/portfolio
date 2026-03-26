@@ -1,15 +1,34 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   Lock, LogOut, Plus, Trash2, Edit2, Save, X,
   FolderGit2, Code2, Sparkles, Star, Eye, EyeOff,
-  MessageSquare, Clock, FileText, Linkedin
+  MessageSquare, Clock, FileText, Linkedin,
+  Upload, GripVertical, ExternalLink, Github
 } from 'lucide-react'
 import { usePortfolioData, Skill, LearningItem, Testimonial, JourneyEvent } from '@/context/PortfolioDataContext'
 import { Project } from '@/components/projects/ProjectsSection'
 import Image from 'next/image'
+import ReactMarkdown from 'react-markdown'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 type Tab = 'projects' | 'skills' | 'learning' | 'testimonials' | 'journey' | 'cv'
 
@@ -194,10 +213,65 @@ export default function AdminPage() {
   )
 }
 
+function SortableProjectItem({ project, onEdit, onDelete }: {
+  project: Project
+  onEdit: (project: Project) => void
+  onDelete: (id: string) => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: project.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  const linkTypeLabel = { live: 'Live Demo', github: 'GitHub', both: 'Both' }
+
+  return (
+    <div ref={setNodeRef} style={style} className="bg-gray-900 rounded-xl p-4 border border-gray-800 flex items-center gap-4">
+      <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 flex-shrink-0 touch-none">
+        <GripVertical className="w-5 h-5" />
+      </button>
+      <div className="w-20 h-14 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
+        {project.imageUrl && (
+          <Image src={project.imageUrl} alt={project.title} width={80} height={56} className="object-cover w-full h-full" />
+        )}
+      </div>
+      <div className="flex-grow min-w-0">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-white truncate">{project.title}</h3>
+          {project.isFeatured && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+          <span className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 ${
+            project.linkType === 'live' ? 'bg-emerald-500/20 text-emerald-400' :
+            project.linkType === 'both' ? 'bg-blue-500/20 text-blue-400' :
+            'bg-gray-700 text-gray-400'
+          }`}>
+            {linkTypeLabel[project.linkType || 'github']}
+          </span>
+        </div>
+        <p className="text-sm text-gray-400 line-clamp-1">{project.description}</p>
+        <p className="text-xs text-gray-500">{project.date}</p>
+      </div>
+      <div className="flex gap-2 flex-shrink-0">
+        <button onClick={() => onEdit(project)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${project.title}`}>
+          <Edit2 className="w-4 h-4" />
+        </button>
+        <button onClick={() => { if (window.confirm(`Delete "${project.title}"?`)) onDelete(project.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${project.title}`}>
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function ProjectsManager() {
-  const { projects, addProject, updateProject, deleteProject } = usePortfolioData()
+  const { projects, addProject, updateProject, deleteProject, reorderProjects, uploadProjectImage } = usePortfolioData()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [descTab, setDescTab] = useState<'write' | 'preview'>('write')
+  const [uploading, setUploading] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState<Omit<Project, 'id'>>({
     title: '',
     description: '',
@@ -205,9 +279,17 @@ function ProjectsManager() {
     imageUrl: '',
     linkUrl: '',
     date: '',
-    isFeatured: false
+    isFeatured: false,
+    sortOrder: 0,
+    linkType: 'github',
+    githubUrl: ''
   })
   const [techInput, setTechInput] = useState('')
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
 
   const resetForm = () => {
     setFormData({
@@ -217,11 +299,15 @@ function ProjectsManager() {
       imageUrl: '',
       linkUrl: '',
       date: '',
-      isFeatured: false
+      isFeatured: false,
+      sortOrder: 0,
+      linkType: 'github',
+      githubUrl: ''
     })
     setTechInput('')
     setEditingId(null)
     setShowForm(false)
+    setDescTab('write')
   }
 
   const handleEdit = (project: Project) => {
@@ -232,10 +318,14 @@ function ProjectsManager() {
       imageUrl: project.imageUrl,
       linkUrl: project.linkUrl,
       date: project.date,
-      isFeatured: project.isFeatured || false
+      isFeatured: project.isFeatured || false,
+      sortOrder: project.sortOrder,
+      linkType: project.linkType || 'github',
+      githubUrl: project.githubUrl || ''
     })
     setEditingId(project.id)
     setShowForm(true)
+    setDescTab('write')
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -257,6 +347,33 @@ function ProjectsManager() {
 
   const removeTech = (tech: string) => {
     setFormData({ ...formData, technologies: formData.technologies.filter(t => t !== tech) })
+  }
+
+  const handleImageUpload = useCallback(async (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    setUploading(true)
+    const url = await uploadProjectImage(file)
+    if (url) {
+      setFormData(prev => ({ ...prev, imageUrl: url }))
+    }
+    setUploading(false)
+  }, [uploadProjectImage])
+
+  const handleFileDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleImageUpload(file)
+  }, [handleImageUpload])
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = projects.findIndex(p => p.id === active.id)
+      const newIndex = projects.findIndex(p => p.id === over.id)
+      const newOrder = arrayMove(projects, oldIndex, newIndex)
+      reorderProjects(newOrder.map(p => p.id))
+    }
   }
 
   return (
@@ -312,38 +429,170 @@ function ProjectsManager() {
               </div>
             </div>
 
+            {/* Markdown Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
-                rows={3}
-                required
-              />
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-300">Description</label>
+                <div className="flex rounded-lg overflow-hidden border border-gray-700">
+                  <button
+                    type="button"
+                    onClick={() => setDescTab('write')}
+                    className={`px-3 py-1 text-xs font-medium transition-colors ${
+                      descTab === 'write' ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Write
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDescTab('preview')}
+                    className={`px-3 py-1 text-xs font-medium transition-colors ${
+                      descTab === 'preview' ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-gray-300'
+                    }`}
+                  >
+                    Preview
+                  </button>
+                </div>
+              </div>
+              {descTab === 'write' ? (
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white font-mono text-sm"
+                  rows={4}
+                  placeholder="Supports **bold**, *italic*, `code`, and [links](url)"
+                  required
+                />
+              ) : (
+                <div className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 min-h-[6.5rem] prose prose-invert prose-sm max-w-none prose-p:my-1 prose-a:text-cyan-400">
+                  {formData.description ? (
+                    <ReactMarkdown>{formData.description}</ReactMarkdown>
+                  ) : (
+                    <p className="text-gray-500 italic">Nothing to preview</p>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label>
+            {/* Image Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Project Image</label>
+              <div className="flex gap-4">
+                <div
+                  className={`flex-1 relative border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
+                    dragOver ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:border-gray-600'
+                  }`}
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={handleFileDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) handleImageUpload(file)
+                    }}
+                  />
+                  {uploading ? (
+                    <div className="flex flex-col items-center gap-2 py-2">
+                      <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                      <p className="text-sm text-gray-400">Uploading...</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-2">
+                      <Upload className="w-6 h-6 text-gray-500" />
+                      <p className="text-sm text-gray-400">Drop image here or click to upload</p>
+                      <p className="text-xs text-gray-600">PNG, JPG, WebP</p>
+                    </div>
+                  )}
+                </div>
+                {formData.imageUrl && (
+                  <div className="w-32 h-24 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0 relative group">
+                    <Image src={formData.imageUrl} alt="Preview" fill className="object-cover" sizes="128px" />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, imageUrl: '' })}
+                      className="absolute top-1 right-1 p-1 rounded-full bg-black/60 text-gray-300 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-xs text-gray-500">or paste URL:</span>
                 <input
                   type="text"
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
+                  className="flex-1 px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm"
                   placeholder="/images/project.png"
-                  required
                 />
               </div>
+            </div>
+
+            {/* Link Type & URLs */}
+            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Link URL</label>
-                <input
-                  type="text"
-                  value={formData.linkUrl}
-                  onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-300 mb-1">Link Type</label>
+                <div className="flex gap-2">
+                  {([
+                    { value: 'live' as const, label: 'Live Demo', icon: ExternalLink, color: 'emerald' },
+                    { value: 'github' as const, label: 'GitHub Only', icon: Github, color: 'gray' },
+                    { value: 'both' as const, label: 'Both', icon: Star, color: 'blue' },
+                  ] as const).map((opt) => {
+                    const Icon = opt.icon
+                    const selected = formData.linkType === opt.value
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, linkType: opt.value })}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                          selected
+                            ? opt.color === 'emerald' ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
+                            : opt.color === 'blue' ? 'border-blue-500/50 bg-blue-500/10 text-blue-400'
+                            : 'border-gray-600 bg-gray-700 text-gray-300'
+                            : 'border-gray-700 bg-gray-800 text-gray-500 hover:text-gray-300'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {opt.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {formData.linkType === 'github' ? 'GitHub URL' : 'Live Demo URL'}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.linkUrl}
+                    onChange={(e) => setFormData({ ...formData, linkUrl: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
+                    placeholder={formData.linkType === 'github' ? 'https://github.com/...' : 'https://myproject.com'}
+                    required
+                  />
+                </div>
+                {formData.linkType === 'both' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">GitHub URL</label>
+                    <input
+                      type="text"
+                      value={formData.githubUrl || ''}
+                      onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
+                      placeholder="https://github.com/..."
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -408,32 +657,22 @@ function ProjectsManager() {
         </motion.div>
       )}
 
-      <div className="grid gap-4">
-        {projects.map((project) => (
-          <div key={project.id} className="bg-gray-900 rounded-xl p-4 border border-gray-800 flex items-center gap-4">
-            <div className="w-20 h-14 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-              {project.imageUrl && (
-                <Image src={project.imageUrl} alt={project.title} width={80} height={56} className="object-cover w-full h-full" />
-              )}
+      <div className="space-y-2">
+        <p className="text-xs text-gray-500">Drag to reorder projects</p>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={projects.map(p => p.id)} strategy={verticalListSortingStrategy}>
+            <div className="grid gap-3">
+              {projects.map((project) => (
+                <SortableProjectItem
+                  key={project.id}
+                  project={project}
+                  onEdit={handleEdit}
+                  onDelete={deleteProject}
+                />
+              ))}
             </div>
-            <div className="flex-grow min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-white truncate">{project.title}</h3>
-                {project.isFeatured && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
-              </div>
-              <p className="text-sm text-gray-400 line-clamp-1">{project.description}</p>
-              <p className="text-xs text-gray-500">{project.date}</p>
-            </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => handleEdit(project)} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700" aria-label={`Edit ${project.title}`}>
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button onClick={() => { if (window.confirm(`Delete "${project.title}"?`)) deleteProject(project.id) }} className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-red-400 hover:bg-gray-700" aria-label={`Delete ${project.title}`}>
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
+          </SortableContext>
+        </DndContext>
       </div>
     </div>
   )

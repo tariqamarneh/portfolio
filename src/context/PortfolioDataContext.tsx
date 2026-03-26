@@ -49,6 +49,8 @@ interface PortfolioDataContextType {
   addProject: (project: Omit<Project, 'id'>) => Promise<void>
   updateProject: (id: string, project: Partial<Project>) => Promise<void>
   deleteProject: (id: string) => Promise<void>
+  reorderProjects: (orderedIds: string[]) => Promise<void>
+  uploadProjectImage: (file: File) => Promise<string | null>
   addSkill: (skill: Omit<Skill, 'id'>) => Promise<void>
   updateSkill: (id: string, skill: Partial<Skill>) => Promise<void>
   deleteSkill: (id: string) => Promise<void>
@@ -87,7 +89,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         journeyRes,
         settingsRes
       ] = await Promise.all([
-        supabase.from('projects').select('*').order('created_at', { ascending: false }),
+        supabase.from('projects').select('*').order('sort_order', { ascending: true }),
         supabase.from('skills').select('*').order('created_at', { ascending: true }),
         supabase.from('learning_items').select('*').order('created_at', { ascending: true }),
         supabase.from('testimonials').select('*').order('created_at', { ascending: true }),
@@ -104,7 +106,10 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
           imageUrl: p.image_url,
           linkUrl: p.link_url,
           date: p.date,
-          isFeatured: p.is_featured
+          isFeatured: p.is_featured,
+          sortOrder: p.sort_order ?? 0,
+          linkType: p.link_type || 'github',
+          githubUrl: p.github_url || undefined
         })))
       }
 
@@ -168,6 +173,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
 
   // Project CRUD
   const addProject = useCallback(async (project: Omit<Project, 'id'>) => {
+    const maxOrder = projects.length > 0 ? Math.max(...projects.map(p => p.sortOrder)) + 1 : 0
     const { data, error } = await supabase
       .from('projects')
       .insert({
@@ -177,7 +183,10 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         image_url: project.imageUrl,
         link_url: project.linkUrl,
         date: project.date,
-        is_featured: project.isFeatured || false
+        is_featured: project.isFeatured || false,
+        sort_order: project.sortOrder ?? maxOrder,
+        link_type: project.linkType || 'github',
+        github_url: project.githubUrl || null
       })
       .select()
       .single()
@@ -188,7 +197,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      setProjects(prev => [{
+      setProjects(prev => [...prev, {
         id: data.id,
         title: data.title,
         description: data.description,
@@ -196,10 +205,13 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
         imageUrl: data.image_url,
         linkUrl: data.link_url,
         date: data.date,
-        isFeatured: data.is_featured
-      }, ...prev])
+        isFeatured: data.is_featured,
+        sortOrder: data.sort_order ?? 0,
+        linkType: data.link_type || 'github',
+        githubUrl: data.github_url || undefined
+      }])
     }
-  }, [])
+  }, [projects])
 
   const updateProject = useCallback(async (id: string, updates: Partial<Project>) => {
     const dbUpdates: Record<string, unknown> = {}
@@ -210,6 +222,9 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     if (updates.linkUrl !== undefined) dbUpdates.link_url = updates.linkUrl
     if (updates.date !== undefined) dbUpdates.date = updates.date
     if (updates.isFeatured !== undefined) dbUpdates.is_featured = updates.isFeatured
+    if (updates.sortOrder !== undefined) dbUpdates.sort_order = updates.sortOrder
+    if (updates.linkType !== undefined) dbUpdates.link_type = updates.linkType
+    if (updates.githubUrl !== undefined) dbUpdates.github_url = updates.githubUrl || null
 
     const { error } = await supabase
       .from('projects')
@@ -231,6 +246,32 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
       return
     }
     setProjects(prev => prev.filter(p => p.id !== id))
+  }, [])
+
+  const reorderProjects = useCallback(async (orderedIds: string[]) => {
+    setProjects(prev => {
+      const map = new Map(prev.map(p => [p.id, p]))
+      return orderedIds.map((id, i) => ({ ...map.get(id)!, sortOrder: i }))
+    })
+    await Promise.all(
+      orderedIds.map((id, index) =>
+        supabase.from('projects').update({ sort_order: index }).eq('id', id)
+      )
+    )
+  }, [])
+
+  const uploadProjectImage = useCallback(async (file: File): Promise<string | null> => {
+    const ext = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`
+    const { error } = await supabase.storage
+      .from('project-images')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false })
+    if (error) {
+      if (process.env.NODE_ENV === 'development') console.error('Error uploading image:', error)
+      return null
+    }
+    const { data: urlData } = supabase.storage.from('project-images').getPublicUrl(fileName)
+    return urlData.publicUrl
   }, [])
 
   // Skill CRUD
@@ -456,6 +497,8 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     addProject,
     updateProject,
     deleteProject,
+    reorderProjects,
+    uploadProjectImage,
     addSkill,
     updateSkill,
     deleteSkill,
@@ -470,7 +513,7 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
     setCvUrl,
     refreshData: fetchData,
   }), [projects, skills, learningItems, testimonials, journeyEvents, cvUrl, isLoading, fetchData,
-    addProject, updateProject, deleteProject, addSkill, updateSkill, deleteSkill,
+    addProject, updateProject, deleteProject, reorderProjects, uploadProjectImage, addSkill, updateSkill, deleteSkill,
     addLearningItem, deleteLearningItem, addTestimonial, updateTestimonial, deleteTestimonial,
     addJourneyEvent, updateJourneyEvent, deleteJourneyEvent, setCvUrl])
 

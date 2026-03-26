@@ -15,6 +15,9 @@ export interface DbProject {
   link_url: string
   date: string
   is_featured: boolean
+  sort_order: number
+  link_type: 'live' | 'github' | 'both'
+  github_url?: string
   created_at?: string
 }
 
