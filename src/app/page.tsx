@@ -160,6 +160,14 @@ const CommandPalette = dynamic(() => import('../components/general/CommandPalett
 const PullToContact = dynamic(() => import('../components/effects/PullToContact'), {
   ssr: false,
 })
+const Room3D = dynamic(() => import('../components/room/Room3D'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[70vh] md:h-[80vh] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+})
 
 export const metadata: Metadata = {
   title: 'Tariq Amarneh - Software Development Engineer',
@@ -231,6 +239,11 @@ export default function Home() {
             {/* Hero Section */}
             <ErrorBoundary>
               <HeroSection />
+            </ErrorBoundary>
+
+            {/* 3D Workspace */}
+            <ErrorBoundary>
+              <Room3D />
             </ErrorBoundary>
 
             {/* About Section */}

@@ -30,6 +30,7 @@ export interface DbSkill {
   description: string
   year_started: number
   is_primary: boolean
+  sort_order: number
   created_at?: string
 }
 
