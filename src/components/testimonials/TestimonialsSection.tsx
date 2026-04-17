@@ -1,185 +1,140 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Quote, ChevronLeft, ChevronRight, Linkedin } from 'lucide-react'
+import React from 'react'
+import { Quote, Linkedin } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
-
-const SWIPE_THRESHOLD = 50
+import { StackingCards, StackingCard } from '@/components/ui/stacking-cards'
 
 const TestimonialsSection: React.FC = () => {
   const { isDark } = useTheme()
   const { testimonials } = usePortfolioData()
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [swipeDir, setSwipeDir] = useState<'left' | 'right'>('right')
-  const touchStartX = useRef(0)
 
-  const nextTestimonial = useCallback(() => {
-    setSwipeDir('left')
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }, [testimonials.length])
+  if (testimonials.length === 0) return null
 
-  const prevTestimonial = useCallback(() => {
-    setSwipeDir('right')
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }, [testimonials.length])
-
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX
-  }, [])
-
-  const onTouchEnd = useCallback((e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current
-    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-      if (deltaX < 0) nextTestimonial()
-      else prevTestimonial()
-    }
-  }, [nextTestimonial, prevTestimonial])
-
-  if (testimonials.length === 0) {
-    return null
-  }
+  // Sticky header — stays pinned at top while cards stack below
+  const header = (
+    <div
+      className={`
+        h-full w-full flex items-end
+        bg-gradient-to-b from-ink-950 via-ink-950/95 to-transparent
+        ${isDark ? '' : 'from-paper-50 via-paper-50/95'}
+        pointer-events-none
+      `}
+    >
+      <div className="max-w-[1400px] mx-auto w-full px-6 md:px-10 lg:px-12 pt-16 md:pt-20 pb-6 pointer-events-auto">
+        <div className="grid grid-cols-12 gap-4 items-end">
+          <div className="col-span-12 md:col-span-8">
+            <div className="flex items-center gap-3 mb-2 md:mb-3">
+              <span className="w-8 h-px bg-ember-500" />
+              <span className="eyebrow">Chapter · 05 / Words</span>
+            </div>
+            <h2
+              className={`font-display leading-[0.98] tracking-tight ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+              style={{
+                fontVariationSettings: '"opsz" 144, "SOFT" 40',
+                fontSize: 'clamp(1.75rem, 5vw, 3.75rem)',
+              }}
+            >
+              Words from{' '}
+              <span
+                className="italic text-sun"
+                style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}
+              >
+                people I&apos;ve built with.
+              </span>
+            </h2>
+          </div>
+          <div className="col-span-12 md:col-span-4 flex md:justify-end">
+            <p className={`text-sm md:text-base leading-relaxed ${isDark ? 'text-ink-400' : 'text-ink-600'}`}>
+              {testimonials.length} voice{testimonials.length === 1 ? '' : 's'} — scroll to stack.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
-    <section id="testimonials" className="section-padding relative">
-      <div className="container mx-auto max-w-4xl">
-        {/* Section Header */}
-        <motion.div
-          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
-          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-display font-bold mb-4">
-            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
-              What People Say
-            </span>
-          </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
-          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Recommendations from colleagues and collaborators
-          </p>
-        </motion.div>
+    <section id="testimonials" className="relative">
+      <StackingCards header={header}>
+        {testimonials.map((t, index) => (
+          <StackingCard key={t.id || index}>
+            <article
+              className={`
+                relative w-full rounded-3xl overflow-hidden p-5 sm:p-6 md:p-8 lg:p-10
+                flex flex-col gap-4 sm:gap-5
+                h-[min(68dvh,500px)] sm:h-[min(62dvh,520px)] md:h-[min(62dvh,540px)]
+                shadow-[0_40px_90px_-30px_rgba(0,0,0,0.45)]
+                ${isDark
+                  ? 'bg-ink-900/95 border border-ink-700'
+                  : 'bg-paper-50/95 border border-ink-800/10'}
+              `}
+            >
+              {/* Soft ember glow in the top-right */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(255,112,67,0.14), transparent 70%)' }}
+              />
 
-        {/* Testimonial Card — negative top inset to allow quote icon overflow */}
-        <motion.div
-          initial={{ clipPath: 'inset(-2rem 100% 0 0)', opacity: 0 }}
-          whileInView={{ clipPath: 'inset(-2rem 0% 0 0)', opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-          className="relative"
-        >
-          <div className={`
-            rounded-3xl p-8 md:p-12
-            ${isDark ? 'glass-card' : 'glass-card-light'}
-            accent-glow
-          `}>
-            {/* Quote Icon */}
-            <div className="absolute -top-6 left-8">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center">
-                <Quote className="w-6 h-6 text-white" />
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait" custom={swipeDir}>
-              <motion.div
-                key={currentIndex}
-                custom={swipeDir}
-                variants={{
-                  enter: (dir: string) => ({ opacity: 0, x: dir === 'left' ? 40 : -40 }),
-                  center: { opacity: 1, x: 0 },
-                  exit: (dir: string) => ({ opacity: 0, x: dir === 'left' ? -40 : 40 }),
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.3 }}
-                className="pt-4 h-[280px] flex flex-col justify-between"
-                onTouchStart={onTouchStart}
-                onTouchEnd={onTouchEnd}
-              >
-                {/* Content */}
-                <p className={`text-lg md:text-xl leading-relaxed mb-8 overflow-y-auto flex-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                  &ldquo;{testimonials[currentIndex]?.content}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      {testimonials[currentIndex]?.name}
-                    </h4>
-                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      {testimonials[currentIndex]?.role} at {testimonials[currentIndex]?.company}
-                    </p>
-                  </div>
-
-                  {testimonials[currentIndex]?.linkedinUrl && (
-                    <a
-                      href={testimonials[currentIndex].linkedinUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`
-                        p-2 rounded-lg transition-colors
-                        ${isDark ? 'text-gray-400 hover:text-blue-400 hover:bg-blue-400/10' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'}
-                      `}
-                    >
-                      <Linkedin className="w-5 h-5" />
-                    </a>
-                  )}
+              {/* Top row — quote glyph + counter */}
+              <div className="relative flex items-start justify-between shrink-0">
+                <div className="w-10 h-10 rounded-full bg-ember-500 flex items-center justify-center shadow-lg">
+                  <Quote className="w-4 h-4 text-ink-950" strokeWidth={2.5} />
                 </div>
-              </motion.div>
-            </AnimatePresence>
+                <span
+                  className={`font-mono text-[10px] uppercase tracking-[0.18em] tabular-nums ${isDark ? 'text-ink-500' : 'text-ink-400'}`}
+                >
+                  {String(index + 1).padStart(2, '0')} / {String(testimonials.length).padStart(2, '0')}
+                </span>
+              </div>
 
-            {/* Swipe hint (mobile only) */}
-            <p className={`text-center text-xs mt-4 md:hidden ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-              Swipe to navigate
-            </p>
+              {/* Quote body — scrollable if long */}
+              <div className="relative flex-1 min-h-0 overflow-y-auto pr-2 custom-scroll">
+                <p className={`text-base md:text-lg lg:text-xl leading-relaxed ${isDark ? 'text-ink-200' : 'text-ink-800'}`}>
+                  &ldquo;{t.content}&rdquo;
+                </p>
+              </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
-              <div className="flex gap-2">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
+              {/* Attribution */}
+              <div
+                className={`relative flex items-end justify-between gap-3 pt-4 border-t shrink-0 ${isDark ? 'border-ink-700/70' : 'border-ink-800/10'}`}
+              >
+                <div className="min-w-0 flex-1">
+                  <h4
+                    className={`font-display text-xl md:text-2xl leading-tight truncate ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+                    style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}
+                  >
+                    {t.name}
+                  </h4>
+                  <p
+                    className={`font-mono text-[10px] uppercase tracking-[0.15em] mt-1 truncate ${isDark ? 'text-ink-400' : 'text-ink-500'}`}
+                  >
+                    {t.role}{t.company ? ` · ${t.company}` : ''}
+                  </p>
+                </div>
+                {t.linkedinUrl && (
+                  <a
+                    href={t.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${t.name} on LinkedIn`}
                     className={`
-                      w-2 h-2 rounded-full transition-all duration-300
-                      ${index === currentIndex
-                        ? 'w-8 bg-gradient-to-r from-cyan-500 to-violet-600'
-                        : isDark ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-300 hover:bg-gray-400'
-                      }
+                      shrink-0 p-2 rounded-full border transition-colors
+                      ${isDark
+                        ? 'border-ink-700 text-ink-300 hover:text-ember-400 hover:border-ember-500/40'
+                        : 'border-ink-800/10 text-ink-700 hover:text-ember-600 hover:border-ember-500/40'}
                     `}
-                  />
-                ))}
+                  >
+                    <Linkedin className="w-3.5 h-3.5" strokeWidth={1.8} />
+                  </a>
+                )}
               </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={prevTestimonial}
-                  className={`
-                    p-2 rounded-lg transition-colors
-                    ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}
-                  `}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={nextTestimonial}
-                  className={`
-                    p-2 rounded-lg transition-colors
-                    ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}
-                  `}
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+            </article>
+          </StackingCard>
+        ))}
+      </StackingCards>
     </section>
   )
 }

@@ -2,29 +2,22 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Github, Linkedin, Heart, ArrowUpRight } from 'lucide-react'
+import { Github, Linkedin, ArrowUpRight } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 
 const navItems = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Journey', href: '#journey' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Intro',    href: '#home'         },
+  { name: 'Studio',   href: '#workspace'    },
+  { name: 'Story',    href: '#story'        },
+  { name: 'Work',     href: '#projects'     },
+  { name: 'Craft',    href: '#skills'       },
+  { name: 'Words',    href: '#testimonials' },
+  { name: 'Contact',  href: '#contact'      },
 ]
 
 const socialLinks = [
-  {
-    name: 'GitHub',
-    href: 'https://github.com/tariqamarneh',
-    icon: Github,
-  },
-  {
-    name: 'LinkedIn',
-    href: 'https://linkedin.com/in/tariq-naser',
-    icon: Linkedin,
-  },
+  { name: 'GitHub',   href: 'https://github.com/tariqamarneh',     icon: Github   },
+  { name: 'LinkedIn', href: 'https://linkedin.com/in/tariq-naser', icon: Linkedin },
 ]
 
 const Footer: React.FC = () => {
@@ -34,59 +27,63 @@ const Footer: React.FC = () => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <footer className={`relative border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-      <div className="container mx-auto max-w-6xl px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Branding */}
-          <div className="md:col-span-2 space-y-4">
-            <motion.h3
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`text-2xl font-bold ${isDark ? 'gradient-text' : 'gradient-text-light'}`}
-            >
-              Tariq Amarneh
-            </motion.h3>
-            <p className={`text-sm max-w-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-              Software Development Engineer at Amazon, passionate about building scalable
-              applications and exploring the frontiers of AI technology.
-            </p>
-            <div className="flex gap-3 pt-2">
-              {socialLinks.map((social) => {
-                const Icon = social.icon
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`
-                      p-2.5 rounded-xl transition-all duration-200
-                      ${isDark
-                        ? 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
-                        : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                      }
-                    `}
-                    aria-label={social.name}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                )
-              })}
+    <footer className={`relative border-t mt-12 ${isDark ? 'border-ink-800' : 'border-ink-800/10'}`}>
+      {/* Massive signature */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 pt-20 md:pt-28 pb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
+          className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 lg:gap-8"
+        >
+          <h2 className={`font-display leading-[0.9] tracking-tight text-[clamp(3rem,10vw,9rem)] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+            Let&apos;s{' '}
+            <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+              build.
+            </span>
+          </h2>
+          <a
+            href="mailto:tariqs.naser@gmail.com"
+            className={`group inline-flex items-center gap-2 px-5 py-3 rounded-full border transition-all
+              ${isDark
+                ? 'border-ink-700 text-ink-200 hover:border-ember-500 hover:text-ember-400'
+                : 'border-ink-800/15 text-ink-800 hover:border-ember-500 hover:text-ember-600'}
+            `}
+          >
+            <span className="font-mono text-xs uppercase tracking-[0.2em]">
+              tariqs.naser@gmail.com
+            </span>
+            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
+          </a>
+        </motion.div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12">
+        <div className={`h-px ${isDark ? 'bg-ink-800' : 'bg-ink-800/10'}`} />
+      </div>
+
+      {/* Meta grid */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 py-12">
+        <div className="grid grid-cols-12 gap-8">
+          <div className="col-span-12 md:col-span-5 space-y-4">
+            <div className="flex items-center gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-ember-500 animate-pulse-soft" />
+              <span className="eyebrow">Tariq Amarneh · Portfolio</span>
             </div>
+            <p className={`text-sm max-w-md leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+              Software Development Engineer at Amazon. Writing Java by day,
+              prototyping with LLMs by night. Based in Amman.
+            </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className={`text-sm font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Quick Links
-            </h4>
+          <div className="col-span-6 md:col-span-3">
+            <h4 className="eyebrow-dim mb-4">Sitemap</h4>
             <nav className="space-y-2">
               {navItems.map((item) => (
                 <a
@@ -94,8 +91,8 @@ const Footer: React.FC = () => {
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={`
-                    flex items-center gap-1 text-sm transition-colors duration-200
-                    ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}
+                    block text-sm transition-colors duration-200
+                    ${isDark ? 'text-ink-400 hover:text-ember-400' : 'text-ink-600 hover:text-ember-600'}
                   `}
                 >
                   {item.name}
@@ -104,41 +101,45 @@ const Footer: React.FC = () => {
             </nav>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className={`text-sm font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Get in Touch
-            </h4>
-            <div className="space-y-3">
-              <a
-                href="mailto:tariqamarneh0@gmail.com"
-                className={`
-                  inline-flex items-center gap-1 text-sm transition-colors duration-200
-                  ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}
-                `}
-              >
-                tariqamarneh0@gmail.com
-                <ArrowUpRight className="w-3 h-3" />
-              </a>
-              <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                Based in Jordan
-              </p>
+          <div className="col-span-6 md:col-span-4">
+            <h4 className="eyebrow-dim mb-4">Elsewhere</h4>
+            <div className="space-y-2">
+              {socialLinks.map((s) => {
+                const Icon = s.icon
+                return (
+                  <a
+                    key={s.name}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`
+                      group flex items-center justify-between gap-3 py-2
+                      transition-colors duration-200
+                      ${isDark ? 'text-ink-300 hover:text-ember-400' : 'text-ink-700 hover:text-ember-600'}
+                    `}
+                    aria-label={s.name}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-4 h-4" strokeWidth={1.8} />
+                      <span className="text-sm font-medium">{s.name}</span>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
+                  </a>
+                )
+              })}
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className={`
-          mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4
-          border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}
-        `}>
-          <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-            &copy; {currentYear} Tariq Amarneh. All rights reserved.
+      {/* Colophon */}
+      <div className={`border-t ${isDark ? 'border-ink-800' : 'border-ink-800/10'}`}>
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${isDark ? 'text-ink-500' : 'text-ink-500'}`}>
+            © {currentYear} · Tariq Amarneh
           </p>
-          <p className={`flex items-center gap-1.5 text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-            Made with
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            in Jordan
+          <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${isDark ? 'text-ink-500' : 'text-ink-500'}`}>
+            Built with <span className="text-ember-500">warmth</span> in Amman, Jordan
           </p>
         </div>
       </div>

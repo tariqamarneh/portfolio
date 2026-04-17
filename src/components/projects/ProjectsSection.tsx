@@ -1,12 +1,12 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import React, { useRef, useEffect, useState } from 'react'
-import { ExternalLink, Github as GithubIcon, Star, Calendar, ArrowRight } from 'lucide-react'
+import React from 'react'
+import { ExternalLink, Github as GithubIcon, Star, ArrowUpRight, Calendar } from 'lucide-react'
 import { useTheme } from '../general/GradientBackground'
 import Image from 'next/image'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 import ReactMarkdown from 'react-markdown'
+import { StackingCards, StackingCard } from '@/components/ui/stacking-cards'
 
 export interface Project {
   id: string
@@ -22,339 +22,280 @@ export interface Project {
   githubUrl?: string
 }
 
-const HorizontalProjectCard = React.memo<{ project: Project; isFeatured?: boolean; index: number; total: number }>(
-  ({ project, isFeatured, index, total }) => {
-    const { isDark } = useTheme()
-    const linkType = project.linkType || (project.linkUrl.includes('github.com') ? 'github' : 'live')
+/**
+ * Browser-window chrome for screenshots — traffic lights + URL pill.
+ */
+const BrowserChrome: React.FC<{
+  title: string
+  isDark: boolean
+  linkType: string
+  children: React.ReactNode
+}> = ({ title, isDark, linkType, children }) => {
+  const hostname = title.toLowerCase().replace(/\s+/g, '-').slice(0, 24)
 
-    return (
+  return (
+    <div
+      className={`
+        relative w-full h-full overflow-hidden
+        ${isDark ? 'bg-ink-950' : 'bg-paper-100'}
+      `}
+    >
       <div
         className={`
-          group relative h-full rounded-2xl overflow-hidden
-          ${isDark ? 'bg-gray-900/60' : 'bg-white/40'}
-          border ${isFeatured ? 'border-cyan-500/30' : isDark ? 'border-white/10' : 'border-stone-200/30'}
-          transition-all duration-300 hover:border-cyan-500/30
-          hover:shadow-xl ${isDark ? 'hover:shadow-cyan-500/10' : 'hover:shadow-gray-300/30'}
-          flex flex-col md:flex-row
+          flex items-center gap-2 px-3 py-2.5 border-b
+          ${isDark ? 'bg-ink-900 border-ink-700/70' : 'bg-paper-50 border-ink-800/8'}
         `}
       >
-        {/* Image */}
-        <div className="relative md:w-[55%] h-40 md:h-auto overflow-hidden shrink-0">
-          <Image
-            src={project.imageUrl}
-            alt={project.title}
-            fill
-            className="object-cover project-img-pan"
-            sizes="(max-width: 768px) 85vw, 40vw"
-            loading="lazy"
-          />
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+        </div>
+        <div
+          className={`
+            flex-1 mx-2 sm:mx-4 px-3 py-1 rounded-md font-mono text-[10px] truncate
+            flex items-center gap-1.5
+            ${isDark
+              ? 'bg-ink-950/70 text-ink-300 border border-ink-700/50'
+              : 'bg-paper-100 text-ink-600 border border-ink-800/5'}
+          `}
+        >
+          <span className="text-ember-500">●</span>
+          <span className="truncate">
+            {linkType === 'github' ? `github.com/${hostname}` : `${hostname}.app`}
+          </span>
+        </div>
+        <div className="w-12 hidden sm:block" />
+      </div>
+      <div className="relative w-full" style={{ height: 'calc(100% - 40px)' }}>
+        {children}
+      </div>
+    </div>
+  )
+}
 
-          <div className="absolute top-4 left-4 flex items-center gap-2">
-            {isFeatured && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-xs font-semibold">
-                <Star className="w-3.5 h-3.5 fill-current" />
-                Featured
-              </div>
-            )}
-            {(linkType === 'live' || linkType === 'both') && (
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                ● Live Demo
-              </span>
-            )}
-            {linkType === 'github' && (
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-500/20 text-gray-300 border border-gray-500/30">
-                ◐ GitHub Only
-              </span>
-            )}
-          </div>
+/**
+ * Full project card — image with browser chrome on the left, content on the right.
+ * Used inside a <StackingCard> slot.
+ */
+const ProjectCardBody: React.FC<{ project: Project; index: number; total: number }> = ({
+  project,
+  index,
+  total,
+}) => {
+  const { isDark } = useTheme()
+  const linkType = project.linkType || (project.linkUrl.includes('github.com') ? 'github' : 'live')
 
-          <div className={`absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium ${
-            isDark ? 'bg-black/40 text-gray-300' : 'bg-white/60 text-gray-600'
-          } backdrop-blur-sm`}>
-            {index + 1} / {total}
-          </div>
+  return (
+    <article
+      className={`
+        group w-full rounded-3xl overflow-hidden flex flex-col md:flex-row
+        border shadow-[0_40px_90px_-30px_rgba(0,0,0,0.45)]
+        ${isDark
+          ? 'bg-ink-900/90 border-ink-700'
+          : 'bg-paper-50/95 border-ink-800/10'}
+      `}
+    >
+      {/* Image column — 55% on desktop */}
+      <div
+        className={`
+          relative md:w-[55%] h-48 sm:h-56 md:h-auto shrink-0 p-4 md:p-5
+          ${isDark
+            ? 'bg-gradient-to-br from-ink-800/80 to-ink-950'
+            : 'bg-gradient-to-br from-paper-100 to-paper-200/60'}
+        `}
+      >
+        <div
+          className="absolute inset-0 opacity-50 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at top right, rgba(255,112,67,0.18), transparent 55%)' }}
+          aria-hidden="true"
+        />
+        <div className="relative w-full h-full rounded-xl overflow-hidden ring-1 ring-inset ring-ink-700/40 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.4)]">
+          <BrowserChrome title={project.title} isDark={isDark} linkType={linkType}>
+            <Image
+              src={project.imageUrl}
+              alt={project.title}
+              fill
+              sizes="(max-width: 768px) 90vw, 50vw"
+              className="object-cover object-top"
+              loading={index < 2 ? 'eager' : 'lazy'}
+            />
+            <div
+              className="absolute inset-x-0 top-0 h-12 pointer-events-none"
+              style={{ background: 'linear-gradient(to bottom, rgba(10,8,7,0.25), transparent)' }}
+            />
+          </BrowserChrome>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-4 md:p-8 flex flex-col justify-center min-w-0 overflow-hidden">
-          <h3 className={`text-xl md:text-3xl font-bold mb-2 md:mb-3 font-display ${isDark ? 'text-white' : 'text-gray-900'}`}>
-            {project.title}
-          </h3>
+        {project.isFeatured && (
+          <div className="absolute top-6 right-6 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ember-500 text-ink-950 font-medium text-[10px] uppercase tracking-[0.15em] shadow-lg z-10">
+            <Star className="w-3 h-3 fill-current" strokeWidth={2} />
+            Featured
+          </div>
+        )}
+      </div>
 
-          <div className={`flex items-center gap-1.5 mb-2 md:mb-4 text-xs md:text-sm shrink-0 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-            <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
+      {/* Content column */}
+      <div className="flex-1 p-6 md:p-8 flex flex-col justify-center min-w-0">
+        <div
+          className={`flex items-center justify-between gap-3 mb-5 font-mono text-[10px] uppercase tracking-[0.18em] ${isDark ? 'text-ink-400' : 'text-ink-500'}`}
+        >
+          <span className="flex items-center gap-2">
+            <Calendar className="w-3 h-3" strokeWidth={2} />
             {project.date}
-          </div>
+          </span>
+          <span className="tabular-nums">
+            {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+          </span>
+        </div>
 
-          <div className={`mb-3 md:mb-6 text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none ${
-            isDark ? 'text-gray-300' : 'text-gray-600'
-          }`}>
-            <ReactMarkdown
-              components={{
-                p: ({ children }) => <p className="my-0">{children}</p>,
-                a: ({ children, href }) => <a href={href} className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>{children}</a>,
-              }}
-            >{project.description}</ReactMarkdown>
-          </div>
+        <h3
+          className={`font-display text-2xl sm:text-3xl md:text-4xl leading-[1.03] mb-4 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+          style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}
+        >
+          {project.title}
+        </h3>
 
-          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-6">
-            {project.technologies.map((tech, i) => (
-              <span key={i} className={`px-2 py-1 md:px-3 md:py-1.5 text-[10px] md:text-xs font-medium rounded-full ${
-                isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-700'
-              }`}>
-                {tech}
-              </span>
-            ))}
-          </div>
+        <div className={`mb-5 text-sm md:text-base leading-relaxed line-clamp-4 ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="my-0">{children}</p>,
+              a: ({ children, href }) => (
+                <a href={href} className="text-ember-500 hover:text-ember-400">
+                  {children}
+                </a>
+              ),
+            }}
+          >
+            {project.description}
+          </ReactMarkdown>
+        </div>
 
-          <div className="flex items-center gap-4">
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.technologies.slice(0, 7).map((tech, i) => (
+            <span
+              key={i}
+              className={`
+                px-2.5 py-0.5 rounded-full font-mono text-[10px]
+                ${isDark
+                  ? 'bg-ink-800/80 text-ink-300 border border-ink-700/70'
+                  : 'bg-paper-100 text-ink-700 border border-ink-800/10'}
+              `}
+            >
+              {tech}
+            </span>
+          ))}
+          {project.technologies.length > 7 && (
+            <span className={`px-2 font-mono text-[10px] ${isDark ? 'text-ink-500' : 'text-ink-400'}`}>
+              +{project.technologies.length - 7}
+            </span>
+          )}
+        </div>
+
+        <div
+          className={`flex items-center gap-5 pt-5 mt-auto border-t ${isDark ? 'border-ink-700' : 'border-ink-800/10'}`}
+        >
+          <a
+            href={project.linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`
+              inline-flex items-center gap-2 text-sm font-medium transition-colors
+              ${isDark ? 'text-ember-400 hover:text-ember-300' : 'text-ember-600 hover:text-ember-500'}
+            `}
+          >
+            {linkType === 'github' ? (
+              <>
+                <GithubIcon className="w-4 h-4" strokeWidth={2} /> View source
+              </>
+            ) : (
+              <>
+                <ExternalLink className="w-4 h-4" strokeWidth={2} /> Visit project
+              </>
+            )}
+            <ArrowUpRight className="w-4 h-4" strokeWidth={2} />
+          </a>
+          {linkType === 'both' && project.githubUrl && (
             <a
-              href={project.linkUrl}
+              href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={`
-                inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-200
-                ${isDark ? 'text-cyan-400 hover:text-cyan-300' : 'text-cyan-600 hover:text-cyan-500'}
+                inline-flex items-center gap-2 text-sm font-medium transition-colors
+                ${isDark ? 'text-ink-400 hover:text-ember-400' : 'text-ink-500 hover:text-ember-600'}
               `}
             >
-              {linkType === 'github' ? (
-                <><GithubIcon className="w-4 h-4" /> View on GitHub</>
-              ) : (
-                <><ExternalLink className="w-4 h-4" /> Visit Project</>
-              )}
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <GithubIcon className="w-4 h-4" strokeWidth={2} /> Repo
             </a>
-            {linkType === 'both' && project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`
-                  inline-flex items-center gap-2 text-sm font-medium transition-colors duration-200
-                  ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'}
-                `}
-              >
-                <GithubIcon className="w-4 h-4" /> GitHub
-              </a>
-            )}
-          </div>
+          )}
         </div>
       </div>
-    )
-  }
-)
-HorizontalProjectCard.displayName = 'HorizontalProjectCard'
+    </article>
+  )
+}
 
 const ProjectsSection: React.FC = () => {
   const { isDark } = useTheme()
   const { projects } = usePortfolioData()
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const progressBarRef = useRef<HTMLDivElement>(null)
   const allProjects = [...projects].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-  const numCards = allProjects.length || 1
-
-  const [sectionHeight, setSectionHeight] = useState('400vh')
-
-  useEffect(() => {
-    const updateHeight = () => {
-      const isMobile = window.innerWidth < 768
-      setSectionHeight(isMobile ? `${numCards * 80}vh` : `${numCards * 100}vh`)
-    }
-    updateHeight()
-    window.addEventListener('resize', updateHeight)
-    return () => window.removeEventListener('resize', updateHeight)
-  }, [numCards])
-
-  // Single scroll handler: pinning (direct DOM) + lerp-smoothed horizontal translation + progress bar
-  // Pinning is done via direct style mutations instead of React state to avoid re-renders/flashing
-  // Horizontal movement uses lerp interpolation (inspired by Codrops parallax gallery) for buttery motion
-  useEffect(() => {
-    let lastPinState = ''
-    let targetX = 0
-    let currentX = 0
-    let targetProgress = 0
-    let currentProgress = 0
-    let rafId: number
-    let dynamicEase = 0.08
-    let lastScrollY = window.scrollY
-    let lastScrollTime = performance.now()
-
-    const EASE_MIN = 0.04  // slow/precise drag
-    const EASE_MAX = 0.14  // fast flick momentum
-    const EASE_DECAY = 0.92 // how fast ease returns to baseline
-
-    const lerp = (start: number, end: number, factor: number) =>
-      start + (end - start) * factor
-
-    // Scroll listener: reads scroll position, measures velocity, computes targets
-    const handleScroll = () => {
-      // Measure scroll velocity to scale lerp ease dynamically
-      const now = performance.now()
-      const dt = now - lastScrollTime
-      const dy = Math.abs(window.scrollY - lastScrollY)
-      lastScrollTime = now
-      lastScrollY = window.scrollY
-
-      if (dt > 0) {
-        const velocity = dy / dt // px per ms
-        // Map velocity (0..3 px/ms) to ease range
-        const velocityFactor = Math.min(velocity / 3, 1)
-        dynamicEase = EASE_MIN + (EASE_MAX - EASE_MIN) * velocityFactor
-      }
-      if (!sectionRef.current || !innerRef.current) return
-      const rect = sectionRef.current.getBoundingClientRect()
-      const vh = window.innerHeight
-      const scrollDistance = sectionRef.current.offsetHeight - vh
-
-      // Pinning via direct DOM mutations (no React state = no re-renders)
-      let pinState: string
-      if (rect.top <= 0 && rect.bottom > vh) {
-        pinState = 'pinned'
-      } else if (rect.bottom <= vh) {
-        pinState = 'after'
-      } else {
-        pinState = 'before'
-      }
-
-      if (pinState !== lastPinState) {
-        lastPinState = pinState
-        const el = innerRef.current
-        if (pinState === 'pinned') {
-          el.style.position = 'fixed'
-          el.style.top = '0'
-          el.style.bottom = ''
-        } else if (pinState === 'after') {
-          el.style.position = 'absolute'
-          el.style.top = ''
-          el.style.bottom = '0'
-        } else {
-          el.style.position = 'relative'
-          el.style.top = ''
-          el.style.bottom = ''
-        }
-      }
-
-      // Update targets for lerp loop
-      if (scrollDistance > 0) {
-        const progress = Math.min(Math.max(-rect.top / scrollDistance, 0), 1)
-        if (trackRef.current) {
-          const maxT = Math.max(trackRef.current.scrollWidth - window.innerWidth + 40, 0)
-          targetX = -progress * maxT
-        }
-        targetProgress = progress
-      }
-    }
-
-    // Render loop: lerps currentX toward targetX every frame (smooth motion)
-    // Ease decays toward baseline between scroll events for natural deceleration
-    const tick = () => {
-      dynamicEase = lerp(dynamicEase, EASE_MIN, 1 - EASE_DECAY)
-      currentX = lerp(currentX, targetX, dynamicEase)
-      currentProgress = lerp(currentProgress, targetProgress, dynamicEase)
-
-      // Only write to DOM if still moving (> 0.5px from target)
-      if (Math.abs(currentX - targetX) > 0.5) {
-        if (trackRef.current) {
-          trackRef.current.style.transform = `translate3d(${currentX}px, 0, 0)`
-        }
-        if (progressBarRef.current) {
-          progressBarRef.current.style.transform = `scaleX(${currentProgress})`
-        }
-      } else if (currentX !== targetX) {
-        // Snap to final position
-        currentX = targetX
-        currentProgress = targetProgress
-        if (trackRef.current) {
-          trackRef.current.style.transform = `translate3d(${targetX}px, 0, 0)`
-        }
-        if (progressBarRef.current) {
-          progressBarRef.current.style.transform = `scaleX(${targetProgress})`
-        }
-      }
-
-      rafId = requestAnimationFrame(tick)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    rafId = requestAnimationFrame(tick)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      cancelAnimationFrame(rafId)
-    }
-  }, [])
 
   if (allProjects.length === 0) {
     return <section id="projects" className="section-padding" />
   }
 
-  return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative"
-      style={{ height: sectionHeight }}
+  // Header is rendered INSIDE StackingCards as a sticky element so it stays
+  // visible while cards stack below it.
+  const header = (
+    <div
+      className={`
+        h-full w-full flex items-end
+        bg-gradient-to-b from-ink-950 via-ink-950/95 to-transparent
+        ${isDark ? '' : 'from-paper-50 via-paper-50/95'}
+        pointer-events-none
+      `}
     >
-      <div ref={innerRef} className="left-0 right-0 h-screen z-30 flex flex-col overflow-hidden">
-        {/* Header */}
-        <motion.div
-          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
-          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-          className="text-center pt-12 md:pt-20 pb-4 md:pb-6 px-4 shrink-0"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
-            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
-              My Projects
-            </span>
-          </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
-          <p className={`mt-4 text-lg hidden md:block ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
-            Building solutions that solve real problems
-          </p>
-        </motion.div>
-
-        {/* Horizontal track */}
-        <div className="flex-1 min-h-0 flex items-center overflow-hidden">
-          <div
-            ref={trackRef}
-            className="flex gap-6 h-[90%] md:h-[82%] pl-[8vw] pr-[8vw]"
-            style={{ willChange: 'transform' }}
-          >
-            {allProjects.map((project, index) => (
-              <div
-                key={project.id}
-                className="w-[75vw] md:w-[70vw] lg:w-[55vw] h-full shrink-0"
+      <div className="max-w-[1400px] mx-auto w-full px-6 md:px-10 lg:px-12 pt-16 md:pt-20 pb-6 pointer-events-auto">
+        <div className="grid grid-cols-12 gap-4 items-end">
+          <div className="col-span-12 md:col-span-8">
+            <div className="flex items-center gap-3 mb-2 md:mb-3">
+              <span className="w-8 h-px bg-ember-500" />
+              <span className="eyebrow">Chapter · 03 / Work</span>
+            </div>
+            <h2
+              className={`font-display leading-[0.95] tracking-tight ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+              style={{
+                fontVariationSettings: '"opsz" 144, "SOFT" 40',
+                fontSize: 'clamp(1.75rem, 5vw, 3.75rem)',
+              }}
+            >
+              Selected{' '}
+              <span
+                className="italic text-sun"
+                style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}
               >
-                <HorizontalProjectCard
-                  project={project}
-                  isFeatured={project.isFeatured}
-                  index={index}
-                  total={allProjects.length}
-                />
-              </div>
-            ))}
+                work.
+              </span>
+            </h2>
           </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="px-8 pb-8 shrink-0">
-          <div className={`h-0.5 rounded-full max-w-xs mx-auto overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}>
-            <div
-              ref={progressBarRef}
-              className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 origin-left"
-              style={{ transform: 'scaleX(0)' }}
-            />
+          <div className="col-span-12 md:col-span-4 flex md:justify-end">
+            <p className={`text-sm md:text-base leading-relaxed ${isDark ? 'text-ink-400' : 'text-ink-600'}`}>
+              {allProjects.length} case{allProjects.length === 1 ? '' : 's'} — scroll to stack.
+            </p>
           </div>
-          <p className={`text-center text-xs mt-3 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-            Scroll to explore projects
-          </p>
         </div>
       </div>
+    </div>
+  )
+
+  return (
+    <section id="projects" className="relative">
+      <StackingCards header={header}>
+        {allProjects.map((project, i) => (
+          <StackingCard key={project.id}>
+            <ProjectCardBody project={project} index={i} total={allProjects.length} />
+          </StackingCard>
+        ))}
+      </StackingCards>
     </section>
   )
 }

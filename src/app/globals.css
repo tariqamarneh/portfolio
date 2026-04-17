@@ -1,308 +1,412 @@
 /* src/app/globals.css */
+/* =======================================================================
+   QUIET PREMIUM — a near-black warm canvas with a single ember accent,
+   breathable spacing, distinctive serif display, clean body, used restraint.
+   Fonts: Fraunces (display, opsz + SOFT axes), Instrument Sans (body),
+          JetBrains Mono (meta / index / eyebrow labels)
+   ======================================================================= */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ===== CSS Variables ===== */
+/* ===== Tokens ===== */
 :root {
-  --primary: #06b6d4;
-  --secondary: #8b5cf6;
-  --accent: #d946ef;
-  --background: #050510;
-  --text: #e2e8f0;
+  /* Ink / warm charcoal */
+  --ink-950: #0a0807;
+  --ink-900: #0f0d0b;
+  --ink-800: #16130f;
+  --ink-700: #1f1b17;
+  --ink-600: #2a241e;
+  --ink-500: #4a3f36;
+  --ink-400: #75685c;
+  --ink-300: #a89b8d;
+  --ink-200: #d0c3b3;
+  --ink-100: #efe6d8;
+  --ink-50:  #faf4e8;
+
+  /* Paper / warm light */
+  --paper-50:  #fbf7ef;
+  --paper-100: #f5ede0;
+  --paper-200: #e8dcc6;
+
+  /* Single accent — molten ember */
+  --ember: #ff7043;
+  --ember-glow: #ffad80;
+  --ember-deep: #c64420;
+
+  /* Secondary accent, used rarely */
+  --sage: #9bc5a6;
+
   --scroll-progress: 0;
 }
 
-/* ===== Base Styles ===== */
+/* ===== Base ===== */
 html {
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* iOS — prevent iOS Safari from auto-inflating text on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Smooth momentum + stop browsers from pulling into a refresh gesture during scroll-hijacked sections */
+  overscroll-behavior-y: none;
 }
 
 body {
-  color: var(--text);
-  background-color: var(--background);
-  overflow-x: hidden;
-  overflow-y: auto;
+  color: var(--ink-100);
+  background-color: var(--ink-950);
+  /* Do NOT put overflow-y:auto here — it creates a nested scroll container
+     that breaks position:sticky and framer-motion useScroll. */
+  overflow-x: clip;
   -webkit-overflow-scrolling: touch;
+  font-feature-settings: "ss01", "cv11";
+  /* Remove the grey tap flash on iOS */
+  -webkit-tap-highlight-color: transparent;
+  /* Safe-area padding for notched iPhones */
+  padding-left:  env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
-/* Custom cursor - hide default when active */
-.custom-cursor-active * {
-  cursor: none !important;
+/* All clickable/tappable elements — remove the lingering tap highlight */
+a, button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* disables 300ms tap delay on iOS */
 }
 
-/* ===== Gradient Backgrounds ===== */
-.gradient-bg-dark {
-  --top-r: calc(8 - 5 * var(--scroll-progress));
-  --top-g: calc(8 - 5 * var(--scroll-progress));
-  --top-b: calc(24 - 14 * var(--scroll-progress));
-  --mid-r: calc(5 - 3 * var(--scroll-progress));
-  --mid-g: calc(5 - 3 * var(--scroll-progress));
-  --mid-b: calc(16 - 6 * var(--scroll-progress));
-  background: linear-gradient(
-    180deg,
-    rgb(var(--top-r), var(--top-g), var(--top-b)) 0%,
-    rgb(var(--mid-r), var(--mid-g), var(--mid-b)) 50%,
-    #020205 100%
-  );
+/* iOS Safari disables user-select on some form elements — re-enable */
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+  /* Prevent zoom-on-focus on iOS — font-size must be ≥16px on form fields */
+  font-size: 16px;
 }
 
-.gradient-bg-light {
-  --top-r: calc(245 + 5 * var(--scroll-progress));
-  --top-g: calc(243 + 6 * var(--scroll-progress));
-  --top-b: calc(238 + 10 * var(--scroll-progress));
-  --mid-r: calc(250 + 4 * var(--scroll-progress));
-  --mid-g: calc(248 + 5 * var(--scroll-progress));
-  --mid-b: calc(244 + 8 * var(--scroll-progress));
-  background: linear-gradient(
-    180deg,
-    rgb(var(--top-r), var(--top-g), var(--top-b)) 0%,
-    rgb(var(--mid-r), var(--mid-g), var(--mid-b)) 50%,
-    #faf9f7 100%
-  );
+/* Disable sticky on iOS when the visual viewport is squashed by the keyboard (edge case) */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-only scope */
+  .ios-kill-hover:hover { /* reserved for any hover-only surface we need to patch */ }
 }
 
-/* Subtle grid pattern overlay */
-.gradient-bg-dark::after,
-.gradient-bg-light::after {
+/* Fraunces axes */
+.font-display {
+  font-variation-settings: "opsz" 144, "SOFT" 40;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+}
+
+/* Custom cursor */
+.custom-cursor-active * { cursor: none !important; }
+
+/* ===== Backgrounds ===== */
+.bg-ink-graded {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 112, 67, 0.045), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(198, 68, 32, 0.03), transparent 60%),
+    linear-gradient(180deg, #0a0807 0%, #0c0a08 60%, #080604 100%);
+}
+
+.bg-paper-graded {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 112, 67, 0.08), transparent 60%),
+    linear-gradient(180deg, #fbf7ef 0%, #f5ede0 100%);
+}
+
+/* Hairline grid — architectural, almost invisible */
+.grid-overlay::after {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(rgba(239, 230, 216, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 230, 216, 0.018) 1px, transparent 1px);
+  background-size: 96px 96px;
   pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 95%);
 }
 
-.gradient-bg-light::after {
+.grid-overlay-light::after {
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.018) 1px, transparent 1px);
+    linear-gradient(rgba(22, 19, 15, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 19, 15, 0.03) 1px, transparent 1px);
 }
 
-/* ===== Glass Effect Components ===== */
+/* ===== Utilities ===== */
 @layer components {
-  .glass-card {
-    @apply rounded-2xl border border-white/10;
-    background: rgba(10, 10, 30, 0.75);
-  }
+  .text-muted { color: var(--ink-300); }
+  .text-subtle { color: var(--ink-400); }
 
-  .glass-card-light {
-    @apply rounded-2xl border border-stone-200/30;
-    background: rgba(255, 254, 252, 0.55);
-  }
-
-  /* Only apply backdrop-blur on elements that truly need it (nav, modals) */
-  .glass-card-blur {
-    @apply rounded-2xl border border-white/10;
-    background: rgba(10, 10, 30, 0.6);
-    backdrop-filter: blur(12px);
-  }
-
-  .glass-card-blur-light {
-    @apply rounded-2xl border border-stone-200/30;
-    background: rgba(255, 254, 252, 0.55);
-    backdrop-filter: blur(12px);
-  }
-
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400;
-  }
-
-  .gradient-text-light {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 via-blue-600 to-indigo-600;
+  /* The single primary gradient type treatment */
+  .text-sun {
+    background: linear-gradient(135deg, #ffd0b3 0%, #ff7043 70%, #c64420 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .section-padding {
-    @apply py-24 px-4 sm:px-6 lg:px-8;
+    @apply py-32 px-6 sm:px-8 lg:px-12;
   }
 
-  .accent-glow {
-    box-shadow: 0 0 60px rgba(6, 182, 212, 0.08), 0 0 120px rgba(139, 92, 246, 0.05);
+  /* Eyebrow — monospace, restrained */
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.2em] font-medium;
+    color: var(--ember);
+  }
+  .eyebrow-dim {
+    @apply font-mono text-[11px] uppercase tracking-[0.2em];
+    color: var(--ink-400);
   }
 
-  .accent-glow-hover:hover {
-    box-shadow: 0 0 80px rgba(6, 182, 212, 0.15), 0 0 120px rgba(139, 92, 246, 0.1);
+  /* Horizontal rules */
+  .rule { @apply h-px w-full bg-ink-700/80; }
+  .rule-ember { @apply h-px w-16 bg-ember-500; }
+
+  /* Primary button — solid ember, refined */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
+           rounded-full font-medium text-sm
+           bg-ember-500 text-ink-950
+           transition-all duration-300;
+    box-shadow: 0 10px 30px -10px rgba(255, 112, 67, 0.4);
+  }
+  .btn-primary:hover {
+    background-color: #ff8456;
+    transform: translateY(-1px);
+    box-shadow: 0 20px 40px -10px rgba(255, 112, 67, 0.55);
+  }
+
+  /* Secondary — ghost, elegant */
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
+           rounded-full font-medium text-sm
+           text-ink-100 border border-ink-700
+           transition-all duration-300;
+  }
+  .btn-secondary:hover {
+    border-color: var(--ember);
+    color: var(--ember);
+  }
+
+  /* Editorial underline link */
+  .link-editorial {
+    @apply relative inline-flex items-center gap-2;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .link-editorial:hover { background-size: 100% 1px; }
+
+  /* Premium panel */
+  .panel {
+    @apply relative rounded-2xl border border-ink-700/80;
+    background: linear-gradient(180deg, rgba(22, 19, 15, 0.8), rgba(15, 13, 11, 0.95));
+  }
+  .panel-light {
+    @apply relative rounded-2xl border border-ink-800/10;
+    background: linear-gradient(180deg, rgba(251, 247, 239, 0.9), rgba(245, 237, 224, 0.8));
+  }
+
+  /* Numeric — for stats */
+  .stat-num {
+    @apply font-display tabular-nums;
+    font-variation-settings: "opsz" 144, "SOFT" 20;
+    letter-spacing: -0.04em;
   }
 
   .project-img-pan {
-    transition: transform 3s ease-out;
+    transition: transform 2s cubic-bezier(.2,.8,.2,1), filter 0.6s ease-out;
   }
-
   .group:hover .project-img-pan {
-    transform: scale(1.15) translateX(-3%) translateY(-2%);
+    transform: scale(1.06);
+    filter: saturate(1.1) contrast(1.03);
   }
 }
 
-/* ===== Custom Scrollbar ===== */
+/* Hide scrollbar entirely (for horizontal snap scrollers) */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Hair-thin inline scrollbar (for testimonial cards) */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ember-deep) transparent;
+}
+.custom-scroll::-webkit-scrollbar { width: 3px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: var(--ember-deep);
+  border-radius: 2px;
+}
+
+/* ===== Custom Scrollbar — hair-thin ember ===== */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 10px;
-    background-color: #050510;
+    width: 5px;
+    background-color: transparent;
   }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(6, 182, 212, 0.05);
-    border-radius: 10px;
-  }
-
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #06b6d4, #8b5cf6);
-    border-radius: 10px;
-    border: 2px solid #050510;
+    background: var(--ember-deep);
+    border-radius: 0;
   }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #22d3ee, #a78bfa);
-  }
-
+  ::-webkit-scrollbar-thumb:hover { background: var(--ember); }
   * {
     scrollbar-width: thin;
-    scrollbar-color: #06b6d4 #050510;
+    scrollbar-color: var(--ember-deep) transparent;
   }
 }
 
 /* ===== Animations ===== */
+@keyframes spotlight {
+  0% { opacity: 0; transform: translate(-72%, -62%) scale(0.5); }
+  100% { opacity: 1; transform: translate(-50%, -40%) scale(1); }
+}
+.animate-spotlight {
+  animation: spotlight 2s ease 0.5s 1 forwards;
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-pulse-soft { animation: pulse-soft 2.5s ease-in-out infinite; }
+
+@keyframes drift-1 {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(40px, -30px, 0) scale(1.08); }
+}
+@keyframes drift-2 {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(-40px, 40px, 0) scale(0.96); }
+}
+.animate-drift-1 { animation: drift-1 30s ease-in-out infinite; }
+.animate-drift-2 { animation: drift-2 40s ease-in-out infinite; }
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.animate-blink { animation: blink 1s step-end infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-bg {
+  background: linear-gradient(90deg,
+    rgba(22, 19, 15, 0.4) 0%,
+    rgba(42, 36, 30, 0.6) 50%,
+    rgba(22, 19, 15, 0.4) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Orb floating animations */
-@keyframes orb-float-1 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  25% { transform: translate3d(80px, -60px, 0) scale(1.1); }
-  50% { transform: translate3d(40px, 40px, 0) scale(0.95); }
-  75% { transform: translate3d(-30px, 20px, 0) scale(1.05); }
-}
-
-@keyframes orb-float-2 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  33% { transform: translate3d(-60px, 50px, 0) scale(1.08); }
-  66% { transform: translate3d(40px, -30px, 0) scale(0.92); }
-}
-
-@keyframes orb-float-3 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(70px, -50px, 0) scale(1.12); }
-}
-
-@keyframes orb-float-4 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(-40px, 30px, 0); }
-  75% { transform: translate3d(30px, -20px, 0); }
-}
-
-.animate-orb-1 { animation: orb-float-1 20s ease-in-out infinite; }
-.animate-orb-2 { animation: orb-float-2 25s ease-in-out infinite; }
-.animate-orb-3 { animation: orb-float-3 30s ease-in-out infinite; }
-.animate-orb-4 { animation: orb-float-4 18s ease-in-out infinite; }
-
-/* Gradient border animation */
+/* Gradient conic border (used rarely) */
 @property --angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
-
 @keyframes rotate-gradient {
   to { --angle: 360deg; }
 }
-
-.animated-gradient-border {
+.ember-ring {
   position: relative;
   background: transparent;
 }
-
-.animated-gradient-border::before {
+.ember-ring::before {
   content: '';
   position: absolute;
   inset: 0;
-  padding: 1.5px;
+  padding: 1px;
   border-radius: inherit;
-  background: conic-gradient(from var(--angle), #06b6d4, #8b5cf6, #d946ef, #06b6d4);
+  background: conic-gradient(from var(--angle), transparent 0deg, #ff7043 90deg, #ffad80 180deg, #c64420 270deg, transparent 360deg);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: rotate-gradient 4s linear infinite;
+  animation: rotate-gradient 6s linear infinite;
+  pointer-events: none;
 }
 
-/* Typing cursor blink */
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-.animate-blink {
-  animation: blink 1s step-end infinite;
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
-}
-
-/* ===== Selection Styling ===== */
+/* ===== Selection ===== */
 ::selection {
-  background: rgba(6, 182, 212, 0.3);
+  background: rgba(255, 112, 67, 0.35);
   color: #fff;
 }
 
 /* ===== Mobile Performance ===== */
 @media (max-width: 767px) {
-  /* Disable decorative orb animations — saves significant GPU on mobile */
-  .animate-orb-1,
-  .animate-orb-2,
-  .animate-orb-3,
-  .animate-orb-4 {
-    animation: none !important;
-  }
+  /* Kill decorative ambient drifts — they're not essential and eat battery */
+  .animate-drift-1, .animate-drift-2 { animation: none !important; }
 
-  /* Reduce backdrop-filter cost on mobile Safari */
-  .glass-card-blur,
-  .glass-card-blur-light {
-    backdrop-filter: blur(4px) !important;
-  }
+  /* backdrop-blur is very expensive on iOS Safari — quarter it on mobile.
+     Safari keeps the frosted look but drops far less frames during scroll. */
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl { backdrop-filter: blur(6px) !important; }
 
-  /* Disable the slow pan on project images — causes jank during scroll */
-  .group:hover .project-img-pan {
-    transform: none;
+  /* Disable the subtle hover-pan on projects — not useful on touch and causes jank */
+  .group:hover .project-img-pan { transform: none !important; }
+
+  /* The ember ring animation uses conic-gradient + animated @property — heavy on mobile */
+  .ember-ring::before { animation: none !important; }
+}
+
+/* iOS Safari — extra guards.
+   @supports (-webkit-touch-callout: none) is iOS-only. */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 767px) {
+    /* Some iOS versions choke on fixed + backdrop-filter combos mid-scroll */
+    .fixed.backdrop-blur-xl { backdrop-filter: blur(4px) !important; }
   }
 }
 
 /* ===== Accessibility ===== */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .animate-spotlight { opacity: 1 !important; transform: translate(-50%, -40%) scale(1) !important; }
 }
 
-/* ===== Focus States ===== */
+/* ===== Focus ===== */
 :focus-visible {
-  outline: 2px solid #06b6d4;
-  outline-offset: 2px;
+  outline: 2px solid var(--ember);
+  outline-offset: 3px;
 }
+
+/* ===== Back-compat shims — legacy classes in untouched components map gracefully ===== */
+.glass-card,
+.glass-card-blur { @apply panel; }
+.glass-card-light,
+.glass-card-blur-light { @apply panel-light; }
+.gradient-text { @apply text-sun; }
+.gradient-text-light {
+  background: linear-gradient(135deg, #c64420, #8a2d0f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.gradient-bg-dark { @apply bg-ink-graded; }
+.gradient-bg-light { @apply bg-paper-graded; }
+.accent-glow { box-shadow: 0 30px 80px -30px rgba(255, 112, 67, 0.35); }
+.accent-glow-hover:hover { box-shadow: 0 40px 100px -30px rgba(255, 112, 67, 0.55); }
+.animated-gradient-border { @apply ember-ring; }

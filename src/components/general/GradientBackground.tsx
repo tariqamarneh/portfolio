@@ -59,14 +59,15 @@ const GradientBackground: React.FC = () => {
   return (
     <>
       <div
-        className={`fixed inset-0 -z-10 transition-colors duration-300 ${
-          isDark ? 'gradient-bg-dark' : 'gradient-bg-light'
+        className={`fixed inset-0 -z-10 transition-colors duration-500 ${
+          isDark ? 'bg-ink-graded grid-overlay' : 'bg-paper-graded grid-overlay-light'
         }`}
       />
-      {/* Noise texture overlay for premium editorial feel (hidden on mobile — feTurbulence is GPU-heavy) */}
-      <svg className="hidden md:block fixed inset-0 -z-[9] pointer-events-none w-full h-full opacity-[0.03]" aria-hidden="true">
+      {/* Warm film grain — editorial grit over the gradient */}
+      <svg className="hidden md:block fixed inset-0 -z-[9] pointer-events-none w-full h-full opacity-[0.06]" aria-hidden="true">
         <filter id="noise-filter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+          <feColorMatrix values="0 0 0 0 1  0 0 0 0 0.7  0 0 0 0 0.5  0 0 0 0.5 0" />
         </filter>
         <rect width="100%" height="100%" filter="url(#noise-filter)" />
       </svg>
@@ -140,7 +141,7 @@ export const ThemeToggle: React.FC = () => {
       const rect = buttonRef.current.getBoundingClientRect()
       const x = rect.left + rect.width / 2
       const y = rect.top + rect.height / 2
-      const newBgColor = isDark ? '#faf9f7' : '#050510'
+      const newBgColor = isDark ? '#fbf7ef' : '#0c0a08'
       setWipe({ x, y, color: newBgColor })
 
       setTimeout(() => toggleTheme(), 400)
@@ -154,22 +155,28 @@ export const ThemeToggle: React.FC = () => {
         <motion.button
           ref={buttonRef}
           onClick={handleToggle}
-          className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg hover:bg-white/20 transition-colors duration-200"
-          whileTap={{ scale: 0.95 }}
+          className={`
+            group relative p-3 rounded-full border backdrop-blur-xl
+            transition-all duration-300
+            ${isDark
+              ? 'border-ink-700 bg-ink-900/70 hover:border-ember-500'
+              : 'border-ink-800/15 bg-paper-50/80 hover:border-ember-500'}
+          `}
+          whileTap={{ scale: 0.92 }}
           aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
         >
           <AnimatePresence mode="wait">
             <motion.div
               key={isDark ? 'dark' : 'light'}
-              initial={{ opacity: 0, rotate: -90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 90 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+              transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
             >
               {isDark ? (
-                <Sun className="w-5 h-5 text-yellow-300" />
+                <Sun className="w-4 h-4 text-ember-400 group-hover:text-ember-300" strokeWidth={1.8} />
               ) : (
-                <Moon className="w-5 h-5 text-slate-700" />
+                <Moon className="w-4 h-4 text-ink-800" strokeWidth={1.8} />
               )}
             </motion.div>
           </AnimatePresence>

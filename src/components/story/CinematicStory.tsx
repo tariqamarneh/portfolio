@@ -1,157 +1,166 @@
 'use client'
 
-import React, { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React from 'react'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 import Image from 'next/image'
 
-// Shared animation presets
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
+// Single IntersectionObserver + CSS reveal — cheap alternative to framer-motion whileInView
+function useReveal<T extends HTMLElement>() {
+  const ref = React.useRef<T | null>(null)
+  const [revealed, setRevealed] = React.useState(false)
+  React.useEffect(() => {
+    if (!ref.current || revealed) return
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => e.isIntersecting && setRevealed(true)),
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.15 }
+    )
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [revealed])
+  return { ref, revealed }
 }
 
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-}
-
-const stagger = {
-  visible: { transition: { staggerChildren: 0.15 } },
-}
-
-// ─── Opening: big statement ───
-
+/* ───────────────────────── OPENING ───────────────────────── */
 function OpeningChapter() {
   const { isDark } = useTheme()
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start']
-  })
-  const lineWidth = useTransform(scrollYProgress, [0.1, 0.5], ['0%', '100%'])
+  const { ref, revealed } = useReveal<HTMLDivElement>()
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center px-6 py-24">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-10%' }}
-        variants={stagger}
-        className="text-center max-w-4xl mx-auto"
-      >
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className={`text-sm md:text-base uppercase tracking-[0.3em] mb-6 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`}
+    <div ref={ref} className="min-h-[80vh] flex items-center justify-center px-6 py-28">
+      <div className="max-w-5xl mx-auto">
+        <div
+          className={`flex items-center gap-3 mb-6 justify-center transition-opacity duration-700 ${revealed ? 'opacity-100' : 'opacity-0'}`}
         >
-          The Story So Far
-        </motion.p>
-        <motion.h2
-          variants={fadeUp}
-          transition={{ duration: 0.7 }}
-          className={`text-4xl sm:text-6xl md:text-7xl font-display font-bold leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}
+          <span className="w-8 h-px bg-ember-500" />
+          <span className="eyebrow">Chapter · 02 / Story</span>
+        </div>
+
+        <h2
+          style={{
+            fontVariationSettings: '"opsz" 144, "SOFT" 40',
+            transitionDelay: revealed ? '100ms' : '0ms',
+          }}
+          className={`
+            font-display leading-[0.95] tracking-tight text-center
+            text-[clamp(2.4rem,7vw,5.5rem)]
+            transition-all duration-[900ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]
+            ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}
+            ${isDark ? 'text-ink-100' : 'text-ink-950'}
+          `}
         >
-          From Curiosity
+          Every line of code is
           <br />
-          <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
-            to Creation
+          <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+            a decision made.
           </span>
-        </motion.h2>
-        <motion.div
-          style={{ width: lineWidth }}
-          className="h-0.5 mx-auto mt-8 bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full"
+        </h2>
+
+        {/* Rule — pure CSS scale-X, no scroll tracking */}
+        <div
+          className={`h-px mx-auto mt-12 bg-gradient-to-r from-transparent via-ember-500 to-transparent origin-center
+            transition-transform duration-[1400ms] ease-out
+            ${revealed ? 'scale-x-100' : 'scale-x-0'}`}
+          style={{ transitionDelay: revealed ? '350ms' : '0ms' }}
         />
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className={`mt-8 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+
+        <p
+          style={{ transitionDelay: revealed ? '450ms' : '0ms' }}
+          className={`
+            mt-12 text-lg md:text-xl leading-relaxed text-center max-w-2xl mx-auto
+            transition-all duration-700
+            ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+            ${isDark ? 'text-ink-300' : 'text-ink-700'}
+          `}
         >
-          A journey of building, breaking, learning — and building again.
-        </motion.p>
-      </motion.div>
-    </div>
-  )
-}
-
-// ─── Origin: split layout with parallax image ───
-
-function OriginChapter() {
-  const { isDark } = useTheme()
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start']
-  })
-  const imgY = useTransform(scrollYProgress, [0, 1], ['8%', '-8%'])
-
-  return (
-    <div ref={ref} className="min-h-screen flex items-center px-6 md:px-16 lg:px-24 py-24">
-      <div className="w-full flex flex-col md:flex-row items-center gap-10 md:gap-16 max-w-7xl mx-auto">
-        {/* Image with parallax */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 0.8 }}
-          className="w-full md:w-1/2 h-[50vh] md:h-[70vh] relative rounded-2xl overflow-hidden shrink-0"
-        >
-          <motion.div style={{ y: imgY }} className="absolute inset-[-10%]">
-            <Image
-              src="/images/my_photo.png"
-              alt="Tariq Amarneh"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </motion.div>
-          <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-t from-gray-950/70 via-transparent' : 'bg-gradient-to-t from-stone-50/70 via-transparent'}`} />
-        </motion.div>
-
-        {/* Text */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-15%' }}
-          variants={stagger}
-          className="w-full md:w-1/2 max-w-xl"
-        >
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-            className={`text-sm uppercase tracking-[0.2em] mb-4 ${isDark ? 'text-violet-400' : 'text-violet-600'}`}
-          >
-            Where It Started
-          </motion.p>
-          <motion.h3
-            variants={fadeUp}
-            transition={{ duration: 0.6 }}
-            className={`text-3xl md:text-5xl font-display font-bold mb-6 leading-tight ${isDark ? 'text-white' : 'text-gray-900'}`}
-          >
-            A Data Science
-            <br />
-            graduate with a
-            <br />
-            <span className={isDark ? 'text-cyan-400' : 'text-cyan-600'}>dream to build.</span>
-          </motion.h3>
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-            className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
-          >
-            Armed with a degree, endless curiosity, and a laptop — I set out to turn ideas into reality.
-            From experimenting with ML models to shipping production code, every line taught me something new.
-          </motion.p>
-        </motion.div>
+          A journey of building, breaking, and rebuilding — this is how it
+          started, and where it&apos;s going.
+        </p>
       </div>
     </div>
   )
 }
 
-// ─── Milestones: scroll-triggered journey events ───
+/* ───────────────────────── ORIGIN ───────────────────────── */
+function OriginChapter() {
+  const { isDark } = useTheme()
+  const { ref, revealed } = useReveal<HTMLDivElement>()
 
+  return (
+    <div ref={ref} className="min-h-[80vh] flex items-center px-6 md:px-12 lg:px-20 py-24">
+      <div className="w-full grid grid-cols-12 gap-8 md:gap-12 items-center max-w-7xl mx-auto">
+        {/* Image — no scroll-driven parallax, just a clean reveal */}
+        <div
+          className={`col-span-12 md:col-span-6 h-[60vh] relative rounded-[2rem] overflow-hidden
+            transition-all duration-[900ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]
+            ${revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+        >
+          <Image
+            src="/images/my_photo.png"
+            alt="Tariq Amarneh"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          {/* Warm wash */}
+          <div className="absolute inset-0 pointer-events-none mix-blend-soft-light opacity-60"
+            style={{ background: 'linear-gradient(135deg, rgba(255,173,128,0.35), transparent 55%)' }}
+          />
+          <div className={`absolute inset-0 pointer-events-none
+            ${isDark ? 'bg-gradient-to-t from-ink-950/70 via-transparent' : 'bg-gradient-to-t from-paper-50/60 via-transparent'}`}
+          />
+        </div>
+
+        {/* Text */}
+        <div className="col-span-12 md:col-span-6">
+          <div
+            className={`flex items-center gap-3 mb-5 transition-opacity duration-700 ${revealed ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transitionDelay: revealed ? '150ms' : '0ms' }}
+          >
+            <span className="w-6 h-px bg-ember-500" />
+            <span className="eyebrow">Where it started</span>
+          </div>
+
+          <h3
+            style={{
+              fontVariationSettings: '"opsz" 144, "SOFT" 40',
+              transitionDelay: revealed ? '250ms' : '0ms',
+            }}
+            className={`
+              font-display text-4xl sm:text-5xl md:text-6xl leading-[0.95] mb-6
+              transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+              ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+              ${isDark ? 'text-ink-100' : 'text-ink-950'}
+            `}
+          >
+            A data science grad <br />
+            with a{' '}
+            <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+              dream to build.
+            </span>
+          </h3>
+
+          <p
+            style={{ transitionDelay: revealed ? '400ms' : '0ms' }}
+            className={`
+              text-base md:text-lg leading-relaxed max-w-xl
+              transition-all duration-700
+              ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}
+              ${isDark ? 'text-ink-300' : 'text-ink-700'}
+            `}
+          >
+            Armed with a degree, endless curiosity, and a laptop — I set out
+            to turn ideas into shipped software. From ML experiments to
+            production systems, every line has taught me something worth
+            keeping.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ───────────────────────── MILESTONES ───────────────────────── */
 function MilestonesChapter() {
   const { isDark } = useTheme()
   const { journeyEvents } = usePortfolioData()
@@ -159,68 +168,70 @@ function MilestonesChapter() {
 
   if (sorted.length === 0) return null
 
+  return <MilestonesInner isDark={isDark} sorted={sorted} />
+}
+
+function MilestonesInner({ isDark, sorted }: { isDark: boolean; sorted: ReturnType<typeof usePortfolioData>['journeyEvents'] }) {
+  const { ref, revealed } = useReveal<HTMLDivElement>()
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-24">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-10%' }}
-        variants={stagger}
-        className="text-center mb-16"
+    <div ref={ref} className="min-h-[70vh] flex flex-col items-center justify-center px-6 py-24">
+      <div
+        className={`text-center mb-14 max-w-2xl mx-auto transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+          ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
       >
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.5 }}
-          className={`text-sm uppercase tracking-[0.2em] mb-3 ${isDark ? 'text-fuchsia-400' : 'text-fuchsia-600'}`}
-        >
-          Milestones
-        </motion.p>
-        <motion.h3
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className={`text-3xl md:text-5xl font-display font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}
-        >
-          Key moments that
-          <br />
-          <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>shaped the path</span>
-        </motion.h3>
-      </motion.div>
+        <div className="flex items-center gap-3 mb-4 justify-center">
+          <span className="w-6 h-px bg-ember-500" />
+          <span className="eyebrow">Milestones</span>
+        </div>
+        <h3 className={`font-display text-4xl sm:text-5xl md:text-6xl leading-[0.95] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+          style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+          Moments that <br />
+          <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+            shaped the path.
+          </span>
+        </h3>
+      </div>
 
       <div className="relative max-w-3xl w-full">
-        {/* Vertical line */}
-        <div className={`absolute left-5 md:left-7 top-0 bottom-0 w-px ${isDark ? 'bg-gradient-to-b from-cyan-500/50 via-violet-500/50 to-fuchsia-500/50' : 'bg-gradient-to-b from-cyan-500/30 via-violet-500/30 to-fuchsia-500/30'}`} />
+        <div className={`absolute left-5 md:left-6 top-2 bottom-2 w-px ${isDark ? 'bg-ink-700' : 'bg-ink-800/15'}`} />
 
         <div className="space-y-10 md:space-y-12">
           {sorted.map((event, i) => (
-            <motion.div
+            <div
               key={event.id}
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-5%' }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="flex items-start gap-4 md:gap-6"
+              style={{ transitionDelay: revealed ? `${200 + i * 60}ms` : '0ms' }}
+              className={`flex items-start gap-5 md:gap-7
+                transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+                ${revealed ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
             >
               <div className="relative z-10 shrink-0">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border-2 ${
-                  isDark ? 'bg-gray-900 border-cyan-500' : 'bg-white border-cyan-500'
-                } shadow-lg shadow-cyan-500/20`}>
-                  <Image src={event.icon} width={24} height={24} alt="" className="object-contain" style={{ width: 'auto', height: 'auto' }} />
+                <div className={`
+                  w-10 h-10 md:w-12 md:h-12 rounded-full
+                  flex items-center justify-center
+                  ${isDark ? 'bg-ink-900 border border-ember-500/50' : 'bg-paper-50 border border-ember-500/40'}
+                  shadow-[0_0_30px_-8px_rgba(255,112,67,0.4)]
+                `}>
+                  <Image src={event.icon} width={22} height={22} alt="" className="object-contain" style={{ width: 'auto', height: 'auto' }} />
                 </div>
               </div>
-              <div className="pt-1">
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                  isDark ? 'bg-cyan-500/15 text-cyan-300' : 'bg-cyan-100 text-cyan-700'
-                }`}>
-                  {event.date}
-                </span>
-                <h4 className={`text-lg md:text-xl font-bold mt-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+
+              <div className="pt-1 flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ember-500">
+                    {event.date}
+                  </span>
+                  <span className={`h-px flex-1 ${isDark ? 'bg-ink-800' : 'bg-ink-800/10'}`} />
+                </div>
+                <h4 className={`font-display text-xl md:text-2xl mb-1 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+                  style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
                   {event.title}
                 </h4>
-                <p className={`text-sm md:text-base mt-1 leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className={`text-sm md:text-base leading-relaxed ${isDark ? 'text-ink-400' : 'text-ink-700'}`}>
                   {event.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -228,149 +239,89 @@ function MilestonesChapter() {
   )
 }
 
-// ─── Growth numbers ───
-
-function GrowthChapter() {
-  const { isDark } = useTheme()
-
-  const stats = [
-    { value: '2.3+', label: 'Years of Experience' },
-    { value: '10+', label: 'Projects Shipped' },
-    { value: '15+', label: 'Technologies' },
-    { value: '∞', label: 'Curiosity' },
-  ]
-
-  return (
-    <div className="min-h-[80vh] flex items-center justify-center px-6 py-24">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-10%' }}
-        variants={stagger}
-        className="text-center max-w-5xl mx-auto"
-      >
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.5 }}
-          className={`text-sm uppercase tracking-[0.2em] mb-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}
-        >
-          The Numbers
-        </motion.p>
-        <motion.h3
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className={`text-3xl md:text-5xl font-display font-bold mb-16 ${isDark ? 'text-white' : 'text-gray-900'}`}
-        >
-          Growth in
-          <span className={isDark ? ' gradient-text' : ' gradient-text-light'}> every dimension</span>
-        </motion.h3>
-
-        <motion.div variants={fadeIn} className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1, type: 'spring', stiffness: 200 }}
-              className="flex flex-col items-center"
-            >
-              <span className={`text-5xl md:text-7xl font-display font-bold ${
-                isDark ? 'gradient-text' : 'gradient-text-light'
-              }`}>
-                {stat.value}
-              </span>
-              <span className={`text-sm mt-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                {stat.label}
-              </span>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.div>
-    </div>
-  )
-}
-
-// ─── Now: what drives me today ───
-
+/* ───────────────────────── NOW ───────────────────────── */
 function NowChapter() {
   const { isDark } = useTheme()
+  const { ref, revealed } = useReveal<HTMLDivElement>()
 
   const pillars = [
-    { emoji: '⚡', title: 'Building at Scale', desc: 'Engineering systems at Amazon that serve millions' },
-    { emoji: '🧠', title: 'AI & Innovation', desc: 'Pushing boundaries with ML and Generative AI' },
-    { emoji: '🌍', title: 'Open Source', desc: 'Contributing back to the community that taught me' },
-    { emoji: '☕', title: 'Never Stop Learning', desc: 'Every day is day one' },
+    { title: 'Shipping at Scale',    desc: 'Writing systems at Amazon that run in production for millions.' },
+    { title: 'Applied AI',           desc: 'Prototyping with LLMs — embedding intelligence where it earns its keep.' },
+    { title: 'Craft over Ceremony',  desc: 'The best code looks obvious. Getting there takes everything else.' },
+    { title: 'Day-One Mindset',      desc: 'Comfort is the enemy. Every morning is a chance to ship something better.' },
   ]
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-10%' }}
-        variants={stagger}
-        className="text-center max-w-4xl mx-auto"
-      >
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.5 }}
-          className={`text-sm uppercase tracking-[0.2em] mb-4 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`}
+    <div ref={ref} className="min-h-[80vh] flex items-center justify-center px-6 py-28">
+      <div className="w-full max-w-6xl mx-auto">
+        <div
+          className={`max-w-2xl mb-14 md:mb-16 transition-all duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]
+            ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
-          Right Now
-        </motion.p>
-        <motion.h3
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className={`text-3xl md:text-5xl font-display font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}
-        >
-          What drives me
-          <span className={isDark ? ' gradient-text' : ' gradient-text-light'}> today</span>
-        </motion.h3>
-        <motion.p
-          variants={fadeUp}
-          transition={{ duration: 0.5 }}
-          className={`text-lg mb-12 max-w-2xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-        >
-          Software Development Engineer at Amazon, specializing in Java, Spring Boot, Python, and AI/ML.
-        </motion.p>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-6 h-px bg-ember-500" />
+            <span className="eyebrow">Right now</span>
+          </div>
+          <h3 className={`font-display text-4xl sm:text-5xl md:text-6xl leading-[0.95] mb-6 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+            What drives me <br />
+            <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+              today.
+            </span>
+          </h3>
+          <p className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+            Software Development Engineer at Amazon — writing Java and Python,
+            learning out loud, and shipping things I&apos;d be proud to show my future self.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 text-left">
+        {/* Pillars — pure CSS stagger, no framer-motion overhead */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {pillars.map((p, i) => (
-            <motion.div
+            <div
               key={p.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`p-5 md:p-6 rounded-2xl border ${
-                isDark ? 'bg-white/[0.03] border-white/10' : 'bg-white/60 border-stone-200/50'
-              }`}
+              style={{
+                transitionDelay: revealed ? `${150 + i * 80}ms` : '0ms',
+                willChange: revealed ? 'auto' : 'transform, opacity',
+              }}
+              className={`
+                group relative p-6 md:p-8 rounded-2xl
+                transition-[opacity,transform,border-color] duration-[600ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]
+                ${revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+                ${isDark
+                  ? 'bg-ink-900/50 border border-ink-700 hover:border-ember-500/40'
+                  : 'bg-paper-50/70 border border-ink-800/10 hover:border-ember-500/40'}
+              `}
             >
-              <span className="text-2xl mb-3 block">{p.emoji}</span>
-              <h4 className={`font-bold text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {p.title}
-              </h4>
-              <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
-                {p.desc}
-              </p>
-            </motion.div>
+              <div className="flex items-start gap-4">
+                <span className={`mt-1.5 shrink-0 font-mono text-[10px] tabular-nums ${isDark ? 'text-ember-400' : 'text-ember-600'}`}>
+                  0{i + 1}
+                </span>
+                <div>
+                  <h4 className={`font-display text-xl md:text-2xl mb-2 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+                    style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
+                    {p.title}
+                  </h4>
+                  <p className={`text-sm md:text-base leading-relaxed ${isDark ? 'text-ink-400' : 'text-ink-700'}`}>
+                    {p.desc}
+                  </p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
-// ─── Main export ───
-
+/* ───────────────────────── MAIN ───────────────────────── */
 export default function CinematicStory() {
   return (
     <section id="story">
       <OpeningChapter />
       <OriginChapter />
       <MilestonesChapter />
-      <GrowthChapter />
       <NowChapter />
     </section>
   )

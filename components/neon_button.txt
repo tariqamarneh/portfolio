@@ -1,0 +1,124 @@
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles.
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+neon-button.tsx
+import React from 'react'
+import { cn } from '@/lib/utils'
+import { VariantProps, cva } from "class-variance-authority";
+
+const buttonVariants = cva(
+    "relative group border text-foreground mx-auto text-center rounded-full",
+    {
+        variants: {
+            variant: {
+                default: "bg-blue-500/5 hover:bg-blue-500/0 border-blue-500/20",
+                solid: "bg-blue-500 hover:bg-blue-600 text-white border-transparent hover:border-foreground/50 transition-all duration-200",
+                ghost: "border-transparent bg-transparent hover:border-zinc-600 hover:bg-white/10",
+            },
+            size: {
+                default: "px-7 py-1.5 ",
+                sm: "px-4 py-0.5 ",
+                lg: "px-10 py-2.5 ",
+            },
+        },
+        defaultVariants: {
+            variant: "default",
+            size: "default",
+        },
+    }
+);
+
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> { neon?: boolean }
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    ({ className, neon = true, size, variant, children, ...props }, ref) => {
+        return (
+            <button
+                className={cn(buttonVariants({ variant, size }), className)}
+                ref={ref}
+                {...props}
+            >
+                <span className={cn("absolute h-px opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out inset-x-0 inset-y-0 bg-gradient-to-r w-3/4 mx-auto from-transparent dark:via-blue-500 via-blue-600 to-transparent hidden", neon && "block")} />
+                {children}
+                <span className={cn("absolute group-hover:opacity-30 transition-all duration-500 ease-in-out inset-x-0 h-px -bottom-px bg-gradient-to-r w-3/4 mx-auto from-transparent dark:via-blue-500 via-blue-600 to-transparent hidden", neon && "block")} />
+            </button>
+        );
+    }
+)
+
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };
+
+demo.tsx
+import { Button } from "@/components/ui/neon-button"
+
+
+const Default = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-3">
+                <Button>Button</Button>
+                <WithNoNeon />
+                <Solid />
+            </div>
+        </>
+    )
+}
+
+const WithNoNeon = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-2">
+                <Button neon={false}>normal button</Button>
+            </div>
+        </>
+    )
+}
+
+const Solid = () => {
+    return (
+        <>
+            <div className="flex flex-col gap-2">
+                <Button variant={"solid"}>solid</Button>
+            </div>
+        </>
+    )
+}
+
+export { Default, WithNoNeon, Solid }
+```
+
+Install NPM dependencies:
+```bash
+class-variance-authority
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them

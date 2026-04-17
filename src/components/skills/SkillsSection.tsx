@@ -6,112 +6,93 @@ import { Search, Code2, Database, Cloud, Brain, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData, Skill } from '@/context/PortfolioDataContext'
-import { useTilt } from '@/hooks/useTilt'
+import { GlowCard } from '@/components/ui/glow-card'
 
-const getCategoryIcon = (category: string) => {
+const getCategoryIcon = (category: string, className = 'w-3 h-3') => {
+  const props = { className, strokeWidth: 1.8 } as const
   switch (category) {
-    case 'frontend':
-      return <Code2 className="w-4 h-4" />
-    case 'backend':
-      return <Code2 className="w-4 h-4" />
-    case 'database':
-      return <Database className="w-4 h-4" />
-    case 'devops':
-      return <Cloud className="w-4 h-4" />
-    case 'ai':
-      return <Brain className="w-4 h-4" />
-    default:
-      return <Code2 className="w-4 h-4" />
+    case 'frontend': return <Code2 {...props} />
+    case 'backend':  return <Code2 {...props} />
+    case 'database': return <Database {...props} />
+    case 'devops':   return <Cloud {...props} />
+    case 'ai':       return <Brain {...props} />
+    default:         return <Code2 {...props} />
   }
 }
 
-const ProficiencyDots = React.memo<{ level: string; isDark: boolean }>(({ level, isDark }) => {
-  const dots = level === 'Expert' ? 5 : level === 'Intermediate' ? 3 : 1
-  const color = level === 'Expert' ? 'bg-green-500' : level === 'Intermediate' ? 'bg-blue-500' : 'bg-yellow-500'
-
+const ProficiencyBar = React.memo<{ level: string; isDark: boolean }>(({ level, isDark }) => {
+  const pct = level === 'Expert' ? 100 : level === 'Intermediate' ? 60 : 30
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <div
-          key={i}
-          className={`w-2 h-2 rounded-full transition-colors ${
-            i <= dots ? color : isDark ? 'bg-gray-700' : 'bg-gray-300'
-          }`}
+    <div className="flex items-center gap-3 w-full">
+      <div className={`flex-1 h-[2px] rounded-full ${isDark ? 'bg-ink-700' : 'bg-ink-800/15'} relative overflow-hidden`}>
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${pct}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, delay: 0.15, ease: [0.2, 0.8, 0.2, 1] }}
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-ember-700 to-ember-400"
         />
-      ))}
+      </div>
+      <span className={`font-mono text-[10px] uppercase tracking-[0.15em] shrink-0 w-20 text-right ${isDark ? 'text-ink-400' : 'text-ink-500'}`}>
+        {level}
+      </span>
     </div>
   )
 })
-ProficiencyDots.displayName = 'ProficiencyDots'
+ProficiencyBar.displayName = 'ProficiencyBar'
 
 const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index }) => {
   const { isDark } = useTheme()
   const years = new Date().getFullYear() - skill.yearStarted
-  const { ref, style: tiltStyle, onMouseMove, onMouseLeave } = useTilt(5)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    onMouseMove(e)
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      ref.current.style.setProperty('--glow-x', `${e.clientX - rect.left}px`)
-      ref.current.style.setProperty('--glow-y', `${e.clientY - rect.top}px`)
-    }
-  }
 
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      style={tiltStyle}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={onMouseLeave}
-      className={`
-        group relative rounded-xl p-4
-        ${isDark ? 'bg-gray-900/50' : 'bg-white/50'}
-        border border-white/10
-        hover:border-cyan-500/20 transition-all duration-200
-      `}
+      transition={{ duration: 0.5, delay: index * 0.035, ease: [0.2, 0.8, 0.2, 1] }}
     >
-      {/* Hover glow effect */}
-      <div
-        className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(300px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(6, 182, 212, 0.1), transparent 60%)`
-        }}
-      />
-
-      <div className="relative flex items-start gap-3">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
-          <Image
-            src={skill.icon}
-            width={28}
-            height={28}
-            alt={`${skill.name} Logo`}
-            loading="lazy"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.style.display = 'none'
-            }}
-          />
-        </div>
-
-        <div className="flex-grow min-w-0">
-          <div className="flex justify-between items-start mb-1">
-            <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {skill.name}
-            </h3>
-            <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              {years > 0 ? `${years}+ yrs` : '<1 yr'}
-            </span>
+      <GlowCard glowColor="ember" className="p-6 h-full">
+        <div className="relative">
+          <div className="flex items-start justify-between mb-5">
+            <div className={`
+              relative w-12 h-12 flex items-center justify-center rounded-xl
+              ${isDark ? 'bg-ink-950/80 border border-ink-700' : 'bg-paper-100 border border-ink-800/10'}
+            `}>
+              <Image
+                src={skill.icon}
+                width={26}
+                height={26}
+                alt={`${skill.name} Logo`}
+                loading="lazy"
+                className="opacity-90"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
+            </div>
+            <div className="text-right">
+              <div className={`font-mono text-[9px] uppercase tracking-[0.15em] ${isDark ? 'text-ink-500' : 'text-ink-400'}`}>
+                Exp
+              </div>
+              <div className="font-mono text-sm text-ember-500 tabular-nums">
+                {years > 0 ? `${years}+ yrs` : '<1 yr'}
+              </div>
+            </div>
           </div>
-          <p className={`text-xs mb-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+
+          <h3 className={`font-display text-xl mb-2.5 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+            style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
+            {skill.name}
+          </h3>
+
+          <p className={`text-sm mb-5 leading-relaxed min-h-[40px] ${isDark ? 'text-ink-400' : 'text-ink-600'}`}>
             {skill.description}
           </p>
-          <ProficiencyDots level={skill.level} isDark={isDark} />
+
+          <ProficiencyBar level={skill.level} isDark={isDark} />
         </div>
-      </div>
+      </GlowCard>
     </motion.div>
   )
 })
@@ -126,10 +107,10 @@ const SkillsSection: React.FC = () => {
 
   const filteredSkills = useMemo(() =>
     skills
-      .filter(skill => activeCategory === 'all' || skill.category === activeCategory)
-      .filter(skill =>
-        skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        skill.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      .filter(s => activeCategory === 'all' || s.category === activeCategory)
+      .filter(s =>
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.description?.toLowerCase().includes(searchQuery.toLowerCase())
       ),
     [skills, activeCategory, searchQuery]
   )
@@ -148,84 +129,98 @@ const SkillsSection: React.FC = () => {
 
   return (
     <section id="skills" className="section-padding relative">
-      <div className="container mx-auto max-w-6xl">
-        <motion.div
-          initial={{ clipPath: 'inset(0 100% 0 0)', opacity: 0 }}
-          whileInView={{ clipPath: 'inset(0 0% 0 0)', opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 font-display">
-            <span className={isDark ? 'gradient-text' : 'gradient-text-light'}>
-              Skills & Expertise
-            </span>
-          </h2>
-          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-cyan-500 via-violet-500 to-fuchsia-500 rounded-full" />
-          <p className={`mt-6 text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
-            Technologies I work with daily
-          </p>
-        </motion.div>
-
-        {/* Filters */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.key}
-                onClick={() => setActiveCategory(category.key)}
-                className={`
-                  px-4 py-2 rounded-full text-sm font-medium
-                  flex items-center gap-2 transition-colors duration-200
-                  ${activeCategory === category.key
-                    ? 'bg-gradient-to-r from-cyan-500 to-violet-600 text-white'
-                    : `${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'} hover:bg-opacity-80`
-                  }
-                `}
-              >
-                {getCategoryIcon(category.key)}
-                {category.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search skills..."
-              className={`
-                w-56 pl-10 pr-4 py-2 rounded-full text-sm
-                ${isDark ? 'bg-gray-800 text-white placeholder-gray-500' : 'bg-gray-100 text-gray-900 placeholder-gray-400'}
-                focus:outline-none focus:ring-2 focus:ring-blue-500/40
-              `}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Search className={`absolute left-3 top-2.5 h-4 w-4 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
-          </div>
-        </div>
-
+      <div className="max-w-[1400px] mx-auto">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+          className="grid grid-cols-12 gap-6 mb-14 md:mb-18"
         >
+          <div className="col-span-12 md:col-span-7">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="w-8 h-px bg-ember-500" />
+              <span className="eyebrow">Chapter · 04 / Craft</span>
+            </div>
+            <h2 className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
+              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+              Tools of the{' '}
+              <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
+                trade.
+              </span>
+            </h2>
+          </div>
+          <div className="col-span-12 md:col-span-4 md:col-start-9 flex items-end">
+            <p className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+              The languages, frameworks, and tools I reach for daily — with the
+              years of shipped systems to back them up.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Filters — pill row + search */}
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-12">
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((category) => {
+              const isActive = activeCategory === category.key
+              return (
+                <button
+                  key={category.key}
+                  onClick={() => setActiveCategory(category.key)}
+                  className={`
+                    flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11px] uppercase tracking-[0.15em]
+                    transition-all duration-200
+                    ${isActive
+                      ? 'bg-ember-500 text-ink-950'
+                      : isDark
+                        ? 'bg-ink-900/70 border border-ink-700 text-ink-300 hover:text-ember-400 hover:border-ember-500/40'
+                        : 'bg-paper-50/70 border border-ink-800/10 text-ink-700 hover:text-ember-600 hover:border-ember-500/40'}
+                  `}
+                >
+                  {getCategoryIcon(category.key)}
+                  {category.label}
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="relative">
+            <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 ${isDark ? 'text-ink-400' : 'text-ink-500'}`} strokeWidth={1.8} />
+            <input
+              type="text"
+              placeholder="Search tools…"
+              className={`
+                w-full md:w-64 pl-10 pr-4 py-2.5 rounded-full text-sm
+                transition-colors duration-200
+                ${isDark
+                  ? 'bg-ink-900/70 border border-ink-700 text-ink-100 placeholder:text-ink-500 focus:border-ember-500'
+                  : 'bg-paper-50/70 border border-ink-800/10 text-ink-950 placeholder:text-ink-400 focus:border-ember-500'}
+                focus:outline-none
+              `}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={`grid-${activeCategory}-${searchQuery}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
           >
-            {/* Primary Skills */}
             {primarySkills.length > 0 && (
-              <div className="mb-8">
-                <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600" />
-                  Primary Skills
-                </h3>
+              <div className="mb-14">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="flex items-center gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-ember-500" />
+                    <span className="eyebrow">Primary · Deep craft</span>
+                  </h3>
+                  <span className="eyebrow-dim">{String(primarySkills.length).padStart(2, '0')}</span>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {primarySkills.map((skill, index) => (
                     <SkillCard key={skill.id} skill={skill} index={index} />
@@ -234,13 +229,15 @@ const SkillsSection: React.FC = () => {
               </div>
             )}
 
-            {/* Secondary Skills */}
             {secondarySkills.length > 0 && (
-              <div className="mb-8">
-                <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  <span className="w-2 h-2 rounded-full bg-gray-500" />
-                  Secondary Skills
-                </h3>
+              <div className="mb-14">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="flex items-center gap-2.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-ink-500' : 'bg-ink-400'}`} />
+                    <span className="eyebrow-dim">Secondary · Working knowledge</span>
+                  </h3>
+                  <span className="eyebrow-dim">{String(secondarySkills.length).padStart(2, '0')}</span>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {secondarySkills.map((skill, index) => (
                     <SkillCard key={skill.id} skill={skill} index={index} />
@@ -250,35 +247,56 @@ const SkillsSection: React.FC = () => {
             )}
           </motion.div>
         </AnimatePresence>
-        </motion.div>
 
-        {/* Currently Learning */}
+        {/* Currently learning — accent panel */}
         {learningItems.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className={`mt-12 p-6 rounded-2xl ${isDark ? 'bg-gradient-to-br from-violet-900/20 to-cyan-900/20 border border-violet-500/20' : 'bg-gradient-to-br from-violet-50 to-cyan-50 border border-violet-200'}`}
+            transition={{ duration: 0.6 }}
+            className={`
+              mt-8 p-6 md:p-8 rounded-2xl overflow-hidden relative
+              ${isDark
+                ? 'bg-ink-900/60 border border-ember-500/30'
+                : 'bg-paper-50/80 border border-ember-500/30'}
+            `}
+            style={{
+              boxShadow: isDark
+                ? '0 20px 60px -30px rgba(255, 112, 67, 0.25)'
+                : '0 20px 60px -30px rgba(255, 112, 67, 0.2)'
+            }}
           >
-            <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              <Sparkles className="w-5 h-5 text-purple-500" />
-              Currently Learning
-            </h3>
-            <div className="flex flex-wrap gap-3">
+            {/* Soft ember glow */}
+            <div className="pointer-events-none absolute -top-32 -right-32 w-96 h-96 rounded-full"
+              style={{ background: 'radial-gradient(circle, rgba(255,112,67,0.15), transparent 70%)' }}
+              aria-hidden="true"
+            />
+
+            <div className="relative flex items-center gap-3 mb-5">
+              <Sparkles className="w-4 h-4 text-ember-500" strokeWidth={1.8} />
+              <span className="eyebrow">In the lab · Currently learning</span>
+            </div>
+            <div className="relative flex flex-wrap gap-2">
               {learningItems.map((item) => (
                 <div
                   key={item.id}
                   className={`
-                    px-4 py-2 rounded-full
-                    ${isDark ? 'bg-gray-800/80 text-gray-300' : 'bg-white text-gray-700'}
-                    border ${isDark ? 'border-gray-700' : 'border-gray-200'}
+                    flex items-center gap-2 px-3.5 py-2 rounded-full
+                    transition-colors
+                    ${isDark
+                      ? 'bg-ink-950/70 border border-ink-700 hover:border-ember-500/50'
+                      : 'bg-paper-50 border border-ink-800/10 hover:border-ember-500/50'}
                   `}
                 >
-                  <span className="font-medium">{item.name}</span>
-                  <span className={`ml-2 text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                    {item.description}
+                  <span className={`text-sm font-medium ${isDark ? 'text-ink-100' : 'text-ink-950'}`}>
+                    {item.name}
                   </span>
+                  {item.description && (
+                    <span className={`font-mono text-[10px] uppercase tracking-[0.1em] ${isDark ? 'text-ink-500' : 'text-ink-400'}`}>
+                      · {item.description}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
