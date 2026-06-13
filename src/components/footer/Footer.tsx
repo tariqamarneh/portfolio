@@ -2,12 +2,11 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Github, Linkedin, ArrowUpRight } from 'lucide-react'
-import { useTheme } from '../general/GradientBackground'
+import { ArrowUpRight } from 'lucide-react'
+import { Github, Linkedin } from '@/components/icons/BrandIcons'
 
 const navItems = [
   { name: 'Intro',    href: '#home'         },
-  { name: 'Studio',   href: '#workspace'    },
   { name: 'Story',    href: '#story'        },
   { name: 'Work',     href: '#projects'     },
   { name: 'Craft',    href: '#skills'       },
@@ -21,7 +20,6 @@ const socialLinks = [
 ]
 
 const Footer: React.FC = () => {
-  const { isDark } = useTheme()
   const currentYear = new Date().getFullYear()
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -31,7 +29,7 @@ const Footer: React.FC = () => {
   }
 
   return (
-    <footer className={`relative border-t mt-12 ${isDark ? 'border-ink-800' : 'border-ink-800/10'}`}>
+    <footer className="relative border-t mt-12 border-abyss-800">
       {/* Massive signature */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 pt-20 md:pt-28 pb-6">
         <motion.div
@@ -41,20 +39,15 @@ const Footer: React.FC = () => {
           transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
           className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 lg:gap-8"
         >
-          <h2 className={`font-display leading-[0.9] tracking-tight text-[clamp(3rem,10vw,9rem)] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
-            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+          <h2 className="font-display leading-[0.95] tracking-tight text-[clamp(3rem,9vw,8rem)] text-abyss-100">
             Let&apos;s{' '}
-            <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
-              build.
-            </span>
+            <span className="text-lumen">build.</span>
           </h2>
           <a
             href="mailto:tariqs.naser@gmail.com"
-            className={`group inline-flex items-center gap-2 px-5 py-3 rounded-full border transition-all
-              ${isDark
-                ? 'border-ink-700 text-ink-200 hover:border-ember-500 hover:text-ember-400'
-                : 'border-ink-800/15 text-ink-800 hover:border-ember-500 hover:text-ember-600'}
-            `}
+            className="group inline-flex items-center gap-2 px-5 py-3 rounded-full border transition-all
+              border-abyss-700 text-abyss-200 hover:border-lumen-500/60 hover:text-lumen-400
+              hover:shadow-[0_8px_30px_-12px_rgba(76,220,202,0.4)]"
           >
             <span className="font-mono text-xs uppercase tracking-[0.2em]">
               tariqs.naser@gmail.com
@@ -65,7 +58,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12">
-        <div className={`h-px ${isDark ? 'bg-ink-800' : 'bg-ink-800/10'}`} />
+        <div className="h-px bg-abyss-800" />
       </div>
 
       {/* Meta grid */}
@@ -73,10 +66,10 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-span-5 space-y-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-ember-500 animate-pulse-soft" />
+              <span className="w-1.5 h-1.5 rounded-full bg-lumen-400 animate-pulse-soft" />
               <span className="eyebrow">Tariq Amarneh · Portfolio</span>
             </div>
-            <p className={`text-sm max-w-md leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+            <p className="text-sm max-w-md leading-relaxed font-light text-abyss-300">
               Software Development Engineer at Amazon. Writing Java by day,
               prototyping with LLMs by night. Based in Amman.
             </p>
@@ -90,10 +83,7 @@ const Footer: React.FC = () => {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`
-                    block text-sm transition-colors duration-200
-                    ${isDark ? 'text-ink-400 hover:text-ember-400' : 'text-ink-600 hover:text-ember-600'}
-                  `}
+                  className="block text-sm transition-colors duration-200 text-abyss-400 hover:text-lumen-400"
                 >
                   {item.name}
                 </a>
@@ -112,11 +102,8 @@ const Footer: React.FC = () => {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`
-                      group flex items-center justify-between gap-3 py-2
-                      transition-colors duration-200
-                      ${isDark ? 'text-ink-300 hover:text-ember-400' : 'text-ink-700 hover:text-ember-600'}
-                    `}
+                    className="group flex items-center justify-between gap-3 py-2
+                      transition-colors duration-200 text-abyss-300 hover:text-lumen-400"
                     aria-label={s.name}
                   >
                     <div className="flex items-center gap-3">
@@ -133,13 +120,13 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Colophon */}
-      <div className={`border-t ${isDark ? 'border-ink-800' : 'border-ink-800/10'}`}>
+      <div className="border-t border-abyss-800">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${isDark ? 'text-ink-500' : 'text-ink-500'}`}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-abyss-500">
             © {currentYear} · Tariq Amarneh
           </p>
-          <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${isDark ? 'text-ink-500' : 'text-ink-500'}`}>
-            Built with <span className="text-ember-500">warmth</span> in Amman, Jordan
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-abyss-500">
+            Signal sent from <span className="text-lumen-400">Amman, Jordan</span>
           </p>
         </div>
       </div>

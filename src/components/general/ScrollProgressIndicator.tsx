@@ -14,11 +14,11 @@ interface ScrollProgressIndicatorProps {
 }
 
 const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
-  height = 'h-1',
-  color = 'bg-indigo-700',
+  height = 'h-[2px]',
+  color = 'bg-lumen-500',
   showAfter = 100,
   position = 'top',
-  shadow = true,
+  shadow = false,
   gradient = true,
 }) => {
   const [isVisible, setIsVisible] = useState(false)
@@ -62,7 +62,7 @@ const ScrollProgressIndicator: React.FC<ScrollProgressIndicatorProps> = ({
             fixed left-0 right-0 ${height} ${color} 
             ${positionClasses[position]} origin-left z-50
             ${shadow ? 'shadow-md' : ''}
-            ${gradient ? 'bg-gradient-to-r from-cyan-500 to-violet-600' : ''}
+            ${gradient ? 'bg-gradient-to-r from-lumen-600 via-lumen-400 to-lumen-300' : ''}
           `}
           style={{ 
             scaleX,

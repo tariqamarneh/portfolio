@@ -1,9 +1,9 @@
 /* src/app/globals.css */
 /* =======================================================================
-   QUIET PREMIUM — a near-black warm canvas with a single ember accent,
-   breathable spacing, distinctive serif display, clean body, used restraint.
-   Fonts: Fraunces (display, opsz + SOFT axes), Instrument Sans (body),
-          JetBrains Mono (meta / index / eyebrow labels)
+   DEEP ORBIT — a deep-space calm canvas. Near-black blue, a single
+   luminous teal accent, glass panels with hairline borders, slow ambient
+   motion. Modern, alive, easy on the eyes.
+   Fonts: Syne (display), Sora (body), Space Mono (meta / index labels)
    ======================================================================= */
 
 @tailwind base;
@@ -12,31 +12,25 @@
 
 /* ===== Tokens ===== */
 :root {
-  /* Ink / warm charcoal */
-  --ink-950: #0a0807;
-  --ink-900: #0f0d0b;
-  --ink-800: #16130f;
-  --ink-700: #1f1b17;
-  --ink-600: #2a241e;
-  --ink-500: #4a3f36;
-  --ink-400: #75685c;
-  --ink-300: #a89b8d;
-  --ink-200: #d0c3b3;
-  --ink-100: #efe6d8;
-  --ink-50:  #faf4e8;
+  /* Abyss / deep-space blues */
+  --abyss-950: #04070d;
+  --abyss-900: #070d18;
+  --abyss-800: #0d1524;
+  --abyss-700: #182236;
+  --abyss-600: #24314c;
+  --abyss-500: #3b4a6b;
+  --abyss-400: #64769b;
+  --abyss-300: #93a3c2;
+  --abyss-200: #bfcbe2;
+  --abyss-100: #e2e9f5;
 
-  /* Paper / warm light */
-  --paper-50:  #fbf7ef;
-  --paper-100: #f5ede0;
-  --paper-200: #e8dcc6;
+  /* Single accent — luminous teal */
+  --lumen: #4cdcca;
+  --lumen-bright: #a8f2e6;
+  --lumen-deep: #1da99d;
 
-  /* Single accent — molten ember */
-  --ember: #ff7043;
-  --ember-glow: #ffad80;
-  --ember-deep: #c64420;
-
-  /* Secondary accent, used rarely */
-  --sage: #9bc5a6;
+  /* Whisper accent — nebula indigo */
+  --haze: #7c8cf8;
 
   --scroll-progress: 0;
 }
@@ -46,35 +40,28 @@ html {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* iOS — prevent iOS Safari from auto-inflating text on orientation change */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* Smooth momentum + stop browsers from pulling into a refresh gesture during scroll-hijacked sections */
   overscroll-behavior-y: none;
 }
 
 body {
-  color: var(--ink-100);
-  background-color: var(--ink-950);
+  color: var(--abyss-100);
+  background-color: var(--abyss-950);
   /* Do NOT put overflow-y:auto here — it creates a nested scroll container
      that breaks position:sticky and framer-motion useScroll. */
   overflow-x: clip;
   -webkit-overflow-scrolling: touch;
-  font-feature-settings: "ss01", "cv11";
-  /* Remove the grey tap flash on iOS */
   -webkit-tap-highlight-color: transparent;
-  /* Safe-area padding for notched iPhones */
   padding-left:  env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
 
-/* All clickable/tappable elements — remove the lingering tap highlight */
 a, button, [role="button"] {
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation; /* disables 300ms tap delay on iOS */
+  touch-action: manipulation;
 }
 
-/* iOS Safari disables user-select on some form elements — re-enable */
 input, textarea {
   -webkit-user-select: text;
   user-select: text;
@@ -82,34 +69,23 @@ input, textarea {
   font-size: 16px;
 }
 
-/* Disable sticky on iOS when the visual viewport is squashed by the keyboard (edge case) */
-@supports (-webkit-touch-callout: none) {
-  /* iOS-only scope */
-  .ios-kill-hover:hover { /* reserved for any hover-only surface we need to patch */ }
-}
-
-/* Fraunces axes */
+/* Display face — Syne, set tight */
 .font-display {
-  font-variation-settings: "opsz" 144, "SOFT" 40;
-  letter-spacing: -0.025em;
-  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 /* Custom cursor */
 .custom-cursor-active * { cursor: none !important; }
 
 /* ===== Backgrounds ===== */
-.bg-ink-graded {
+/* Instant-paint base behind the WebGL starfield — keeps first paint calm
+   while the canvas loads, and remains as depth beneath it. */
+.bg-abyss-graded {
   background:
-    radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 112, 67, 0.045), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(198, 68, 32, 0.03), transparent 60%),
-    linear-gradient(180deg, #0a0807 0%, #0c0a08 60%, #080604 100%);
-}
-
-.bg-paper-graded {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 112, 67, 0.08), transparent 60%),
-    linear-gradient(180deg, #fbf7ef 0%, #f5ede0 100%);
+    radial-gradient(ellipse 80% 60% at 70% 10%, rgba(76, 220, 202, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 15% 80%, rgba(124, 140, 248, 0.045), transparent 60%),
+    linear-gradient(180deg, #04070d 0%, #060b15 50%, #03060b 100%);
 }
 
 /* Hairline grid — architectural, almost invisible */
@@ -118,27 +94,21 @@ input, textarea {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(239, 230, 216, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(239, 230, 216, 0.018) 1px, transparent 1px);
+    linear-gradient(rgba(226, 233, 245, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(226, 233, 245, 0.016) 1px, transparent 1px);
   background-size: 96px 96px;
   pointer-events: none;
   mask-image: radial-gradient(ellipse at center, black 40%, transparent 95%);
 }
 
-.grid-overlay-light::after {
-  background-image:
-    linear-gradient(rgba(22, 19, 15, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22, 19, 15, 0.03) 1px, transparent 1px);
-}
-
 /* ===== Utilities ===== */
 @layer components {
-  .text-muted { color: var(--ink-300); }
-  .text-subtle { color: var(--ink-400); }
+  .text-muted { color: var(--abyss-300); }
+  .text-subtle { color: var(--abyss-400); }
 
   /* The single primary gradient type treatment */
-  .text-sun {
-    background: linear-gradient(135deg, #ffd0b3 0%, #ff7043 70%, #c64420 100%);
+  .text-lumen {
+    background: linear-gradient(120deg, #a8f2e6 0%, #4cdcca 55%, #2fc9b9 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -151,70 +121,82 @@ input, textarea {
 
   /* Eyebrow — monospace, restrained */
   .eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.2em] font-medium;
-    color: var(--ember);
+    @apply font-mono text-[11px] uppercase tracking-[0.22em] font-medium;
+    color: var(--lumen);
   }
   .eyebrow-dim {
-    @apply font-mono text-[11px] uppercase tracking-[0.2em];
-    color: var(--ink-400);
+    @apply font-mono text-[11px] uppercase tracking-[0.22em];
+    color: var(--abyss-400);
   }
 
   /* Horizontal rules */
-  .rule { @apply h-px w-full bg-ink-700/80; }
-  .rule-ember { @apply h-px w-16 bg-ember-500; }
+  .rule { @apply h-px w-full bg-abyss-700/80; }
+  .rule-lumen { @apply h-px w-16 bg-lumen-400; }
 
-  /* Primary button — solid ember, refined */
+  /* Primary button — luminous teal pill */
   .btn-primary {
     @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
            rounded-full font-medium text-sm
-           bg-ember-500 text-ink-950
+           bg-lumen-400 text-abyss-950
            transition-all duration-300;
-    box-shadow: 0 10px 30px -10px rgba(255, 112, 67, 0.4);
+    box-shadow: 0 0 0 1px rgba(168, 242, 230, 0.25) inset,
+                0 10px 35px -10px rgba(76, 220, 202, 0.45);
   }
   .btn-primary:hover {
-    background-color: #ff8456;
+    background-color: #76e9d8;
     transform: translateY(-1px);
-    box-shadow: 0 20px 40px -10px rgba(255, 112, 67, 0.55);
+    box-shadow: 0 0 0 1px rgba(168, 242, 230, 0.4) inset,
+                0 18px 45px -10px rgba(76, 220, 202, 0.6);
   }
 
-  /* Secondary — ghost, elegant */
+  /* Secondary — glass ghost */
   .btn-secondary {
     @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
            rounded-full font-medium text-sm
-           text-ink-100 border border-ink-700
+           text-abyss-100 border border-abyss-600/80 bg-abyss-800/40
            transition-all duration-300;
+    backdrop-filter: blur(8px);
   }
   .btn-secondary:hover {
-    border-color: var(--ember);
-    color: var(--ember);
+    border-color: rgba(76, 220, 202, 0.5);
+    color: var(--lumen);
+    box-shadow: 0 8px 30px -12px rgba(76, 220, 202, 0.3);
   }
 
   /* Editorial underline link */
   .link-editorial {
     @apply relative inline-flex items-center gap-2;
     background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0% 1px;
+    background-size: 0 1px;
     background-position: 0 100%;
     background-repeat: no-repeat;
     transition: background-size 0.4s cubic-bezier(.2,.8,.2,1);
   }
   .link-editorial:hover { background-size: 100% 1px; }
 
-  /* Premium panel */
+  /* Glass panel — the default surface */
   .panel {
-    @apply relative rounded-2xl border border-ink-700/80;
-    background: linear-gradient(180deg, rgba(22, 19, 15, 0.8), rgba(15, 13, 11, 0.95));
+    @apply relative rounded-3xl border border-abyss-600/50;
+    background: linear-gradient(165deg, rgba(13, 21, 36, 0.72), rgba(7, 13, 24, 0.92));
+    box-shadow: 0 1px 0 rgba(226, 233, 245, 0.04) inset,
+                0 30px 60px -30px rgba(0, 0, 0, 0.6);
   }
-  .panel-light {
-    @apply relative rounded-2xl border border-ink-800/10;
-    background: linear-gradient(180deg, rgba(251, 247, 239, 0.9), rgba(245, 237, 224, 0.8));
+  .panel-glow {
+    box-shadow: 0 1px 0 rgba(168, 242, 230, 0.07) inset,
+                0 30px 80px -35px rgba(76, 220, 202, 0.25);
+  }
+  /* Hoverable panel — lifts with a soft teal halo */
+  .panel-hover { transition: border-color 0.3s ease, box-shadow 0.4s ease, transform 0.3s ease; }
+  .panel-hover:hover {
+    border-color: rgba(76, 220, 202, 0.35);
+    box-shadow: 0 1px 0 rgba(168, 242, 230, 0.07) inset,
+                0 30px 80px -35px rgba(76, 220, 202, 0.3);
   }
 
   /* Numeric — for stats */
   .stat-num {
     @apply font-display tabular-nums;
-    font-variation-settings: "opsz" 144, "SOFT" 20;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.03em;
   }
 
   .project-img-pan {
@@ -236,16 +218,16 @@ input, textarea {
 /* Hair-thin inline scrollbar (for testimonial cards) */
 .custom-scroll {
   scrollbar-width: thin;
-  scrollbar-color: var(--ember-deep) transparent;
+  scrollbar-color: var(--lumen-deep) transparent;
 }
 .custom-scroll::-webkit-scrollbar { width: 3px; }
 .custom-scroll::-webkit-scrollbar-track { background: transparent; }
 .custom-scroll::-webkit-scrollbar-thumb {
-  background: var(--ember-deep);
+  background: var(--lumen-deep);
   border-radius: 2px;
 }
 
-/* ===== Custom Scrollbar — hair-thin ember ===== */
+/* ===== Custom Scrollbar — hair-thin teal ===== */
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
     width: 5px;
@@ -253,25 +235,17 @@ input, textarea {
   }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: var(--ember-deep);
+    background: var(--lumen-deep);
     border-radius: 0;
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--ember); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--lumen); }
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--ember-deep) transparent;
+    scrollbar-color: var(--lumen-deep) transparent;
   }
 }
 
 /* ===== Animations ===== */
-@keyframes spotlight {
-  0% { opacity: 0; transform: translate(-72%, -62%) scale(0.5); }
-  100% { opacity: 1; transform: translate(-50%, -40%) scale(1); }
-}
-.animate-spotlight {
-  animation: spotlight 2s ease 0.5s 1 forwards;
-}
-
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
@@ -307,9 +281,9 @@ input, textarea {
 }
 .shimmer-bg {
   background: linear-gradient(90deg,
-    rgba(22, 19, 15, 0.4) 0%,
-    rgba(42, 36, 30, 0.6) 50%,
-    rgba(22, 19, 15, 0.4) 100%);
+    rgba(13, 21, 36, 0.4) 0%,
+    rgba(36, 49, 76, 0.6) 50%,
+    rgba(13, 21, 36, 0.4) 100%);
   background-size: 200% 100%;
   animation: shimmer 3s linear infinite;
 }
@@ -323,17 +297,17 @@ input, textarea {
 @keyframes rotate-gradient {
   to { --angle: 360deg; }
 }
-.ember-ring {
+.lumen-ring {
   position: relative;
   background: transparent;
 }
-.ember-ring::before {
+.lumen-ring::before {
   content: '';
   position: absolute;
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: conic-gradient(from var(--angle), transparent 0deg, #ff7043 90deg, #ffad80 180deg, #c64420 270deg, transparent 360deg);
+  background: conic-gradient(from var(--angle), transparent 0deg, #4cdcca 90deg, #a8f2e6 180deg, #1da99d 270deg, transparent 360deg);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -343,35 +317,28 @@ input, textarea {
 
 /* ===== Selection ===== */
 ::selection {
-  background: rgba(255, 112, 67, 0.35);
+  background: rgba(76, 220, 202, 0.3);
   color: #fff;
 }
 
 /* ===== Mobile Performance ===== */
 @media (max-width: 767px) {
-  /* Kill decorative ambient drifts — they're not essential and eat battery */
   .animate-drift-1, .animate-drift-2 { animation: none !important; }
 
-  /* backdrop-blur is very expensive on iOS Safari — quarter it on mobile.
-     Safari keeps the frosted look but drops far less frames during scroll. */
+  /* backdrop-blur is very expensive on iOS Safari — quarter it on mobile */
   .backdrop-blur-md,
   .backdrop-blur-lg,
   .backdrop-blur-xl,
   .backdrop-blur-2xl,
   .backdrop-blur-3xl { backdrop-filter: blur(6px) !important; }
 
-  /* Disable the subtle hover-pan on projects — not useful on touch and causes jank */
   .group:hover .project-img-pan { transform: none !important; }
 
-  /* The ember ring animation uses conic-gradient + animated @property — heavy on mobile */
-  .ember-ring::before { animation: none !important; }
+  .lumen-ring::before { animation: none !important; }
 }
 
-/* iOS Safari — extra guards.
-   @supports (-webkit-touch-callout: none) is iOS-only. */
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 767px) {
-    /* Some iOS versions choke on fixed + backdrop-filter combos mid-scroll */
     .fixed.backdrop-blur-xl { backdrop-filter: blur(4px) !important; }
   }
 }
@@ -383,30 +350,10 @@ input, textarea {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .animate-spotlight { opacity: 1 !important; transform: translate(-50%, -40%) scale(1) !important; }
 }
 
 /* ===== Focus ===== */
 :focus-visible {
-  outline: 2px solid var(--ember);
+  outline: 2px solid var(--lumen);
   outline-offset: 3px;
 }
-
-/* ===== Back-compat shims — legacy classes in untouched components map gracefully ===== */
-.glass-card,
-.glass-card-blur { @apply panel; }
-.glass-card-light,
-.glass-card-blur-light { @apply panel-light; }
-.gradient-text { @apply text-sun; }
-.gradient-text-light {
-  background: linear-gradient(135deg, #c64420, #8a2d0f);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-.gradient-bg-dark { @apply bg-ink-graded; }
-.gradient-bg-light { @apply bg-paper-graded; }
-.accent-glow { box-shadow: 0 30px 80px -30px rgba(255, 112, 67, 0.35); }
-.accent-glow-hover:hover { box-shadow: 0 40px 100px -30px rgba(255, 112, 67, 0.55); }
-.animated-gradient-border { @apply ember-ring; }

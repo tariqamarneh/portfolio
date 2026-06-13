@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail, Download, Github, X, Command } from 'lucide-react'
+import { Search, Home, User, Clock, FolderGit2, Code2, MessageSquare, Mail, Download, X, Command } from 'lucide-react'
+import { Github } from '@/components/icons/BrandIcons'
 import { useTheme } from './GradientBackground'
 import { usePortfolioData } from '@/context/PortfolioDataContext'
 

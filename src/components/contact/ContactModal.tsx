@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X, Send } from 'lucide-react';
+import { Github, Linkedin } from '@/components/icons/BrandIcons';
 import { MESSAGE_MAX_LENGTH } from '@/lib/constants';
-
 
 interface ContactModalProps {
     isOpen: boolean;
@@ -67,11 +67,9 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         setFieldErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
     };
 
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validate all fields before submission
         const errors = {
             name: validateField('name', formData.name),
             email: validateField('email', formData.email),
@@ -113,127 +111,93 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
 
     const formFields = [
         { name: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
-        { name: 'email', label: 'Email', type: 'email', placeholder: 'your.email@example.com' },
+        { name: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com' },
         {
             name: 'message',
             label: 'Message',
             type: 'textarea',
-            placeholder: 'Your message here...',
+            placeholder: 'Tell me about your project…',
             rows: 4
         }
     ];
 
-    const overlayVariants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1 }
-    };
-
-    const modalVariants = {
-        hidden: {
-            opacity: 0,
-            scale: 0.75,
-            y: -50
-        },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                damping: 30,
-                stiffness: 400
-            }
-        },
-        exit: {
-            opacity: 0,
-            scale: 0.75,
-            y: 50,
-            transition: {
-                duration: 0.2
-            }
-        }
-    };
+    const inputBase = `
+        w-full px-4 py-3 rounded-xl text-sm
+        border transition-colors duration-200
+        bg-abyss-950/70 border-abyss-700 text-abyss-100 placeholder:text-abyss-500
+        focus:border-lumen-500 focus:outline-none
+    `;
 
     return (
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm"
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={overlayVariants}
+                    className="fixed inset-0 bg-abyss-950/70 flex items-center justify-center z-[200] backdrop-blur-md px-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     onClick={onClose}
                 >
                     <motion.div
-                        className="bg-gray-900 rounded-lg p-8 max-w-md w-full mx-4 relative"
-                        variants={modalVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                        className="relative w-full max-w-md p-7 sm:p-8 panel panel-glow"
+                        initial={{ opacity: 0, scale: 0.9, y: 24 }}
+                        animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', damping: 28, stiffness: 360 } }}
+                        exit={{ opacity: 0, scale: 0.92, y: 16, transition: { duration: 0.2 } }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                        {/* Soft teal glow */}
+                        <div
+                            aria-hidden
+                            className="pointer-events-none absolute -top-20 -right-20 w-56 h-56 rounded-full"
+                            style={{ background: 'radial-gradient(circle, rgba(76,220,202,0.14), transparent 70%)' }}
+                        />
+
+                        <button
                             onClick={onClose}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                            aria-label="Close"
+                            className="absolute top-4 right-4 p-2 rounded-full text-abyss-400 hover:text-lumen-400 hover:bg-abyss-800 transition-colors"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </motion.button>
+                            <X className="w-4 h-4" strokeWidth={2} />
+                        </button>
 
-                        <motion.h2
-                            className="text-2xl font-bold mb-6 text-white"
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            Get in Touch
-                        </motion.h2>
+                        <div className="relative mb-7">
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className="w-6 h-px bg-lumen-400" />
+                                <span className="eyebrow">Say hello</span>
+                            </div>
+                            <h2 className="font-display text-2xl sm:text-3xl text-abyss-100">
+                                Get in <span className="text-lumen">touch.</span>
+                            </h2>
+                        </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="relative space-y-4">
                             {formFields.map(({ name, label, type, placeholder, rows }) => (
-                                <div key={name} className="mb-6">
+                                <div key={name}>
                                     <label
                                         htmlFor={name}
-                                        className="block mb-2 text-sm font-medium text-gray-300"
+                                        className="flex items-center justify-between mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-abyss-400"
                                     >
-                                        {label}
+                                        <span>{label}</span>
+                                        {name === 'message' && (
+                                            <span className="text-lumen-400 tabular-nums">
+                                                {formData.message.length}/{MESSAGE_MAX_LENGTH}
+                                            </span>
+                                        )}
                                     </label>
                                     {type === 'textarea' ? (
-                                        <div>
-                                            <textarea
-                                                id={name}
-                                                name={name}
-                                                value={formData[name as keyof typeof formData]}
-                                                onChange={handleChange}
-                                                required
-                                                rows={rows}
-                                                maxLength={MESSAGE_MAX_LENGTH}
-                                                className={`w-full px-3 py-2 text-gray-300 bg-gray-800/50 rounded-md 
-                      focus:outline-none focus:ring-2 focus:ring-cyan-500
-                      ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
-                                                placeholder={placeholder}
-                                                aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
-                                                aria-describedby={`${name}-error`}
-                                            />
-                                            <div className="mt-1 text-sm text-gray-400">
-                                                {formData.message.length}/{MESSAGE_MAX_LENGTH} characters
-                                            </div>
-                                        </div>
+                                        <textarea
+                                            id={name}
+                                            name={name}
+                                            value={formData[name as keyof typeof formData]}
+                                            onChange={handleChange}
+                                            required
+                                            rows={rows}
+                                            maxLength={MESSAGE_MAX_LENGTH}
+                                            className={`${inputBase} resize-none ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-red-400/60' : ''}`}
+                                            placeholder={placeholder}
+                                            aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
+                                            aria-describedby={`${name}-error`}
+                                        />
                                     ) : (
                                         <input
                                             type={type}
@@ -242,9 +206,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                             value={formData[name as keyof typeof formData]}
                                             onChange={handleChange}
                                             required
-                                            className={`w-full px-3 py-2 text-gray-300 bg-gray-800/50 rounded-md 
-                    focus:outline-none focus:ring-2 focus:ring-cyan-500
-                    ${fieldErrors[name as keyof typeof fieldErrors] ? 'border-red-500' : ''}`}
+                                            className={`${inputBase} ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-red-400/60' : ''}`}
                                             placeholder={placeholder}
                                             aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
                                             aria-describedby={`${name}-error`}
@@ -253,7 +215,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                     {fieldErrors[name as keyof typeof fieldErrors] && (
                                         <p
                                             id={`${name}-error`}
-                                            className="mt-1 text-sm text-red-400"
+                                            className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-red-300"
                                             role="alert"
                                         >
                                             {fieldErrors[name as keyof typeof fieldErrors]}
@@ -262,85 +224,73 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                                 </div>
                             ))}
 
-                            <motion.button
+                            <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full px-5 py-3 text-white bg-gradient-to-r from-cyan-500 to-violet-600 
-              rounded-md hover:from-cyan-600 hover:to-violet-700 focus:outline-none 
-              focus:ring-2 focus:ring-cyan-500 disabled:opacity-50
-              flex items-center justify-center"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed group"
                                 aria-label={isSubmitting ? 'Sending message...' : 'Send message'}
                             >
                                 {isSubmitting ? (
                                     <>
-                                        <Loader2 className="animate-spin mr-2" size={20} />
-                                        Sending...
+                                        <Loader2 className="animate-spin w-4 h-4" strokeWidth={2} />
+                                        <span>Sending</span>
                                     </>
                                 ) : (
-                                    'Send Message'
+                                    <>
+                                        <span>Send message</span>
+                                        <Send className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
+                                    </>
                                 )}
-                            </motion.button>
-
+                            </button>
                         </form>
 
                         {submitMessage && (
                             <motion.p
-                                className="mt-4 text-center text-green-400"
+                                className="mt-4 p-3 rounded-xl text-sm text-center border border-sage-500/40 bg-sage-500/5 text-sage-400"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 0.4 }}
                             >
-                                {submitMessage}
+                                ✓ {submitMessage}
                             </motion.p>
                         )}
 
                         {errorMessage && (
                             <motion.p
-                                className="mt-4 text-center text-red-400"
+                                className="mt-4 p-3 rounded-xl text-sm text-center border border-red-400/40 bg-red-400/5 text-red-300"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 0.4 }}
                             >
-                                {errorMessage}
+                                ⚠ {errorMessage}
                             </motion.p>
                         )}
 
-                        <motion.div
-                            className="mt-6 pt-6 border-t border-gray-700"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.6 }}
-                        >
-                            <p className="text-gray-300 text-sm mb-4">Or connect with me on:</p>
-                            <div className="flex space-x-4 justify-center">
-                                <motion.a
+                        <div className="relative mt-6 pt-6 border-t border-abyss-700/60">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-abyss-400 mb-3 text-center">
+                                Or find me elsewhere
+                            </p>
+                            <div className="flex justify-center gap-3">
+                                <a
                                     href="https://github.com/tariqamarneh"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-cyan-400 hover:text-white transition-colors duration-300"
-                                    whileHover={{ scale: 1.1, rotate: 5 }}
-                                    whileTap={{ scale: 0.9 }}
+                                    aria-label="GitHub"
+                                    className="p-2.5 rounded-full border border-abyss-700 text-abyss-300 hover:text-lumen-400 hover:border-lumen-500/40 transition-colors"
                                 >
-                                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                                    </svg>
-                                </motion.a>
-                                <motion.a
+                                    <Github className="w-4 h-4" strokeWidth={1.8} />
+                                </a>
+                                <a
                                     href="https://www.linkedin.com/in/tariq-naser/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-cyan-400 hover:text-white transition-colors duration-300"
-                                    whileHover={{ scale: 1.1, rotate: -5 }}
-                                    whileTap={{ scale: 0.9 }}
+                                    aria-label="LinkedIn"
+                                    className="p-2.5 rounded-full border border-abyss-700 text-abyss-300 hover:text-lumen-400 hover:border-lumen-500/40 transition-colors"
                                 >
-                                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
-                                    </svg>
-                                </motion.a>
+                                    <Linkedin className="w-4 h-4" strokeWidth={1.8} />
+                                </a>
                             </div>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 </motion.div>
             )}
@@ -349,4 +299,3 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
 };
 
 export default ContactModal;
-

@@ -2,7 +2,6 @@
 
 import React, { useRef, ReactNode } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, MotionValue } from 'framer-motion'
-import ReactLenis from 'lenis/react'
 
 /**
  * Sticky stacking cards — each card pins below the header, and the next one
@@ -34,7 +33,6 @@ export const StackingCards: React.FC<StackingCardsProps> = ({ header, children, 
   const total = items.length
 
   return (
-    <ReactLenis root>
       <main
         ref={container}
         className={`
@@ -65,7 +63,6 @@ export const StackingCards: React.FC<StackingCardsProps> = ({ header, children, 
           })
         })}
       </main>
-    </ReactLenis>
   )
 }
 

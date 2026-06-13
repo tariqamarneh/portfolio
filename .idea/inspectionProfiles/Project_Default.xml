@@ -1,6 +1,13 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <!-- Tailwind directives (@tailwind/@apply/@layer) are not standard CSS;
+         silence the built-in "unknown at-rule" inspection. -->
+    <inspection_tool class="CssUnknownAtRule" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CssInvalidAtRule" enabled="false" level="WARNING" enabled_by_default="false" />
+    <!-- Next.js App Router sets the document title via the `metadata` export,
+         not a literal <title> tag — the HTML inspection is a false positive. -->
+    <inspection_tool class="HtmlRequiredTitleElement" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
         <language minSize="68" name="TypeScript" />

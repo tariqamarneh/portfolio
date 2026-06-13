@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Loader2, Mail, MessageSquare, User, Send, Github, Linkedin, ArrowUpRight } from 'lucide-react'
+import { Loader2, Mail, MessageSquare, User, Send, ArrowUpRight } from 'lucide-react'
+import { Github, Linkedin } from '@/components/icons/BrandIcons'
 import { motion } from 'framer-motion'
-import { useTheme } from '../general/GradientBackground'
 import { MESSAGE_MAX_LENGTH } from '@/lib/constants'
 
 const ContactSection = () => {
@@ -12,7 +12,6 @@ const ContactSection = () => {
   const [submitMessage, setSubmitMessage] = useState('')
   const [submitError, setErrorMessage] = useState('')
   const [fieldErrors, setFieldErrors] = useState({ name: '', email: '', message: '' })
-  const { isDark } = useTheme()
 
   const validateField = (name: string, value: string) => {
     switch (name) {
@@ -78,9 +77,7 @@ const ContactSection = () => {
   const inputBase = `
     w-full pl-11 pr-4 py-3 rounded-xl text-sm
     border transition-colors duration-200
-    ${isDark
-      ? 'bg-ink-900/60 border-ink-700 text-ink-100 placeholder:text-ink-500 focus:border-ember-500'
-      : 'bg-paper-50/80 border-ink-800/10 text-ink-950 placeholder:text-ink-400 focus:border-ember-500'}
+    bg-abyss-900/60 border-abyss-700 text-abyss-100 placeholder:text-abyss-500 focus:border-lumen-500
     focus:outline-none
   `
 
@@ -97,19 +94,16 @@ const ContactSection = () => {
         >
           <div className="col-span-12 md:col-span-7">
             <div className="flex items-center gap-3 mb-3">
-              <span className="w-8 h-px bg-ember-500" />
+              <span className="w-8 h-px bg-lumen-400" />
               <span className="eyebrow">Chapter · 06 / Contact</span>
             </div>
-            <h2 className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
-              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] text-abyss-100">
               Let&apos;s make{' '}
-              <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
-                something.
-              </span>
+              <span className="text-lumen">something.</span>
             </h2>
           </div>
           <div className="col-span-12 md:col-span-4 md:col-start-9 flex items-end">
-            <p className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+            <p className="text-base md:text-lg leading-relaxed font-light text-abyss-300">
               Great projects start with a conversation. Drop a note — I read
               every message and usually reply within a day.
             </p>
@@ -120,19 +114,16 @@ const ContactSection = () => {
           {/* Form — 7 cols */}
           <motion.form
             onSubmit={handleSubmit}
-            className={`
-              lg:col-span-7 relative p-6 md:p-8 rounded-3xl
-              ${isDark ? 'bg-ink-900/60 border border-ink-700' : 'bg-paper-50/70 border border-ink-800/10'}
-            `}
+            className="lg:col-span-7 relative p-6 md:p-8 panel"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center gap-2.5 mb-7 pb-5 border-b border-ink-700/40">
+            <div className="flex items-center gap-2.5 mb-7 pb-5 border-b border-abyss-700/50">
               <span className="relative flex w-2 h-2">
-                <span className="absolute inset-0 rounded-full bg-ember-500 animate-ping opacity-60" />
-                <span className="relative rounded-full bg-ember-500 w-2 h-2" />
+                <span className="absolute inset-0 rounded-full bg-lumen-400 animate-ping opacity-60" />
+                <span className="relative rounded-full bg-lumen-400 w-2 h-2" />
               </span>
               <span className="eyebrow">Send a message</span>
             </div>
@@ -142,17 +133,17 @@ const ContactSection = () => {
                 <div key={name}>
                   <label
                     htmlFor={name}
-                    className={`flex items-center justify-between mb-2 font-mono text-[10px] uppercase tracking-[0.18em] ${isDark ? 'text-ink-400' : 'text-ink-500'}`}
+                    className="flex items-center justify-between mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-abyss-400"
                   >
                     <span>{label}</span>
                     {name === 'message' && (
-                      <span className="text-ember-500 tabular-nums">
+                      <span className="text-lumen-400 tabular-nums">
                         {formState.message.length}/{MESSAGE_MAX_LENGTH}
                       </span>
                     )}
                   </label>
                   <div className="relative">
-                    <div className={`absolute left-3.5 ${type === 'textarea' ? 'top-3.5' : 'top-1/2 -translate-y-1/2'} ${isDark ? 'text-ink-400' : 'text-ink-500'}`}>
+                    <div className={`absolute left-3.5 ${type === 'textarea' ? 'top-3.5' : 'top-1/2 -translate-y-1/2'} text-abyss-400`}>
                       {icon}
                     </div>
                     {type === 'textarea' ? (
@@ -164,7 +155,7 @@ const ContactSection = () => {
                         required
                         rows={rows}
                         maxLength={MESSAGE_MAX_LENGTH}
-                        className={`${inputBase} resize-none ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-ember-600' : ''}`}
+                        className={`${inputBase} resize-none ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-red-400/60' : ''}`}
                         placeholder={placeholder}
                         aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
                       />
@@ -176,13 +167,13 @@ const ContactSection = () => {
                         value={formState[name as keyof typeof formState]}
                         onChange={handleChange}
                         required
-                        className={`${inputBase} ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-ember-600' : ''}`}
+                        className={`${inputBase} ${fieldErrors[name as keyof typeof fieldErrors] ? '!border-red-400/60' : ''}`}
                         placeholder={placeholder}
                         aria-invalid={!!fieldErrors[name as keyof typeof fieldErrors]}
                       />
                     )}
                     {fieldErrors[name as keyof typeof fieldErrors] && (
-                      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ember-400" role="alert">
+                      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-red-300" role="alert">
                         {fieldErrors[name as keyof typeof fieldErrors]}
                       </p>
                     )}
@@ -214,7 +205,7 @@ const ContactSection = () => {
                 role="alert"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`mt-4 p-4 rounded-xl text-sm ${isDark ? 'border border-sage-500/40 bg-sage-500/5 text-sage-400' : 'border border-sage-500/40 bg-sage-500/5 text-sage-500'}`}
+                className="mt-4 p-4 rounded-xl text-sm border border-sage-500/40 bg-sage-500/5 text-sage-400"
               >
                 ✓ {submitMessage}
               </motion.div>
@@ -224,7 +215,7 @@ const ContactSection = () => {
                 role="alert"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 rounded-xl text-sm border border-ember-600/40 bg-ember-600/5 text-ember-400"
+                className="mt-4 p-4 rounded-xl text-sm border border-red-400/40 bg-red-400/5 text-red-300"
               >
                 ⚠ {submitError}
               </motion.div>
@@ -240,36 +231,33 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.15 }}
           >
             {/* Direct email */}
-            <div className={`p-6 md:p-7 rounded-3xl ${isDark ? 'bg-ink-900/60 border border-ink-700' : 'bg-paper-50/70 border border-ink-800/10'}`}>
+            <div className="p-6 md:p-7 panel">
               <span className="eyebrow-dim mb-2 block">Direct</span>
               <a
                 href="mailto:tariqs.naser@gmail.com"
-                className={`font-display text-xl md:text-2xl lg:text-3xl leading-tight break-all link-editorial ${isDark ? 'text-ink-100 hover:text-ember-400' : 'text-ink-950 hover:text-ember-600'}`}
-                style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}
+                className="font-display text-xl md:text-2xl lg:text-3xl leading-tight break-all link-editorial text-abyss-100 hover:text-lumen-400"
               >
-                tariqs.naser<span className="text-ember-500">@</span>gmail.com
+                tariqs.naser<span className="text-lumen-400">@</span>gmail.com
               </a>
               <div className="rule my-5" />
-              <p className={`text-sm leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
-                <span className="text-ember-500">→</span> I reply within 24 hours. For urgent matters, LinkedIn is faster.
+              <p className="text-sm leading-relaxed font-light text-abyss-300">
+                <span className="text-lumen-400">→</span> I reply within 24 hours. For urgent matters, LinkedIn is faster.
               </p>
             </div>
 
             {/* Socials */}
-            <div className={`p-6 md:p-7 rounded-3xl ${isDark ? 'bg-ink-900/60 border border-ink-700' : 'bg-paper-50/70 border border-ink-800/10'}`}>
+            <div className="p-6 md:p-7 panel">
               <span className="eyebrow-dim mb-4 block">Elsewhere</span>
-              <div className={`divide-y ${isDark ? 'divide-ink-700/60' : 'divide-ink-800/10'}`}>
+              <div className="divide-y divide-abyss-700/60">
                 <a
                   href="https://github.com/tariqamarneh"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group flex items-center justify-between py-3 transition-colors ${isDark ? 'text-ink-100 hover:text-ember-400' : 'text-ink-950 hover:text-ember-600'}`}
+                  className="group flex items-center justify-between py-3 transition-colors text-abyss-100 hover:text-lumen-400"
                 >
                   <div className="flex items-center gap-3">
                     <Github className="w-4 h-4" strokeWidth={1.8} />
-                    <span className="font-display text-lg" style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
-                      GitHub
-                    </span>
+                    <span className="font-display text-lg">GitHub</span>
                   </div>
                   <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
                 </a>
@@ -277,13 +265,11 @@ const ContactSection = () => {
                   href="https://www.linkedin.com/in/tariq-naser/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group flex items-center justify-between py-3 transition-colors ${isDark ? 'text-ink-100 hover:text-ember-400' : 'text-ink-950 hover:text-ember-600'}`}
+                  className="group flex items-center justify-between py-3 transition-colors text-abyss-100 hover:text-lumen-400"
                 >
                   <div className="flex items-center gap-3">
                     <Linkedin className="w-4 h-4" strokeWidth={1.8} />
-                    <span className="font-display text-lg" style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
-                      LinkedIn
-                    </span>
+                    <span className="font-display text-lg">LinkedIn</span>
                   </div>
                   <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
                 </a>
@@ -291,17 +277,13 @@ const ContactSection = () => {
             </div>
 
             {/* Signature pull quote */}
-            <div className={`
-              relative p-6 md:p-7 rounded-3xl overflow-hidden
-              ${isDark ? 'bg-ink-900/60 border border-ember-500/30' : 'bg-paper-50/70 border border-ember-500/30'}
-            `}>
+            <div className="relative p-6 md:p-7 rounded-3xl overflow-hidden bg-abyss-900/60 border border-lumen-500/25">
               <div className="pointer-events-none absolute -top-12 -right-12 w-48 h-48 rounded-full"
-                style={{ background: 'radial-gradient(circle, rgba(255,112,67,0.18), transparent 70%)' }}
+                style={{ background: 'radial-gradient(circle, rgba(76,220,202,0.15), transparent 70%)' }}
               />
               <div className="relative">
                 <div className="eyebrow mb-3">Signal</div>
-                <p className={`font-display italic text-lg md:text-xl leading-snug ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
-                  style={{ fontVariationSettings: '"opsz" 72, "SOFT" 100' }}>
+                <p className="font-display text-lg md:text-xl leading-snug text-abyss-100">
                   &ldquo;The best projects start as conversations.&rdquo;
                 </p>
               </div>

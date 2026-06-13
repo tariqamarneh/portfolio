@@ -81,7 +81,7 @@ export default function CustomCursor() {
             isHovering ? 'w-14 h-14' : 'w-10 h-10'
           }`}
           style={{
-            background: 'radial-gradient(circle, rgba(6,182,212,0.15), rgba(139,92,246,0.08), transparent 70%)',
+            background: 'radial-gradient(circle, rgba(76,220,202,0.14), rgba(124,140,248,0.07), transparent 70%)',
             opacity: isVisible ? 1 : 0,
           }}
         />
@@ -100,8 +100,8 @@ export default function CustomCursor() {
         <div
           className={`rounded-full transition-all duration-200 ${
             isHovering
-              ? 'w-4 h-4 bg-cyan-400/60 shadow-[0_0_20px_rgba(6,182,212,0.5)]'
-              : 'w-2 h-2 bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
+              ? 'w-4 h-4 bg-lumen-400/60 shadow-[0_0_20px_rgba(76,220,202,0.5)]'
+              : 'w-2 h-2 bg-lumen-400 shadow-[0_0_10px_rgba(76,220,202,0.4)]'
           }`}
           style={{ opacity: isVisible ? 1 : 0 }}
         />

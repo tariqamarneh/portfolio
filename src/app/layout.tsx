@@ -1,34 +1,35 @@
 import type { Metadata, Viewport } from 'next'
-import { Fraunces, JetBrains_Mono, Instrument_Sans } from 'next/font/google'
+import { Syne, Sora, Space_Mono } from 'next/font/google'
 import './globals.css'
-import FloatingNav from '../components/general/FloatingNav'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
 import React from "react";
 
-// Editorial serif with optical sizing + soft axis for distinctive display type
-const fraunces = Fraunces({
+// Geometric display face — cosmic, distinctive, set tight (only 600/700 are used)
+const display = Syne({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
   variable: '--font-display',
-  axes: ['opsz', 'SOFT'],
+  weight: ['600', '700'],
 })
 
-// Monospace for meta labels, indices, data
-const mono = JetBrains_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-  variable: '--font-mono',
-})
-
-// Editorial body font — light and distinctive
-const body = Instrument_Sans({
+// Body — soft geometric sans, calm and readable
+const body = Sora({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
   variable: '--font-sans',
+  weight: ['300', '400', '500', '600'],
+})
+
+// Monospace for meta labels, indices, data (only 400 is used)
+const mono = Space_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-mono',
+  weight: ['400'],
 })
 
 export const viewport: Viewport = {
@@ -39,10 +40,7 @@ export const viewport: Viewport = {
   minimumScale: 1,
   // Fit under the notch / dynamic island on iOS
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fbf7ef' },
-    { media: '(prefers-color-scheme: dark)',  color: '#0a0807' },
-  ],
+  themeColor: '#04070d',
 }
 
 export const metadata: Metadata = {
@@ -90,24 +88,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`scroll-smooth ${fraunces.variable} ${mono.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${mono.variable} ${body.variable}`}>
       <head>
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
           crossOrigin="anonymous"
         />
-        <link
-          rel="preconnect"
-          href="https://cdnjs.cloudflare.com"
-          crossOrigin="anonymous"
-        />
       </head>
-      <body className="relative bg-[#0c0a08] text-[#f5ece0] flex flex-col min-h-screen antialiased font-sans selection:bg-[#ff6b2b]/30 selection:text-white">
+      <body className="relative bg-[#04070d] text-[#e2e9f5] flex flex-col min-h-screen antialiased font-sans selection:bg-[#4cdcca]/30 selection:text-white">
         <SpeedInsights />
         <Analytics />
         <main className="flex-grow relative">
-          <FloatingNav />
           {children}
         </main>
       </body>

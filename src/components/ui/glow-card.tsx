@@ -5,20 +5,20 @@ import React, { useEffect, useRef, ReactNode } from 'react'
 interface GlowCardProps {
   children: ReactNode
   className?: string
-  glowColor?: 'ember' | 'amber' | 'sage' | 'gold'
+  glowColor?: 'lumen' | 'ember' | 'haze' | 'sage'
 }
 
 const glowColorMap = {
-  ember: { base: 20, spread: 40 },   // ember-500 hue
-  amber: { base: 35, spread: 35 },
-  sage:  { base: 140, spread: 60 },
-  gold:  { base: 45, spread: 30 },
+  lumen: { base: 172, spread: 24 },  // luminous teal
+  ember: { base: 172, spread: 24 },  // legacy alias → teal
+  haze:  { base: 232, spread: 20 },  // nebula indigo
+  sage:  { base: 150, spread: 30 },
 }
 
 export const GlowCard: React.FC<GlowCardProps> = ({
   children,
   className = '',
-  glowColor = 'ember',
+  glowColor = 'lumen',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -44,8 +44,8 @@ export const GlowCard: React.FC<GlowCardProps> = ({
     ['--spread' as string]: spread,
     ['--radius' as string]: '14',
     ['--border' as string]: '1',
-    ['--backdrop' as string]: 'hsl(30 8% 10% / 0.55)',
-    ['--backup-border' as string]: 'hsl(30 12% 18% / 0.7)',
+    ['--backdrop' as string]: 'hsl(218 47% 8% / 0.6)',
+    ['--backup-border' as string]: 'hsl(219 38% 15% / 0.8)',
     ['--size' as string]: '260',
     ['--outer' as string]: '1',
     ['--border-size' as string]: 'calc(var(--border, 1) * 1px)',

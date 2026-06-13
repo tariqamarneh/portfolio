@@ -5,9 +5,10 @@ import { motion } from 'framer-motion'
 import {
   Lock, LogOut, Plus, Trash2, Edit2, Save, X,
   FolderGit2, Code2, Sparkles, Star, Eye, EyeOff,
-  MessageSquare, Clock, FileText, Linkedin,
-  Upload, GripVertical, ExternalLink, Github
+  MessageSquare, Clock, FileText,
+  Upload, GripVertical, ExternalLink
 } from 'lucide-react'
+import { Github, Linkedin } from '@/components/icons/BrandIcons'
 import { usePortfolioData, Skill, LearningItem, Testimonial, JourneyEvent } from '@/context/PortfolioDataContext'
 import { Project } from '@/components/projects/ProjectsSection'
 import Image from 'next/image'
@@ -603,7 +604,7 @@ function ProjectsManager() {
                   type="text"
                   value={techInput}
                   onChange={(e) => setTechInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTech())}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTech() } }}
                   className="flex-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white"
                   placeholder="Add technology"
                 />

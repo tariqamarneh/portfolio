@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Code2, Database, Cloud, Brain, Sparkles } from 'lucide-react'
 import Image from 'next/image'
-import { useTheme } from '../general/GradientBackground'
 import { usePortfolioData, Skill } from '@/context/PortfolioDataContext'
 import { GlowCard } from '@/components/ui/glow-card'
 
@@ -20,20 +19,20 @@ const getCategoryIcon = (category: string, className = 'w-3 h-3') => {
   }
 }
 
-const ProficiencyBar = React.memo<{ level: string; isDark: boolean }>(({ level, isDark }) => {
+const ProficiencyBar = React.memo<{ level: string }>(({ level }) => {
   const pct = level === 'Expert' ? 100 : level === 'Intermediate' ? 60 : 30
   return (
     <div className="flex items-center gap-3 w-full">
-      <div className={`flex-1 h-[2px] rounded-full ${isDark ? 'bg-ink-700' : 'bg-ink-800/15'} relative overflow-hidden`}>
+      <div className="flex-1 h-[2px] rounded-full bg-abyss-700 relative overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${pct}%` }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.2, 0.8, 0.2, 1] }}
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-ember-700 to-ember-400"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-lumen-700 to-lumen-400"
         />
       </div>
-      <span className={`font-mono text-[10px] uppercase tracking-[0.15em] shrink-0 w-20 text-right ${isDark ? 'text-ink-400' : 'text-ink-500'}`}>
+      <span className="font-mono text-[10px] uppercase tracking-[0.15em] shrink-0 w-20 text-right text-abyss-400">
         {level}
       </span>
     </div>
@@ -42,7 +41,6 @@ const ProficiencyBar = React.memo<{ level: string; isDark: boolean }>(({ level, 
 ProficiencyBar.displayName = 'ProficiencyBar'
 
 const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index }) => {
-  const { isDark } = useTheme()
   const years = new Date().getFullYear() - skill.yearStarted
 
   return (
@@ -51,13 +49,11 @@ const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index })
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.035, ease: [0.2, 0.8, 0.2, 1] }}
     >
-      <GlowCard glowColor="ember" className="p-6 h-full">
+      <GlowCard glowColor="lumen" className="p-6 h-full">
         <div className="relative">
           <div className="flex items-start justify-between mb-5">
-            <div className={`
-              relative w-12 h-12 flex items-center justify-center rounded-xl
-              ${isDark ? 'bg-ink-950/80 border border-ink-700' : 'bg-paper-100 border border-ink-800/10'}
-            `}>
+            <div className="relative w-12 h-12 flex items-center justify-center rounded-xl
+              bg-abyss-950/80 border border-abyss-700">
               <Image
                 src={skill.icon}
                 width={26}
@@ -72,25 +68,24 @@ const SkillCard = React.memo<{ skill: Skill; index: number }>(({ skill, index })
               />
             </div>
             <div className="text-right">
-              <div className={`font-mono text-[9px] uppercase tracking-[0.15em] ${isDark ? 'text-ink-500' : 'text-ink-400'}`}>
+              <div className="font-mono text-[9px] uppercase tracking-[0.15em] text-abyss-500">
                 Exp
               </div>
-              <div className="font-mono text-sm text-ember-500 tabular-nums">
+              <div className="font-mono text-sm text-lumen-400 tabular-nums">
                 {years > 0 ? `${years}+ yrs` : '<1 yr'}
               </div>
             </div>
           </div>
 
-          <h3 className={`font-display text-xl mb-2.5 ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
-            style={{ fontVariationSettings: '"opsz" 72, "SOFT" 30' }}>
+          <h3 className="font-display text-xl mb-2.5 text-abyss-100">
             {skill.name}
           </h3>
 
-          <p className={`text-sm mb-5 leading-relaxed min-h-[40px] ${isDark ? 'text-ink-400' : 'text-ink-600'}`}>
+          <p className="text-sm mb-5 leading-relaxed min-h-[40px] font-light text-abyss-400">
             {skill.description}
           </p>
 
-          <ProficiencyBar level={skill.level} isDark={isDark} />
+          <ProficiencyBar level={skill.level} />
         </div>
       </GlowCard>
     </motion.div>
@@ -102,7 +97,6 @@ const SkillsSection: React.FC = () => {
   type Category = 'all' | 'frontend' | 'backend' | 'database' | 'devops' | 'ai'
   const [activeCategory, setActiveCategory] = useState<Category>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const { isDark } = useTheme()
   const { skills, learningItems } = usePortfolioData()
 
   const filteredSkills = useMemo(() =>
@@ -140,19 +134,16 @@ const SkillsSection: React.FC = () => {
         >
           <div className="col-span-12 md:col-span-7">
             <div className="flex items-center gap-3 mb-3">
-              <span className="w-8 h-px bg-ember-500" />
+              <span className="w-8 h-px bg-lumen-400" />
               <span className="eyebrow">Chapter · 04 / Craft</span>
             </div>
-            <h2 className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.95] ${isDark ? 'text-ink-100' : 'text-ink-950'}`}
-              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 40' }}>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.02] text-abyss-100">
               Tools of the{' '}
-              <span className="italic text-sun" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
-                trade.
-              </span>
+              <span className="text-lumen">trade.</span>
             </h2>
           </div>
           <div className="col-span-12 md:col-span-4 md:col-start-9 flex items-end">
-            <p className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-ink-300' : 'text-ink-700'}`}>
+            <p className="text-base md:text-lg leading-relaxed font-light text-abyss-300">
               The languages, frameworks, and tools I reach for daily — with the
               years of shipped systems to back them up.
             </p>
@@ -172,10 +163,8 @@ const SkillsSection: React.FC = () => {
                     flex items-center gap-2 px-4 py-2 rounded-full font-mono text-[11px] uppercase tracking-[0.15em]
                     transition-all duration-200
                     ${isActive
-                      ? 'bg-ember-500 text-ink-950'
-                      : isDark
-                        ? 'bg-ink-900/70 border border-ink-700 text-ink-300 hover:text-ember-400 hover:border-ember-500/40'
-                        : 'bg-paper-50/70 border border-ink-800/10 text-ink-700 hover:text-ember-600 hover:border-ember-500/40'}
+                      ? 'bg-lumen-400 text-abyss-950 shadow-[0_8px_25px_-10px_rgba(76,220,202,0.6)]'
+                      : 'bg-abyss-900/70 border border-abyss-700 text-abyss-300 hover:text-lumen-400 hover:border-lumen-500/40'}
                   `}
                 >
                   {getCategoryIcon(category.key)}
@@ -186,18 +175,14 @@ const SkillsSection: React.FC = () => {
           </div>
 
           <div className="relative">
-            <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 ${isDark ? 'text-ink-400' : 'text-ink-500'}`} strokeWidth={1.8} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-abyss-400" strokeWidth={1.8} />
             <input
               type="text"
               placeholder="Search tools…"
-              className={`
-                w-full md:w-64 pl-10 pr-4 py-2.5 rounded-full text-sm
+              className="w-full md:w-64 pl-10 pr-4 py-2.5 rounded-full text-sm
                 transition-colors duration-200
-                ${isDark
-                  ? 'bg-ink-900/70 border border-ink-700 text-ink-100 placeholder:text-ink-500 focus:border-ember-500'
-                  : 'bg-paper-50/70 border border-ink-800/10 text-ink-950 placeholder:text-ink-400 focus:border-ember-500'}
-                focus:outline-none
-              `}
+                bg-abyss-900/70 border border-abyss-700 text-abyss-100 placeholder:text-abyss-500 focus:border-lumen-500
+                focus:outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -216,7 +201,7 @@ const SkillsSection: React.FC = () => {
               <div className="mb-14">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="flex items-center gap-2.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-ember-500" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-lumen-400" />
                     <span className="eyebrow">Primary · Deep craft</span>
                   </h3>
                   <span className="eyebrow-dim">{String(primarySkills.length).padStart(2, '0')}</span>
@@ -233,7 +218,7 @@ const SkillsSection: React.FC = () => {
               <div className="mb-14">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="flex items-center gap-2.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-ink-500' : 'bg-ink-400'}`} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-abyss-500" />
                     <span className="eyebrow-dim">Secondary · Working knowledge</span>
                   </h3>
                   <span className="eyebrow-dim">{String(secondarySkills.length).padStart(2, '0')}</span>
@@ -255,45 +240,33 @@ const SkillsSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className={`
-              mt-8 p-6 md:p-8 rounded-2xl overflow-hidden relative
-              ${isDark
-                ? 'bg-ink-900/60 border border-ember-500/30'
-                : 'bg-paper-50/80 border border-ember-500/30'}
-            `}
-            style={{
-              boxShadow: isDark
-                ? '0 20px 60px -30px rgba(255, 112, 67, 0.25)'
-                : '0 20px 60px -30px rgba(255, 112, 67, 0.2)'
-            }}
+            className="mt-8 p-6 md:p-8 rounded-3xl overflow-hidden relative
+              bg-abyss-900/60 border border-lumen-500/25"
+            style={{ boxShadow: '0 20px 60px -30px rgba(76, 220, 202, 0.25)' }}
           >
-            {/* Soft ember glow */}
+            {/* Soft teal glow */}
             <div className="pointer-events-none absolute -top-32 -right-32 w-96 h-96 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(255,112,67,0.15), transparent 70%)' }}
+              style={{ background: 'radial-gradient(circle, rgba(76,220,202,0.12), transparent 70%)' }}
               aria-hidden="true"
             />
 
             <div className="relative flex items-center gap-3 mb-5">
-              <Sparkles className="w-4 h-4 text-ember-500" strokeWidth={1.8} />
+              <Sparkles className="w-4 h-4 text-lumen-400" strokeWidth={1.8} />
               <span className="eyebrow">In the lab · Currently learning</span>
             </div>
             <div className="relative flex flex-wrap gap-2">
               {learningItems.map((item) => (
                 <div
                   key={item.id}
-                  className={`
-                    flex items-center gap-2 px-3.5 py-2 rounded-full
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-full
                     transition-colors
-                    ${isDark
-                      ? 'bg-ink-950/70 border border-ink-700 hover:border-ember-500/50'
-                      : 'bg-paper-50 border border-ink-800/10 hover:border-ember-500/50'}
-                  `}
+                    bg-abyss-950/70 border border-abyss-700 hover:border-lumen-500/50"
                 >
-                  <span className={`text-sm font-medium ${isDark ? 'text-ink-100' : 'text-ink-950'}`}>
+                  <span className="text-sm font-medium text-abyss-100">
                     {item.name}
                   </span>
                   {item.description && (
-                    <span className={`font-mono text-[10px] uppercase tracking-[0.1em] ${isDark ? 'text-ink-500' : 'text-ink-400'}`}>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-abyss-500">
                       · {item.description}
                     </span>
                   )}

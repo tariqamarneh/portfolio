@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Home, Boxes, User, FolderGit2, Code2, MessageSquare, Mail, LucideIcon } from 'lucide-react'
-import { useTheme } from '../general/GradientBackground'
+import { Home, User, FolderGit2, Code2, MessageSquare, Mail, LucideIcon } from 'lucide-react'
 
 type NavItem = { key: string; label: string; icon: LucideIcon }
 
 const navItems: NavItem[] = [
   { key: 'home',         label: 'Intro',   icon: Home          },
-  { key: 'workspace',    label: 'Studio',  icon: Boxes         },
   { key: 'story',        label: 'Story',   icon: User          },
   { key: 'projects',     label: 'Work',    icon: FolderGit2    },
   { key: 'skills',       label: 'Craft',   icon: Code2         },
@@ -21,7 +19,6 @@ export default function FloatingNav() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [hoverKey, setHoverKey] = useState<string | null>(null)
-  const { isDark } = useTheme()
   const activeSectionRef = useRef('home')
 
   // Section detection
@@ -99,40 +96,25 @@ export default function FloatingNav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-            className={`
-              pointer-events-auto relative flex items-stretch rounded-full
+            className="pointer-events-auto relative flex items-stretch rounded-full
               border backdrop-blur-xl max-w-full
-              ${isDark
-                ? 'border-ink-700/80 bg-ink-900/75'
-                : 'border-ink-800/10 bg-paper-50/85'}
-            `}
+              border-abyss-600/60 bg-abyss-900/70
+              shadow-[0_20px_50px_-20px_rgba(0,0,0,0.7)]"
             role="navigation"
             aria-label="Main navigation"
           >
             {/* Brand mark — hidden on very small screens, visible md+ */}
-            <div
-              className={`
-                hidden md:flex items-center gap-2 px-4 border-r
-                ${isDark ? 'border-ink-700/80' : 'border-ink-800/10'}
-              `}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-ember-500 animate-pulse-soft" />
-              <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${isDark ? 'text-ink-200' : 'text-ink-800'}`}>
+            <div className="hidden md:flex items-center gap-2 px-4 border-r border-abyss-600/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-lumen-400 animate-pulse-soft" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-abyss-200">
                 T · A
               </span>
             </div>
 
             {/* Mobile: active label pill (left side) */}
-            <div
-              className={`
-                flex md:hidden items-center gap-1.5 pl-3 pr-2 border-r min-w-0
-                ${isDark ? 'border-ink-700/80' : 'border-ink-800/10'}
-              `}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-ember-500 animate-pulse-soft shrink-0" />
-              <span
-                className={`font-mono text-[10px] uppercase tracking-[0.15em] truncate ${isDark ? 'text-ink-200' : 'text-ink-800'}`}
-              >
+            <div className="flex md:hidden items-center gap-1.5 pl-3 pr-2 border-r min-w-0 border-abyss-600/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-lumen-400 animate-pulse-soft shrink-0" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.15em] truncate text-abyss-200">
                 {activeItem.label}
               </span>
             </div>
@@ -157,10 +139,8 @@ export default function FloatingNav() {
                         transition-colors duration-200
                         min-w-[40px] md:min-w-0
                         ${isActive
-                          ? isDark ? 'text-ink-950' : 'text-paper-50'
-                          : isDark
-                            ? 'text-ink-300 hover:text-ink-100'
-                            : 'text-ink-600 hover:text-ink-900'}
+                          ? 'text-abyss-950'
+                          : 'text-abyss-300 hover:text-abyss-100'}
                       `}
                     >
                       <Icon className="w-4 h-4" strokeWidth={1.8} />
@@ -173,8 +153,8 @@ export default function FloatingNav() {
                       {isActive && (
                         <motion.span
                           layoutId="active-nav-pill"
-                          className={`absolute inset-0 -z-10 rounded-full
-                            ${isDark ? 'bg-ember-500' : 'bg-ink-900'}`}
+                          className="absolute inset-0 -z-10 rounded-full bg-lumen-400
+                            shadow-[0_8px_25px_-10px_rgba(76,220,202,0.7)]"
                           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                         />
                       )}
@@ -183,24 +163,10 @@ export default function FloatingNav() {
                       {!isActive && hoverKey === item.key && (
                         <motion.span
                           layoutId="hover-nav-pill"
-                          className={`hidden md:block absolute inset-0 -z-0 rounded-full pointer-events-none
-                            ${isDark ? 'bg-ink-700/60' : 'bg-ink-800/5'}`}
+                          className="hidden md:block absolute inset-0 -z-0 rounded-full pointer-events-none bg-abyss-700/60"
                           transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                         />
                       )}
-
-                      {/* Mobile-only tooltip above */}
-                      <span
-                        className={`
-                          md:hidden pointer-events-none absolute left-1/2 -translate-x-1/2 -bottom-8
-                          px-2 py-0.5 rounded-md whitespace-nowrap
-                          font-mono text-[9px] uppercase tracking-[0.15em]
-                          opacity-0 group-hover:opacity-100 transition-opacity
-                          ${isDark ? 'bg-ink-900 text-ink-200 border border-ink-700' : 'bg-paper-50 text-ink-800 border border-ink-800/10'}
-                        `}
-                      >
-                        {item.label}
-                      </span>
                     </a>
                   </li>
                 )
