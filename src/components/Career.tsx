@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { AnimatePresence, motion, useInView } from "motion/react";
+import { useRef, useState } from "react";
 import { career, type Role } from "@/content/profile";
 
 const AXIS_START = { y: 2019, m: 9 }; // Sep 2019
@@ -40,6 +40,9 @@ function Row({
   const left = (startM / AXIS_SPAN) * 100;
   const width = ((endM - startM) / AXIS_SPAN) * 100;
   const study = role.kind === "study";
+  // Watch the full-size track: the fill itself starts at scaleX(0), which has no area to observe.
+  const trackRef = useRef<HTMLDivElement>(null);
+  const seen = useInView(trackRef, { once: true, margin: "0px 0px -12% 0px" });
 
   return (
     <li className="border-b border-rule">
@@ -54,7 +57,7 @@ function Row({
           <p className="mt-0.5 text-sm text-muted">{role.title}</p>
         </div>
         <div>
-          <div className="relative h-5">
+          <div ref={trackRef} className="relative h-5">
             <div
               className={`absolute inset-y-0 overflow-hidden rounded-[5px] ${study ? "border border-dashed border-faint" : "bg-ink-3"}`}
               style={{ left: `${left}%`, width: `max(${width}%, 6px)` }}
@@ -63,8 +66,7 @@ function Row({
               <motion.div
                 className="h-full origin-left"
                 initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                animate={{ scaleX: seen ? 1 : 0 }}
                 transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
                 style={{
                   background: study ? "color-mix(in oklab, var(--faint) 45%, transparent)" : "var(--signal)",
