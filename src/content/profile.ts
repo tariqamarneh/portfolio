@@ -4,7 +4,7 @@ export const profile = {
   name: "Tariq Amarneh",
   givenName: "Tariq",
   familyName: "Amarneh",
-  siteUrl: "https://tariqamarneh.com",
+  siteUrl: "https://www.tariqamarneh.com",
   role: "Senior Software Engineer",
   company: "BusinessChat",
   location: "Amman, Jordan",
