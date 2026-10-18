@@ -225,13 +225,13 @@ export function LiveTrace() {
 
           <div className="font-mono text-[12px]">
             {/* time axis */}
-            <div className="grid grid-cols-[128px_1fr_44px] items-end gap-3 pb-1.5 sm:grid-cols-[176px_1fr_52px]">
+            <div className="grid grid-cols-[116px_1fr_44px] items-end gap-3 pb-1.5 sm:grid-cols-[176px_1fr_52px]">
               <span />
               <div className="relative h-4">
                 {Array.from({ length: tick + 1 }, (_, i) => (
                   <span
                     key={i}
-                    className="absolute -translate-x-1/2 text-[10px] text-faint first:translate-x-0"
+                    className={`absolute -translate-x-1/2 text-[10px] text-faint first:translate-x-0 ${i % 2 ? "max-sm:hidden" : ""}`}
                     style={{ left: `${((i * 1000) / (tick * 1000)) * 100}%` }}
                   >
                     {i}s
@@ -250,11 +250,11 @@ export function LiveTrace() {
                 return (
                   <li
                     key={`${scenario.id}-${i}`}
-                    className="grid grid-cols-[128px_1fr_44px] items-center gap-3 py-[5px] transition-opacity duration-300 sm:grid-cols-[176px_1fr_52px]"
+                    className="grid grid-cols-[116px_1fr_44px] items-center gap-3 py-[5px] transition-opacity duration-300 sm:grid-cols-[176px_1fr_52px]"
                     style={{ opacity: started ? 1 : 0.28 }}
                   >
                     <div className="min-w-0" style={{ paddingLeft: span.depth * 12 }}>
-                      <p className="leading-snug text-text [overflow-wrap:anywhere] max-sm:text-[11px]">
+                      <p className="leading-snug text-text [overflow-wrap:anywhere] max-sm:text-[10.5px]">
                         {span.depth > 0 && <span className="text-faint">└ </span>}
                         {span.name}
                       </p>
