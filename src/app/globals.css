@@ -1,359 +1,169 @@
-/* src/app/globals.css */
-/* =======================================================================
-   DEEP ORBIT — a deep-space calm canvas. Near-black blue, a single
-   luminous teal accent, glass panels with hairline borders, slow ambient
-   motion. Modern, alive, easy on the eyes.
-   Fonts: Syne (display), Sora (body), Space Mono (meta / index labels)
-   ======================================================================= */
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* ===== Tokens ===== */
+/* Dark is the default; light is opt-in via data-theme or the system setting. */
 :root {
-  /* Abyss / deep-space blues */
-  --abyss-950: #04070d;
-  --abyss-900: #070d18;
-  --abyss-800: #0d1524;
-  --abyss-700: #182236;
-  --abyss-600: #24314c;
-  --abyss-500: #3b4a6b;
-  --abyss-400: #64769b;
-  --abyss-300: #93a3c2;
-  --abyss-200: #bfcbe2;
-  --abyss-100: #e2e9f5;
-
-  /* Single accent — luminous teal */
-  --lumen: #4cdcca;
-  --lumen-bright: #a8f2e6;
-  --lumen-deep: #1da99d;
-
-  /* Whisper accent — nebula indigo */
-  --haze: #7c8cf8;
-
-  --scroll-progress: 0;
+  --ink: #0d1526;
+  --ink-2: #121d33;
+  --ink-3: #18253f;
+  --rule: #233251;
+  --text: #e8ecf3;
+  --muted: #8d9ab3;
+  --faint: #56637d;
+  --signal: #8ab4ff;
+  --signal-soft: rgb(138 180 255 / 0.14);
+  --ok: #6ee7b7;
+  --tool: #ffd166;
+  --logic: #c3cbe0;
+  --bubble-in: #1a2742;
+  --bubble-out: #20345a;
+  color-scheme: dark;
 }
 
-/* ===== Base ===== */
+:root[data-theme="light"] {
+  --ink: #f2f4f8;
+  --ink-2: #ffffff;
+  --ink-3: #e7ebf3;
+  --rule: #d3d9e5;
+  --text: #0f1b33;
+  --muted: #56627b;
+  --faint: #8a94a8;
+  --signal: #2453d6;
+  --signal-soft: rgb(36 83 214 / 0.1);
+  --ok: #0e8f62;
+  --tool: #a77a05;
+  --logic: #5a6680;
+  --bubble-in: #ffffff;
+  --bubble-out: #dbe6ff;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --ink: #f2f4f8;
+    --ink-2: #ffffff;
+    --ink-3: #e7ebf3;
+    --rule: #d3d9e5;
+    --text: #0f1b33;
+    --muted: #56627b;
+    --faint: #8a94a8;
+    --signal: #2453d6;
+    --signal-soft: rgb(36 83 214 / 0.1);
+    --ok: #0e8f62;
+    --tool: #a77a05;
+    --logic: #5a6680;
+    --bubble-in: #ffffff;
+    --bubble-out: #dbe6ff;
+    color-scheme: light;
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-ok: var(--ok);
+  --color-tool: var(--tool);
+  --color-logic: var(--logic);
+  --color-bubble-in: var(--bubble-in);
+  --color-bubble-out: var(--bubble-out);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-arabic: var(--font-plex-arabic), var(--font-archivo), sans-serif;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
 html {
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--ink);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: clip;
+}
+
+/* Anchor targets land below the fixed nav (Lenis honours this too). */
+section[id] {
+  scroll-margin-top: calc(4rem + env(safe-area-inset-top));
+}
+
+/* Side gutter that also clears the notch in landscape when viewport-fit=cover. */
+.gutter {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+@media (min-width: 640px) {
+  .gutter {
+    padding-left: max(2rem, env(safe-area-inset-left));
+    padding-right: max(2rem, env(safe-area-inset-right));
+  }
 }
 
 body {
-  color: var(--abyss-100);
-  background-color: var(--abyss-950);
-  /* Do NOT put overflow-y:auto here — it creates a nested scroll container
-     that breaks position:sticky and framer-motion useScroll. */
   overflow-x: clip;
-  -webkit-overflow-scrolling: touch;
-  -webkit-tap-highlight-color: transparent;
-  padding-left:  env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-a, button, [role="button"] {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-input, textarea {
-  -webkit-user-select: text;
-  user-select: text;
-  /* Prevent zoom-on-focus on iOS — font-size must be ≥16px on form fields */
-  font-size: 16px;
-}
-
-/* Display face — Syne, set tight */
-.font-display {
-  letter-spacing: -0.02em;
-  font-weight: 600;
-}
-
-/* Custom cursor */
-.custom-cursor-active * { cursor: none !important; }
-
-/* ===== Backgrounds ===== */
-/* Instant-paint base behind the WebGL starfield — keeps first paint calm
-   while the canvas loads, and remains as depth beneath it. */
-.bg-abyss-graded {
-  background:
-    radial-gradient(ellipse 80% 60% at 70% 10%, rgba(76, 220, 202, 0.05), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 15% 80%, rgba(124, 140, 248, 0.045), transparent 60%),
-    linear-gradient(180deg, #04070d 0%, #060b15 50%, #03060b 100%);
-}
-
-/* Hairline grid — architectural, almost invisible */
-.grid-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(226, 233, 245, 0.016) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(226, 233, 245, 0.016) 1px, transparent 1px);
-  background-size: 96px 96px;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 95%);
-}
-
-/* ===== Utilities ===== */
-@layer components {
-  .text-muted { color: var(--abyss-300); }
-  .text-subtle { color: var(--abyss-400); }
-
-  /* The single primary gradient type treatment */
-  .text-lumen {
-    background: linear-gradient(120deg, #a8f2e6 0%, #4cdcca 55%, #2fc9b9 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-
-  .section-padding {
-    @apply py-32 px-6 sm:px-8 lg:px-12;
-  }
-
-  /* Eyebrow — monospace, restrained */
-  .eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.22em] font-medium;
-    color: var(--lumen);
-  }
-  .eyebrow-dim {
-    @apply font-mono text-[11px] uppercase tracking-[0.22em];
-    color: var(--abyss-400);
-  }
-
-  /* Horizontal rules */
-  .rule { @apply h-px w-full bg-abyss-700/80; }
-  .rule-lumen { @apply h-px w-16 bg-lumen-400; }
-
-  /* Primary button — luminous teal pill */
-  .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
-           rounded-full font-medium text-sm
-           bg-lumen-400 text-abyss-950
-           transition-all duration-300;
-    box-shadow: 0 0 0 1px rgba(168, 242, 230, 0.25) inset,
-                0 10px 35px -10px rgba(76, 220, 202, 0.45);
-  }
-  .btn-primary:hover {
-    background-color: #76e9d8;
-    transform: translateY(-1px);
-    box-shadow: 0 0 0 1px rgba(168, 242, 230, 0.4) inset,
-                0 18px 45px -10px rgba(76, 220, 202, 0.6);
-  }
-
-  /* Secondary — glass ghost */
-  .btn-secondary {
-    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-3
-           rounded-full font-medium text-sm
-           text-abyss-100 border border-abyss-600/80 bg-abyss-800/40
-           transition-all duration-300;
-    backdrop-filter: blur(8px);
-  }
-  .btn-secondary:hover {
-    border-color: rgba(76, 220, 202, 0.5);
-    color: var(--lumen);
-    box-shadow: 0 8px 30px -12px rgba(76, 220, 202, 0.3);
-  }
-
-  /* Editorial underline link */
-  .link-editorial {
-    @apply relative inline-flex items-center gap-2;
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.4s cubic-bezier(.2,.8,.2,1);
-  }
-  .link-editorial:hover { background-size: 100% 1px; }
-
-  /* Glass panel — the default surface */
-  .panel {
-    @apply relative rounded-3xl border border-abyss-600/50;
-    background: linear-gradient(165deg, rgba(13, 21, 36, 0.72), rgba(7, 13, 24, 0.92));
-    box-shadow: 0 1px 0 rgba(226, 233, 245, 0.04) inset,
-                0 30px 60px -30px rgba(0, 0, 0, 0.6);
-  }
-  .panel-glow {
-    box-shadow: 0 1px 0 rgba(168, 242, 230, 0.07) inset,
-                0 30px 80px -35px rgba(76, 220, 202, 0.25);
-  }
-  /* Hoverable panel — lifts with a soft teal halo */
-  .panel-hover { transition: border-color 0.3s ease, box-shadow 0.4s ease, transform 0.3s ease; }
-  .panel-hover:hover {
-    border-color: rgba(76, 220, 202, 0.35);
-    box-shadow: 0 1px 0 rgba(168, 242, 230, 0.07) inset,
-                0 30px 80px -35px rgba(76, 220, 202, 0.3);
-  }
-
-  /* Numeric — for stats */
-  .stat-num {
-    @apply font-display tabular-nums;
-    letter-spacing: -0.03em;
-  }
-
-  .project-img-pan {
-    transition: transform 2s cubic-bezier(.2,.8,.2,1), filter 0.6s ease-out;
-  }
-  .group:hover .project-img-pan {
-    transform: scale(1.06);
-    filter: saturate(1.1) contrast(1.03);
-  }
-}
-
-/* Hide scrollbar entirely (for horizontal snap scrollers) */
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Hair-thin inline scrollbar (for testimonial cards) */
-.custom-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--lumen-deep) transparent;
-}
-.custom-scroll::-webkit-scrollbar { width: 3px; }
-.custom-scroll::-webkit-scrollbar-track { background: transparent; }
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: var(--lumen-deep);
-  border-radius: 2px;
-}
-
-/* ===== Custom Scrollbar — hair-thin teal ===== */
-@media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 5px;
-    background-color: transparent;
-  }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background: var(--lumen-deep);
-    border-radius: 0;
-  }
-  ::-webkit-scrollbar-thumb:hover { background: var(--lumen); }
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--lumen-deep) transparent;
-  }
-}
-
-/* ===== Animations ===== */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
-.animate-float { animation: float 6s ease-in-out infinite; }
-
-@keyframes pulse-soft {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-.animate-pulse-soft { animation: pulse-soft 2.5s ease-in-out infinite; }
-
-@keyframes drift-1 {
-  0%, 100% { transform: translate3d(0,0,0) scale(1); }
-  50% { transform: translate3d(40px, -30px, 0) scale(1.08); }
-}
-@keyframes drift-2 {
-  0%, 100% { transform: translate3d(0,0,0) scale(1); }
-  50% { transform: translate3d(-40px, 40px, 0) scale(0.96); }
-}
-.animate-drift-1 { animation: drift-1 30s ease-in-out infinite; }
-.animate-drift-2 { animation: drift-2 40s ease-in-out infinite; }
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-.animate-blink { animation: blink 1s step-end infinite; }
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.shimmer-bg {
-  background: linear-gradient(90deg,
-    rgba(13, 21, 36, 0.4) 0%,
-    rgba(36, 49, 76, 0.6) 50%,
-    rgba(13, 21, 36, 0.4) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-}
-
-/* Gradient conic border (used rarely) */
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-@keyframes rotate-gradient {
-  to { --angle: 360deg; }
-}
-.lumen-ring {
-  position: relative;
-  background: transparent;
-}
-.lumen-ring::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: conic-gradient(from var(--angle), transparent 0deg, #4cdcca 90deg, #a8f2e6 180deg, #1da99d 270deg, transparent 360deg);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: rotate-gradient 6s linear infinite;
-  pointer-events: none;
-}
-
-/* ===== Selection ===== */
 ::selection {
-  background: rgba(76, 220, 202, 0.3);
-  color: #fff;
+  background: var(--signal);
+  color: var(--ink);
 }
 
-/* ===== Mobile Performance ===== */
-@media (max-width: 767px) {
-  .animate-drift-1, .animate-drift-2 { animation: none !important; }
-
-  /* backdrop-blur is very expensive on iOS Safari — quarter it on mobile */
-  .backdrop-blur-md,
-  .backdrop-blur-lg,
-  .backdrop-blur-xl,
-  .backdrop-blur-2xl,
-  .backdrop-blur-3xl { backdrop-filter: blur(6px) !important; }
-
-  .group:hover .project-img-pan { transform: none !important; }
-
-  .lumen-ring::before { animation: none !important; }
+/* Expressive width axis for display type. */
+.wide {
+  font-stretch: 125%;
+}
+.condensed {
+  font-stretch: 75%;
 }
 
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 767px) {
-    .fixed.backdrop-blur-xl { backdrop-filter: blur(4px) !important; }
-  }
+.grid-paper {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--rule) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--rule) 45%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, black 30%, transparent 75%);
 }
 
-/* ===== Accessibility ===== */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.press {
+  transition: transform 160ms var(--ease-out-strong);
+}
+.press:active {
+  transform: scale(0.97);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-}
-
-/* ===== Focus ===== */
-:focus-visible {
-  outline: 2px solid var(--lumen);
-  outline-offset: 3px;
 }
