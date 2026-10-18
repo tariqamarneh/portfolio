@@ -130,7 +130,7 @@ export const career: Role[] = [
     summary: "Graduated with an 82% GPA.",
     points: [
       "Studied machine learning, statistics, data engineering and software design.",
-      "Earned Microsoft Azure AI Fundamentals (AI-900) and Google's Professional Data Analysis certificate.",
+      "Earned Microsoft Azure AI Fundamentals (AI-900) and Google Cloud Platform's Professional Data Analysis certificate (2019).",
     ],
     tags: ["Python", "ML", "Statistics"],
   },
