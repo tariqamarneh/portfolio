@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { profile } from "@/content/profile";
+import { Portrait } from "./Portrait";
 
 const channels = [
   { label: "Phone", value: profile.phoneDisplay, href: profile.phoneHref },
@@ -26,13 +27,18 @@ export function Contact() {
     <section id="contact" className="relative isolate overflow-hidden border-t border-rule pt-24 pb-10">
       <div className="grid-paper pointer-events-none absolute inset-0 -z-10 rotate-180" aria-hidden />
       <div className="mx-auto max-w-[1240px] gutter">
-        <h2 className="wide py-2 text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
-          Get in touch
-        </h2>
-        <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">
-          I&apos;m open to conversations about AI agents, backend systems and engineering roles. Email is the fastest
-          way to reach me.
-        </p>
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <Portrait className="w-[min(50vw,200px)] lg:order-last lg:w-full" />
+          <div>
+            <h2 className="wide text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
+              Get in touch
+            </h2>
+            <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">
+              I&apos;m open to conversations about AI agents, backend systems and engineering roles. Email is the
+              fastest way to reach me.
+            </p>
+          </div>
+        </div>
 
         <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
           <a
