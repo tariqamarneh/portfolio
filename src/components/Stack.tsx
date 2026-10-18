@@ -49,7 +49,7 @@ export function Stack() {
           <div>
             <h3 className="text-sm text-faint">Certificates</h3>
             <p className="mt-2 font-medium">Azure AI Fundamentals (AI-900)</p>
-            <p className="text-muted">Professional Data Analysis, Google Cloud Platform, 2019</p>
+            <p className="text-muted">Professional Data Analysis, Google Cloud Platform, 2022</p>
           </div>
           <div>
             <h3 className="text-sm text-faint">Languages</h3>
