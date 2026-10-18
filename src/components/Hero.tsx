@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
+import portrait from "../../public/images/tariq-portrait.png";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { profile } from "@/content/profile";
 import { LiveTrace } from "./LiveTrace";
@@ -16,17 +18,30 @@ export function Hero() {
       <div className="grid-paper pointer-events-none absolute inset-0 -z-10" aria-hidden />
 
       <div className="mx-auto max-w-[1240px] gutter">
-        <motion.p
+        <motion.div
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted"
+          className="flex items-center gap-3.5"
         >
-          <span>
-            {profile.role} at <span className="text-text">{profile.company}</span>
+          {/* Face crop of the contact-section portrait: zoomed to head and collar. */}
+          <span className="relative size-12 shrink-0 overflow-hidden rounded-full border border-rule bg-ink-3">
+            <Image
+              src={portrait}
+              alt=""
+              sizes="96px"
+              priority
+              className="absolute max-w-none"
+              style={{ width: "182%", left: "-41%", top: "-3%", height: "auto" }}
+            />
           </span>
-          <span>{profile.location}</span>
-        </motion.p>
+          <p className="flex flex-wrap gap-x-6 gap-y-0.5 text-sm text-muted">
+            <span>
+              {profile.role} at <span className="text-text">{profile.company}</span>
+            </span>
+            <span>{profile.location}</span>
+          </p>
+        </motion.div>
 
         <h1 className="wide mt-5 text-[clamp(3.4rem,10.4vw,9rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
           {words.map((word, i) => (
