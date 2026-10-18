@@ -259,7 +259,7 @@ export function LiveTrace() {
                     >
                       <p className="leading-snug text-text [overflow-wrap:anywhere] max-sm:text-[10.5px]">
                         {/* No-break space keeps the tree mark on the same line as the name. */}
-                        {span.depth > 0 && <span className="text-faint">└\u00a0</span>}
+                        {span.depth > 0 && <span className="text-faint">{"└\u00a0"}</span>}
                         {span.name}
                       </p>
                       <p className="hidden truncate text-[10.5px] text-faint sm:block">{span.detail}</p>
