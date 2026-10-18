@@ -1,8 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
-import portrait from "../../public/images/tariq-portrait.png";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { profile } from "@/content/profile";
 import { LiveTrace } from "./LiveTrace";
@@ -39,19 +37,6 @@ export function Hero() {
                 animate={{ y: "0%" }}
                 transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
               >
-                {i === 0 && (
-                  // Sized in em so the photo matches the name's cap height at every breakpoint.
-                  <span className="relative mr-[0.1em] inline-block size-[0.74em] overflow-hidden rounded-full border border-rule bg-ink-3 align-baseline">
-                    <Image
-                      src={portrait}
-                      alt=""
-                      sizes="(min-width: 1024px) 240px, 120px"
-                      priority
-                      className="absolute max-w-none"
-                      style={{ width: "182%", left: "-41%", top: "-3%", height: "auto" }}
-                    />
-                  </span>
-                )}
                 {word}
                 {i < words.length - 1 && " "}
               </motion.span>
