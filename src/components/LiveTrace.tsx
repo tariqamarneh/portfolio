@@ -197,6 +197,17 @@ export function LiveTrace() {
               {finished && <Bubble key={`${scenario.id}-${runKey}-out`} side="out" {...scenario.reply} />}
             </AnimatePresence>
           </div>
+          {/* Decorative WhatsApp-style composer: anchors the chat and fills the column under short threads. */}
+          <div className="mt-2 flex items-center gap-2" aria-hidden>
+            <div className="flex h-10 flex-1 items-center rounded-full border border-rule bg-ink px-4 text-sm text-faint">
+              Type a message
+            </div>
+            <div className="grid size-10 shrink-0 place-items-center rounded-full bg-signal-soft text-signal">
+              <svg viewBox="0 0 16 16" className="size-4">
+                <path d="M2.5 8h9M8 3.5 12.5 8 8 12.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Trace waterfall */}
@@ -214,7 +225,7 @@ export function LiveTrace() {
 
           <div className="font-mono text-[12px]">
             {/* time axis */}
-            <div className="grid grid-cols-[112px_1fr_48px] items-end gap-3 pb-1.5 sm:grid-cols-[176px_1fr_52px]">
+            <div className="grid grid-cols-[128px_1fr_44px] items-end gap-3 pb-1.5 sm:grid-cols-[176px_1fr_52px]">
               <span />
               <div className="relative h-4">
                 {Array.from({ length: tick + 1 }, (_, i) => (
@@ -239,11 +250,11 @@ export function LiveTrace() {
                 return (
                   <li
                     key={`${scenario.id}-${i}`}
-                    className="grid grid-cols-[112px_1fr_48px] items-center gap-3 py-[5px] transition-opacity duration-300 sm:grid-cols-[176px_1fr_52px]"
+                    className="grid grid-cols-[128px_1fr_44px] items-center gap-3 py-[5px] transition-opacity duration-300 sm:grid-cols-[176px_1fr_52px]"
                     style={{ opacity: started ? 1 : 0.28 }}
                   >
                     <div className="min-w-0" style={{ paddingLeft: span.depth * 12 }}>
-                      <p className="truncate text-text">
+                      <p className="leading-snug text-text [overflow-wrap:anywhere] max-sm:text-[11px]">
                         {span.depth > 0 && <span className="text-faint">└ </span>}
                         {span.name}
                       </p>

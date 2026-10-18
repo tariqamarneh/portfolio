@@ -282,7 +282,7 @@ function ScaleVisual({ active }: { active: boolean }) {
             key={i}
             className="aspect-square rounded-full bg-signal"
             initial={reduce ? false : { opacity: 0.12, scale: 0.6 }}
-            animate={active || reduce ? { opacity: 0.9, scale: 1 } : { opacity: 0.12, scale: 0.6 }}
+            animate={active || reduce ? { opacity: 0.55, scale: 0.78 } : { opacity: 0.1, scale: 0.5 }}
             transition={{ duration: 0.3, ease, delay: active ? i * 0.006 : 0 }}
           />
         ))}
