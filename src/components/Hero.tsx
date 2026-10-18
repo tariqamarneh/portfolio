@@ -28,7 +28,7 @@ export function Hero() {
           <span>{profile.location}</span>
         </motion.p>
 
-        <h1 className="wide mt-5 text-[clamp(3.4rem,10.4vw,9rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
+        <h1 className="wide mt-5 text-[clamp(3rem,10.4vw,8rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
           {words.map((word, i) => (
             <span key={word} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
               <motion.span
@@ -67,7 +67,7 @@ export function Hero() {
             </a>
             <a
               href={profile.cv}
-              download="Tariq-Naser-CV.pdf"
+              download="Tariq-Amarneh-CV.pdf"
               className="press rounded-full border border-rule px-5 py-3 text-[15px] font-medium transition-colors hover:border-muted"
             >
               Download CV

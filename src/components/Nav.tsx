@@ -119,7 +119,7 @@ export function Nav() {
           </ul>
           <a
             href={profile.cv}
-            download="Tariq-Naser-CV.pdf"
+            download="Tariq-Amarneh-CV.pdf"
             className="press hidden h-9 items-center rounded-full bg-text px-4 text-sm font-medium text-ink transition-opacity hover:opacity-90 md:flex"
           >
             Download CV
@@ -162,7 +162,7 @@ export function Nav() {
               <li className="border-t border-rule pt-4">
                 <a
                   href={profile.cv}
-                  download="Tariq-Naser-CV.pdf"
+                  download="Tariq-Amarneh-CV.pdf"
                   onClick={() => setOpen(false)}
                   className="press flex h-12 items-center justify-center rounded-full bg-text text-[15px] font-medium text-ink"
                 >

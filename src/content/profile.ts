@@ -1,7 +1,10 @@
 // All editable site copy lives here.
 
 export const profile = {
-  name: "Tariq Naser",
+  name: "Tariq Amarneh",
+  givenName: "Tariq",
+  familyName: "Amarneh",
+  siteUrl: "https://tariqamarneh.vercel.app",
   role: "Senior Software Engineer",
   company: "BusinessChat",
   location: "Amman, Jordan",
@@ -13,7 +16,7 @@ export const profile = {
   whatsappHref: "https://wa.me/962797909969",
   linkedin: "https://www.linkedin.com/in/tariq-amarneh",
   github: "https://github.com/tariqamarneh",
-  cv: "/Tariq-Naser-CV.pdf",
+  cv: "/Tariq-Amarneh-CV.pdf",
 };
 
 // ── Live trace demo ──────────────────────────────────────────────

@@ -67,7 +67,7 @@ export function Contact() {
           </button>
           <a
             href={profile.cv}
-            download="Tariq-Naser-CV.pdf"
+            download="Tariq-Amarneh-CV.pdf"
             className="press flex h-11 items-center rounded-full bg-text px-5 text-sm font-medium text-ink transition-opacity hover:opacity-90"
           >
             Download CV
