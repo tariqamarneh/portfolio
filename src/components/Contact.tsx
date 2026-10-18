@@ -8,7 +8,7 @@ import { Portrait } from "./Portrait";
 const channels = [
   { label: "Phone", value: profile.phoneDisplay, href: profile.phoneHref },
   { label: "WhatsApp", value: "Message me", href: profile.whatsappHref },
-  { label: "LinkedIn", value: "in/tariq-naser", href: profile.linkedin },
+  { label: "LinkedIn", value: "in/tariq-amarneh", href: profile.linkedin },
   { label: "GitHub", value: "tariqamarneh", href: profile.github },
 ];
 

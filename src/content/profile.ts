@@ -11,7 +11,7 @@ export const profile = {
   phoneDisplay: "+962 79 790 9969",
   phoneHref: "tel:+962797909969",
   whatsappHref: "https://wa.me/962797909969",
-  linkedin: "https://www.linkedin.com/in/tariq-naser",
+  linkedin: "https://www.linkedin.com/in/tariq-amarneh",
   github: "https://github.com/tariqamarneh",
   cv: "/Tariq-Naser-CV.pdf",
 };
