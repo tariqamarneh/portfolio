@@ -18,30 +18,17 @@ export function Hero() {
       <div className="grid-paper pointer-events-none absolute inset-0 -z-10" aria-hidden />
 
       <div className="mx-auto max-w-[1240px] gutter">
-        <motion.div
+        <motion.p
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center gap-3.5"
+          className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted"
         >
-          {/* Face crop of the contact-section portrait: zoomed to head and collar. */}
-          <span className="relative size-12 shrink-0 overflow-hidden rounded-full border border-rule bg-ink-3">
-            <Image
-              src={portrait}
-              alt=""
-              sizes="96px"
-              priority
-              className="absolute max-w-none"
-              style={{ width: "182%", left: "-41%", top: "-3%", height: "auto" }}
-            />
+          <span>
+            {profile.role} at <span className="text-text">{profile.company}</span>
           </span>
-          <p className="flex flex-wrap gap-x-6 gap-y-0.5 text-sm text-muted">
-            <span>
-              {profile.role} at <span className="text-text">{profile.company}</span>
-            </span>
-            <span>{profile.location}</span>
-          </p>
-        </motion.div>
+          <span>{profile.location}</span>
+        </motion.p>
 
         <h1 className="wide mt-5 text-[clamp(3.4rem,10.4vw,9rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
           {words.map((word, i) => (
@@ -52,6 +39,19 @@ export function Hero() {
                 animate={{ y: "0%" }}
                 transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
               >
+                {i === 0 && (
+                  // Sized in em so the photo matches the name's cap height at every breakpoint.
+                  <span className="relative mr-[0.1em] inline-block size-[0.74em] overflow-hidden rounded-full border border-rule bg-ink-3 align-baseline">
+                    <Image
+                      src={portrait}
+                      alt=""
+                      sizes="(min-width: 1024px) 240px, 120px"
+                      priority
+                      className="absolute max-w-none"
+                      style={{ width: "182%", left: "-41%", top: "-3%", height: "auto" }}
+                    />
+                  </span>
+                )}
                 {word}
                 {i < words.length - 1 && " "}
               </motion.span>
