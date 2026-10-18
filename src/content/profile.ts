@@ -76,7 +76,7 @@ export const scenarios: TraceScenario[] = [
       { name: "capability_router", detail: "→ order_status", start: 340, duration: 520, depth: 0, kind: "llm" },
       { name: "order_status", detail: "store integration", start: 860, duration: 1600, depth: 0, kind: "logic" },
       { name: "lookup_order", detail: "#48213 · out_for_delivery", start: 900, duration: 740, depth: 1, kind: "tool" },
-      { name: "shipment_events", detail: "carrier · 4 events", start: 1660, duration: 520, depth: 1, kind: "tool" },
+      { name: "track_shipment", detail: "carrier · 4 events", start: 1660, duration: 520, depth: 1, kind: "tool" },
       { name: "answer", detail: "English · empathetic", start: 2200, duration: 600, depth: 1, kind: "llm" },
       { name: "final_review", detail: "grounded · pass", start: 2820, duration: 380, depth: 0, kind: "llm" },
     ],
