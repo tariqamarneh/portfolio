@@ -74,7 +74,7 @@ export function Hero() {
             </a>
             <a
               href={`mailto:${profile.email}`}
-              className="press rounded-full px-3 py-3 text-[15px] font-medium text-muted transition-colors hover:text-text"
+              className="press rounded-full px-3 py-3 text-[15px] font-medium text-muted transition-colors hover:text-text max-sm:hidden"
             >
               Email me
             </a>

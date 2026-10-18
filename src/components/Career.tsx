@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useReducedMotion } from "@/lib/useReducedMotion";
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import { career, type Role } from "@/content/profile";
 
 const AXIS_START = { y: 2019, m: 9 }; // Sep 2019
@@ -29,12 +28,10 @@ function length(role: Role) {
 
 function Row({
   role,
-  progress,
   open,
   onToggle,
 }: {
   role: Role;
-  progress: MotionValue<number>;
   open: boolean;
   onToggle: () => void;
 }) {
@@ -42,10 +39,6 @@ function Row({
   const endM = toMonths(role.end ? parse(role.end) : NOW) + 1 - AXIS_FROM;
   const left = (startM / AXIS_SPAN) * 100;
   const width = ((endM - startM) / AXIS_SPAN) * 100;
-  const fill = useTransform(progress, (p) => {
-    const at = p * AXIS_SPAN;
-    return Math.min(1, Math.max(0, (at - startM) / (endM - startM)));
-  });
   const study = role.kind === "study";
 
   return (
@@ -66,10 +59,14 @@ function Row({
               className={`absolute inset-y-0 overflow-hidden rounded-[5px] ${study ? "border border-dashed border-faint" : "bg-ink-3"}`}
               style={{ left: `${left}%`, width: `max(${width}%, 6px)` }}
             >
+              {/* Each bar fills as its own row comes into view, so long expanded rows never leave it empty. */}
               <motion.div
                 className="h-full origin-left"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
                 style={{
-                  scaleX: fill,
                   background: study ? "color-mix(in oklab, var(--faint) 45%, transparent)" : "var(--signal)",
                 }}
               />
@@ -119,12 +116,6 @@ function Row({
 }
 
 export function Career() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.55"] });
-  const full = useTransform(scrollYProgress, () => 1);
-  const progress = reduce ? full : scrollYProgress;
-  const playhead = useTransform(progress, (p) => `${p * 100}%`);
   const [open, setOpen] = useState<string | null>(career[career.length - 1].org);
 
   const years = Array.from({ length: NOW.y - AXIS_START.y }, (_, i) => AXIS_START.y + 1 + i);
@@ -142,7 +133,7 @@ export function Career() {
           </p>
         </div>
 
-        <div ref={ref} className="relative mt-14">
+        <div className="relative mt-14">
           {/* Year axis */}
           <div className="grid gap-x-6 border-b border-rule pb-3 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
             <span className="hidden md:block" />
@@ -155,11 +146,6 @@ export function Career() {
                   </span>
                 );
               })}
-              <motion.span
-                className="absolute -bottom-[17px] size-2.5 -translate-x-1/2 rounded-full border-2 border-ink bg-signal"
-                style={{ left: playhead }}
-                aria-hidden
-              />
             </div>
           </div>
 
@@ -168,7 +154,6 @@ export function Career() {
               <Row
                 key={role.org}
                 role={role}
-                progress={progress}
                 open={open === role.org}
                 onToggle={() => setOpen(open === role.org ? null : role.org)}
               />

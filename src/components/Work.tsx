@@ -37,7 +37,7 @@ function CaseStudy({
       </h3>
 
       {/* Inline visual on small screens */}
-      <div className="mt-8 aspect-[11/10] rounded-2xl border border-rule bg-ink-2/60 p-4 lg:hidden">
+      <div className="mt-8 rounded-2xl border border-rule bg-ink-2/60 px-4 py-6 lg:hidden">
         <WorkVisual visual={item.visual} active={seen} />
       </div>
 
