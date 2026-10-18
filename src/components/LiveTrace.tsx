@@ -253,9 +253,13 @@ export function LiveTrace() {
                     className="grid grid-cols-[116px_1fr_44px] items-center gap-3 py-[5px] transition-opacity duration-300 sm:grid-cols-[176px_1fr_52px]"
                     style={{ opacity: started ? 1 : 0.28 }}
                   >
-                    <div className="min-w-0" style={{ paddingLeft: span.depth * 12 }}>
+                    <div
+                      className="min-w-0 [--indent:7px] sm:[--indent:12px]"
+                      style={{ paddingLeft: `calc(${span.depth} * var(--indent))` }}
+                    >
                       <p className="leading-snug text-text [overflow-wrap:anywhere] max-sm:text-[10.5px]">
-                        {span.depth > 0 && <span className="text-faint">└ </span>}
+                        {/* No-break space keeps the tree mark on the same line as the name. */}
+                        {span.depth > 0 && <span className="text-faint">└\u00a0</span>}
                         {span.name}
                       </p>
                       <p className="hidden truncate text-[10.5px] text-faint sm:block">{span.detail}</p>
