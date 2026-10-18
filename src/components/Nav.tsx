@@ -4,11 +4,11 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { profile } from "@/content/profile";
 
-const links = [
-  { href: "#work", label: "Work" },
-  { href: "#career", label: "Career" },
-  { href: "#stack", label: "Stack" },
-  { href: "#contact", label: "Contact" },
+const sections = [
+  { id: "work", label: "Work" },
+  { id: "career", label: "Career" },
+  { id: "writing", label: "Writing" },
+  { id: "contact", label: "Contact" },
 ];
 
 const lightQuery = "(prefers-color-scheme: light)";
@@ -65,7 +65,10 @@ function ThemeToggle() {
   );
 }
 
-export function Nav() {
+/** `home` keeps in-page anchors (smooth-scrolled by Lenis); other pages link back to the homepage sections. */
+export function Nav({ home = false }: { home?: boolean }) {
+  const base = home ? "" : "/";
+  const links = sections.map((s) => ({ href: `${base}#${s.id}`, label: s.label }));
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -101,7 +104,7 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-[1240px] items-center justify-between pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] sm:px-8">
-        <a href="#top" onClick={() => setOpen(false)} className="wide flex h-11 items-center text-[15px] font-bold tracking-tight">
+        <a href={home ? "#top" : "/"} onClick={() => setOpen(false)} className="wide flex h-11 items-center text-[15px] font-bold tracking-tight">
           {profile.name}
         </a>
         <div className="flex items-center gap-2">

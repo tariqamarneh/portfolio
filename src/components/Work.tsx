@@ -10,11 +10,13 @@ function CaseStudy({
   index,
   onActive,
   active,
+  articleHref,
 }: {
   item: WorkItem;
   index: number;
   onActive: (index: number) => void;
   active: boolean;
+  articleHref?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const centered = useInView(ref, { margin: "-45% 0px -45% 0px" });
@@ -55,6 +57,14 @@ function CaseStudy({
           <dd className="mt-1 text-xl leading-snug font-medium text-text">{item.result}</dd>
         </div>
       </dl>
+      {articleHref && (
+        <a
+          href={articleHref}
+          className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-opacity hover:opacity-80"
+        >
+          Read the write-up →
+        </a>
+      )}
       <ul className="mt-6 flex flex-wrap gap-2">
         {item.stack.map((s) => (
           <li key={s} className="rounded-full border border-rule px-3 py-1 font-mono text-xs text-muted">
@@ -66,7 +76,8 @@ function CaseStudy({
   );
 }
 
-export function Work() {
+/** `liveArticles`: slugs of published articles, passed from the server so article text stays out of this bundle. */
+export function Work({ liveArticles = [] }: { liveArticles?: string[] }) {
   const [active, setActive] = useState(0);
 
   return (
@@ -81,7 +92,14 @@ export function Work() {
               Five problems I owned from design to production, with the numbers they moved.
             </p>
             {work.map((item, i) => (
-              <CaseStudy key={item.id} item={item} active={active === i} index={i} onActive={setActive} />
+              <CaseStudy
+                key={item.id}
+                item={item}
+                active={active === i}
+                index={i}
+                onActive={setActive}
+                articleHref={item.article && liveArticles.includes(item.article) ? `/writing/${item.article}` : undefined}
+              />
             ))}
           </div>
 

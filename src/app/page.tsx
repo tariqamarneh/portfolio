@@ -4,16 +4,19 @@ import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
 import { Stack } from "@/components/Stack";
 import { Work } from "@/components/Work";
+import { Writing } from "@/components/Writing";
+import { articles } from "@/content/writing";
 
 export default function Home() {
   return (
     <>
-      <Nav />
+      <Nav home />
       <main>
         <Hero />
-        <Work />
+        <Work liveArticles={articles.map((a) => a.slug)} />
         <Career />
         <Stack />
+        <Writing />
         <Contact />
       </main>
     </>

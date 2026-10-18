@@ -221,6 +221,8 @@ export type Work = {
   result: string;
   stack: string[];
   visual: "graph" | "latency" | "compile" | "retrieval" | "scale";
+  /** Slug of a related article in `writing.ts`; linked only once it's published. */
+  article?: string;
 };
 
 export const work: Work[] = [
@@ -235,6 +237,7 @@ export const work: Work[] = [
     result: "It runs end to end in production, from the first question to a confirmed appointment.",
     stack: ["LangGraph", "LangSmith", "FastAPI", "Redis", "Milvus"],
     visual: "graph",
+    article: "one-agent-for-every-business",
   },
   {
     id: "latency",
@@ -246,6 +249,7 @@ export const work: Work[] = [
     result: "Responses dropped from 50–80s to 10–40s, depending on the query.",
     stack: ["LangSmith", "asyncio", "Gemini", "Claude"],
     visual: "latency",
+    article: "making-an-ai-agent-faster",
   },
   {
     id: "procedures",
@@ -258,6 +262,7 @@ export const work: Work[] = [
     result: "Admins build a workflow by writing it out, and the agent runs it the same way every time.",
     stack: ["Python", "LangGraph", "Next.js", "Kotlin", "PostgreSQL"],
     visual: "compile",
+    article: "compiling-plain-language-workflows",
   },
   {
     id: "neom-search",
@@ -292,7 +297,7 @@ export const alsoShipped = [
   "Schema translator on Cloud Run Jobs, fed by Pub/Sub events",
   "Detection of knowledge-base conflicts, with a review screen",
   "IDF-weighted fuzzy name matching for catalog search",
-  "Nightly regression tiers that grade agent turns from their traces",
+  "A nightly regression tier that grades workflow conversations from their traces",
 ];
 
 // ── Stack, grouped by the layer it runs in ───────────────────────
