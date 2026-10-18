@@ -66,8 +66,15 @@ export function Hero() {
               See selected work
             </a>
             <a
-              href={`mailto:${profile.email}`}
+              href={profile.cv}
+              download="Tariq-Naser-CV.pdf"
               className="press rounded-full border border-rule px-5 py-3 text-[15px] font-medium transition-colors hover:border-muted"
+            >
+              Download CV
+            </a>
+            <a
+              href={`mailto:${profile.email}`}
+              className="press rounded-full px-3 py-3 text-[15px] font-medium text-muted transition-colors hover:text-text"
             >
               Email me
             </a>

@@ -13,6 +13,7 @@ export const profile = {
   whatsappHref: "https://wa.me/962797909969",
   linkedin: "https://www.linkedin.com/in/tariq-naser",
   github: "https://github.com/tariqamarneh",
+  cv: "/Tariq-Naser-CV.pdf",
 };
 
 // ── Live trace demo ──────────────────────────────────────────────

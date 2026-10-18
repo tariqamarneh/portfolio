@@ -1,0 +1,178 @@
+<!doctype html>
+<!--
+  Source of public/Tariq-Naser-CV.pdf.
+  To regenerate: open this file in Chrome → Print → Save as PDF (A4, margins: none, background graphics on).
+  Kept single-column with standard headings and plain text so ATS parsers read it in order.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tariq Naser - CV</title>
+<meta name="author" content="Tariq Naser">
+<meta name="description" content="Senior Software Engineer - AI Agents and Backend Systems">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.7pt;
+    line-height: 1.38;
+    color: #1b2333;
+  }
+  .page { padding: 13mm 15mm 11mm; }
+  h1 {
+    margin: 0;
+    font-size: 23pt;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: #0d1526;
+  }
+  .headline { margin: 3pt 0 0; font-size: 11.5pt; font-weight: 600; color: #2453d6; }
+  .contact { margin: 6pt 0 0; font-size: 9.4pt; color: #3d475c; }
+  .contact a { color: inherit; text-decoration: none; }
+  h2 {
+    margin: 11pt 0 5pt;
+    padding-bottom: 3pt;
+    border-bottom: 1.2pt solid #2453d6;
+    font-size: 10.5pt;
+    letter-spacing: 0.06em;
+    color: #0d1526;
+  }
+  p { margin: 0; }
+  .summary { text-align: left; }
+  .skills p { margin: 0 0 2.5pt; }
+  .skills b { color: #0d1526; }
+  .role { margin: 0 0 7.5pt; break-inside: avoid; }
+  .role-head { display: flex; justify-content: space-between; gap: 12pt; align-items: baseline; }
+  .role-title { font-weight: 700; font-size: 10.6pt; color: #0d1526; }
+  .role-dates { font-size: 9.6pt; color: #3d475c; white-space: nowrap; }
+  .role-org { font-size: 9.8pt; color: #3d475c; margin-top: 0.5pt; }
+  .role-org b { color: #1b2333; }
+  ul { margin: 3pt 0 0; padding-left: 13pt; }
+  li { margin: 0 0 1.8pt; padding-left: 1pt; }
+  li::marker { color: #2453d6; }
+  .two-col-text p { margin: 0 0 2.5pt; }
+  .page-break { break-before: page; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Tariq Naser</h1>
+<p class="headline">Senior Software Engineer | AI Agents, LLM Systems and Backend Engineering</p>
+<p class="contact">
+  Amman, Jordan | +962 79 790 9969 | <a href="mailto:tariqs.naser@gmail.com">tariqs.naser@gmail.com</a> |
+  <a href="https://www.linkedin.com/in/tariq-naser">linkedin.com/in/tariq-naser</a> |
+  <a href="https://github.com/tariqamarneh">github.com/tariqamarneh</a> |
+  <a href="https://tariqamarneh.vercel.app">tariqamarneh.vercel.app</a>
+</p>
+
+<h2>PROFESSIONAL SUMMARY</h2>
+<p class="summary">
+  Senior Software Engineer with 2.5+ years of experience designing and shipping production AI agents, LLM
+  applications and scalable backend services at Amazon, PwC and fast-growing AI startups. Builds multi-step
+  agents with LangGraph, LangChain and LangSmith, retrieval-augmented generation (RAG) on vector databases, and
+  the Python, Kotlin and Java services behind them on GCP, AWS and Azure. Track record of measurable results:
+  2–5x faster agent responses, 80% more accurate document retrieval, and a compliance rollout covering 15M+ items.
+  Works across the stack, from agent architecture and evaluation to APIs, data pipelines and React interfaces.
+</p>
+
+<h2>TECHNICAL SKILLS</h2>
+<div class="skills">
+  <p><b>AI and LLM:</b> LangGraph, LangChain, LangSmith, AI agents, multi-agent orchestration, RAG, embeddings, vector databases (Milvus, ChromaDB), prompt engineering, structured output, LLM evaluation, OpenAI, Gemini</p>
+  <p><b>Languages:</b> Python, Kotlin, Java, TypeScript, JavaScript, SQL</p>
+  <p><b>Backend:</b> FastAPI, Spring Boot, Ktor, REST APIs, microservices, event-driven architecture, asyncio, jOOQ</p>
+  <p><b>Data:</b> PostgreSQL, Redis, MongoDB, BigQuery, Alembic, Flyway, data pipelines</p>
+  <p><b>Cloud and DevOps:</b> Google Cloud (Cloud Run, Cloud Run Jobs, Pub/Sub, BigQuery), AWS (Lambda, EC2), Azure, Docker, CI/CD, GitHub Actions</p>
+  <p><b>Frontend:</b> React, Next.js, TypeScript, Tailwind CSS</p>
+  <p><b>Practices:</b> System design, SOLID principles, automated testing (pytest), static typing (mypy strict), observability, code review, Agile</p>
+</div>
+
+<h2>PROFESSIONAL EXPERIENCE</h2>
+
+<div class="role">
+  <div class="role-head">
+    <span class="role-title">Senior Software Engineer</span>
+    <span class="role-dates">01/2026 - Present</span>
+  </div>
+  <p class="role-org"><b>BusinessChat</b>, Amman, Jordan | Conversational AI platform running AI agents for businesses on WhatsApp</p>
+  <ul>
+    <li>Designed and built the LangGraph agent that extended the platform into healthcare, answering patient questions against each clinic's doctors, specialties, services and branches, checking live availability and booking appointments end to end in Arabic and English.</li>
+    <li>Architected a schema-driven adaptive agent (guard, capability router, entity extraction and resolution, disambiguation, confirmation and final-review nodes) that onboards new business verticals through configuration instead of new code.</li>
+    <li>Built Procedures (AI Workflows) from compiler to UI: admins write business workflows in plain language, which are compiled into a control-flow graph and executed by a deterministic runtime that limits LLM calls to dispatch, judgment, intake and replies.</li>
+    <li>Reduced e-commerce agent response time from 50–80s to 10–40s by profiling LangSmith traces and reworking the slowest graph paths, substantially improving the conversational experience.</li>
+    <li>Improved the document and FAQ ingestion pipeline (loading, chunking, embedding into Milvus), increasing retrieval accuracy by 20%, and added knowledge-base conflict detection with a review-and-resolve workflow.</li>
+    <li>Built a nightly LLM regression suite that grades agent conversations from their traces across healthcare, multi-intent and workflow tiers and reports results to Slack.</li>
+    <li>Developed Kotlin and Spring Boot services for a generic entity-and-relation store with event-driven Pub/Sub sync, plus a schema translator on Cloud Run Jobs, so any vertical can sync its catalog to the agent.</li>
+    <li>Raised engineering quality of the Python AI engine: migrated it to strict mypy (fixing 15 latent bugs), enforced a layered architecture free of import cycles, root-caused a production memory leak, and cut LangSmith tracing costs through sampling and payload trimming.</li>
+    <li>Delivered 700+ commits across the Python AI engine, Kotlin services and React/TypeScript admin console, including agent configuration, knowledge base, workflow editor and AI insights reporting.</li>
+  </ul>
+</div>
+
+<div class="role">
+  <div class="role-head">
+    <span class="role-title">Software Development Engineer</span>
+    <span class="role-dates">11/2024 - 12/2025</span>
+  </div>
+  <p class="role-org"><b>Amazon</b>, Amman, Jordan</p>
+  <ul>
+    <li>Led a cross-functional compliance initiative in Turkey to print product serial numbers on invoices, coordinating legal, operations and engineering teams; the rollout covered 15M+ items and improved fulfillment center accuracy.</li>
+    <li>Built automated 2-hour delivery workflows for the UAE and Saudi Arabia, including auto-cancellation, refunds for failed deliveries and shipping-fee refunds for delayed orders, improving SLA compliance and customer satisfaction scores.</li>
+    <li>Developed and operated backend services on AWS Lambda and EC2 for large-scale e-commerce fulfillment operations, applying Amazon's Leadership Principles of Customer Obsession, Ownership and Deliver Results.</li>
+  </ul>
+</div>
+
+<div class="role">
+  <div class="role-head">
+    <span class="role-title">Java Software Engineer</span>
+    <span class="role-dates">09/2024 - 11/2024</span>
+  </div>
+  <p class="role-org"><b>ProgressSoft</b>, Amman, Jordan</p>
+  <ul>
+    <li>Refactored and strengthened the backend architecture of a financial platform serving 14+ banks by applying SOLID principles in Java and Spring Boot, improving maintainability and speeding up onboarding of new banking clients.</li>
+  </ul>
+</div>
+
+<div class="role">
+  <div class="role-head">
+    <span class="role-title">AI Engineer</span>
+    <span class="role-dates">12/2023 - 07/2024</span>
+  </div>
+  <p class="role-org"><b>PwC</b>, Amman, Jordan</p>
+  <ul>
+    <li>Designed and built a semantic document search engine for NEOM using OpenAI embeddings and ChromaDB, improving document retrieval accuracy by 80% and reducing average search time by 65%.</li>
+    <li>Collaborated with client stakeholders and AI teams to align search capabilities with business objectives, delivering context-aware results to 300,000+ users.</li>
+  </ul>
+</div>
+
+<div class="role">
+  <div class="role-head">
+    <span class="role-title">Predictive Data Analyst Intern</span>
+    <span class="role-dates">06/2022 - 09/2022</span>
+  </div>
+  <p class="role-org"><b>Arab Bank</b>, Amman, Jordan</p>
+  <ul>
+    <li>Built and deployed time-series forecasting models to predict sales trends and presented the findings to executive leadership, enabling data-driven inventory optimization across 3 business units.</li>
+  </ul>
+</div>
+
+<h2>EDUCATION</h2>
+<div class="role">
+  <p class="role-title">Bachelor of Science in Data Science and Artificial Intelligence</p>
+  <p class="role-org"><b>Princess Sumaya University for Technology</b>, Amman, Jordan | 10/2019 - 07/2023 | GPA: 82%</p>
+</div>
+
+<h2>CERTIFICATIONS</h2>
+<div class="two-col-text">
+  <p><b>Microsoft Certified: Azure AI Fundamentals (AI-900)</b>, Microsoft</p>
+  <p><b>Professional Data Analysis</b>, Google</p>
+</div>
+
+<h2>LANGUAGES</h2>
+<p>Arabic (Native), English (Fluent)</p>
+
+</div>
+</body>
+</html>
