@@ -50,9 +50,9 @@ function Row({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="group grid w-full gap-x-6 gap-y-3 py-5 text-left md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:items-center"
+        className="group relative grid w-full cursor-pointer gap-x-6 gap-y-3 py-5 text-left md:grid-cols-[minmax(0,300px)_minmax(0,1fr)_auto] md:items-center"
       >
-        <div className="min-w-0">
+        <div className="min-w-0 max-md:pr-14">
           <p className="text-lg leading-tight font-semibold transition-colors group-hover:text-signal">{role.org}</p>
           <p className="mt-0.5 text-sm text-muted">{role.title}</p>
         </div>
@@ -78,6 +78,16 @@ function Row({
             {monthName(role.start)} – {role.end ? monthName(role.end) : "now"} · {length(role)}
           </p>
         </div>
+        {/* Plus that becomes a minus: the row's visible "expand" cue, since touch screens have no hover. */}
+        <span
+          aria-hidden
+          className="absolute top-5 right-0 grid size-10 place-items-center rounded-full border border-rule text-muted transition-colors group-hover:border-text group-hover:text-text group-aria-expanded:border-signal group-aria-expanded:text-signal md:static"
+        >
+          <span className="relative block size-3">
+            <span className="absolute inset-x-0 top-1/2 h-[1.5px] -translate-y-1/2 rounded-full bg-current" />
+            <span className="absolute inset-y-0 left-1/2 w-[1.5px] -translate-x-1/2 rounded-full bg-current transition-transform duration-300 group-aria-expanded:rotate-90" />
+          </span>
+        </span>
       </button>
 
       <AnimatePresence initial={false}>
@@ -89,7 +99,7 @@ function Row({
             transition={{ duration: 0.35, ease: [0.77, 0, 0.175, 1] }}
             className="overflow-hidden"
           >
-            <div className="grid gap-x-6 pb-8 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
+            <div className="grid gap-x-6 pb-8 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)_2.5rem]">
               <p className="text-sm text-faint">{role.place}</p>
               <div className="max-w-[68ch]">
                 <p className="text-lg leading-snug text-text">{role.summary}</p>

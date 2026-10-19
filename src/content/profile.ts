@@ -4,6 +4,9 @@ export const profile = {
   name: "Tariq Amarneh",
   givenName: "Tariq",
   familyName: "Amarneh",
+  nameAr: "طارق عمارنة",
+  // Spelling variants people search with; search data only, never shown.
+  alternateNames: ["طارق عمارنة", "طارق عمارنه"],
   siteUrl: "https://www.tariqamarneh.com",
   role: "Senior Software Engineer",
   company: "BusinessChat",

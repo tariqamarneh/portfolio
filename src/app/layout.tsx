@@ -82,6 +82,7 @@ const jsonLd = {
       name: profile.name,
       givenName: profile.givenName,
       familyName: profile.familyName,
+      alternateName: profile.alternateNames,
       url: profile.siteUrl,
       image: `${profile.siteUrl}/images/tariq-portrait.png`,
       jobTitle: profile.role,

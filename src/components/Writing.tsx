@@ -9,7 +9,7 @@ export function ArticleList({ limit }: { limit?: number }) {
         <li key={article.slug} className="border-b border-rule">
           <Link
             href={`/writing/${article.slug}`}
-            className="group grid gap-x-6 gap-y-2 py-7 md:grid-cols-[300px_minmax(0,1fr)]"
+            className="group grid gap-x-6 gap-y-2 py-7 transition-colors md:grid-cols-[300px_minmax(0,1fr)] md:-mx-4 md:rounded-2xl md:px-4 md:hover:bg-ink-2"
           >
             <p className="text-sm text-faint md:pt-1.5">
               <time dateTime={article.published}>{formatDate(article.published)}</time>
@@ -22,6 +22,12 @@ export function ArticleList({ limit }: { limit?: number }) {
                 {article.title}
               </h3>
               <p className="mt-2 max-w-[62ch] leading-relaxed text-muted">{article.description}</p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-signal">
+                Read article
+                <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">
+                  →
+                </span>
+              </span>
             </div>
           </Link>
         </li>

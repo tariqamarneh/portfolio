@@ -94,7 +94,10 @@ export function Contact() {
 
         <footer className="mt-20 flex flex-wrap justify-between gap-4 text-sm text-faint">
           <p>
-            © 2026 {profile.name}
+            © 2026 {profile.name} ·{" "}
+            <span lang="ar" dir="rtl">
+              {profile.nameAr}
+            </span>
           </p>
           <p>Built with Next.js, Tailwind CSS and Motion</p>
         </footer>
