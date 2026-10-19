@@ -107,5 +107,9 @@ def get_search_client(**cfg) -> SearchClient:
         "Anything holding sockets or channels (gRPC, HTTP pools, SDK clients) belongs at process scope. Building it inside a request also captures that request's context.",
       ],
     },
+    {
+      type: "callout",
+      text: "I turned this investigation into an open-source tool and agent skill: [python-leak-hunter](https://github.com/tariqamarneh/python-leak-hunter). It finds what accumulates per request, walks the referrers to what keeps it alive (including \"held by a C extension\"), and adds a pytest check so the leak stays fixed. Run against real grpcio, it traces this exact leak to gRPC's auth plugin.",
+    },
   ],
 };

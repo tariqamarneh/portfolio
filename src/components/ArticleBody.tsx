@@ -7,9 +7,23 @@ const kindStyle = {
   logic: { dot: "bg-logic", label: "code" },
 } as const;
 
-/** Renders `code` spans, **bold** and *italic* runs; everything else is plain text. */
+/** Renders `code` spans, **bold**, *italic* and [links](https://…); everything else is plain text. */
 function inline(text: string): ReactNode {
-  return text.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/g).map((part, i) => {
+  return text.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*\s][^*]*\*|\[[^\]]+\]\(https:\/\/[^)\s]+\))/g).map((part, i) => {
+    const link = /^\[([^\]]+)\]\((https:\/\/[^)\s]+)\)$/.exec(part);
+    if (link) {
+      return (
+        <a
+          key={i}
+          href={link[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-signal underline decoration-signal/40 underline-offset-4 hover:decoration-signal"
+        >
+          {link[1]}
+        </a>
+      );
+    }
     if (part.startsWith("`") && part.endsWith("`")) {
       return (
         <code key={i} className="rounded-md bg-ink-3 px-1.5 py-0.5 font-mono text-[0.86em] text-text">
