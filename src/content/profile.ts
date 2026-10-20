@@ -11,12 +11,13 @@ export const profile = {
   role: "Senior Software Engineer",
   company: "BusinessChat",
   location: "Amman, Jordan",
+  previously: "Amazon and PwC",
   intro:
     "I build AI agents that book appointments, track orders and follow business procedures over WhatsApp, in Arabic and English, and the backend services they run on.",
   email: "tariqs.naser@gmail.com",
   phoneDisplay: "+962 79 790 9969",
   phoneHref: "tel:+962797909969",
-  whatsappHref: "https://wa.me/962797909969",
+  whatsappHref: `https://wa.me/962797909969?text=${encodeURIComponent("Hi Tariq, I saw your portfolio and wanted to get in touch.")}`,
   linkedin: "https://www.linkedin.com/in/tariq-amarneh",
   github: "https://github.com/tariqamarneh",
   cv: "/Tariq-Amarneh-CV.pdf",
@@ -261,7 +262,7 @@ export const work: Work[] = [
     problem:
       "Businesses wanted their bot to follow their own processes, like returns, escalations and data collection, without filing a request with engineering.",
     built:
-      "An editor where admins write steps with @variables and /action chips. Publishing compiles the text into a control-flow graph. At run time, the LLM is limited to four narrow jobs: dispatch, judge, intake and say. A nightly regression suite grades real traces.",
+      "An editor where admins write steps with @variables and /action chips. Publishing compiles the text into a control-flow graph. At run time, the LLM is limited to four narrow jobs: dispatch, judge, intake and say. I added a workflows tier to the team's nightly regression suite, which grades real traces.",
     result: "Admins build a workflow by writing it out, and the agent runs it the same way every time.",
     stack: ["Python", "LangGraph", "Next.js", "Kotlin", "PostgreSQL"],
     visual: "compile",

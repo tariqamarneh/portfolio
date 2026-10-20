@@ -13,19 +13,21 @@ const channels = [
 ];
 
 export function Contact() {
-  const [copied, setCopied] = useState(false);
+  const [copy, setCopy] = useState<"idle" | "done" | "failed">("idle");
 
-  async function copy() {
+  async function copyEmail() {
     try {
       await navigator.clipboard.writeText(profile.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {}
+      setCopy("done");
+    } catch {
+      // Clipboard blocked (permissions, insecure context): say so, and the address stays selectable.
+      setCopy("failed");
+    }
+    setTimeout(() => setCopy("idle"), 1800);
   }
 
   return (
-    <section id="contact" className="relative isolate overflow-hidden border-t border-rule pt-24 pb-10">
-      <div className="grid-paper pointer-events-none absolute inset-0 -z-10 rotate-180" aria-hidden />
+    <section id="contact" className="relative isolate overflow-hidden pt-24 pb-10 lg:pt-28">
       <div className="mx-auto max-w-[1240px] gutter">
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
           <Portrait className="w-[min(50vw,200px)] lg:order-last lg:w-full" />
@@ -34,8 +36,8 @@ export function Contact() {
               Get in touch
             </h2>
             <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">
-              I&apos;m open to conversations about AI agents, backend systems and engineering roles. Email is the
-              fastest way to reach me.
+              I&apos;m open to conversations about AI agents and backend systems. Email is the fastest way to
+              reach me, and WhatsApp works too.
             </p>
           </div>
         </div>
@@ -43,25 +45,26 @@ export function Contact() {
         <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
           <a
             href={`mailto:${profile.email}`}
-            className="wide py-2 text-[clamp(1.05rem,calc((100vw-2.25rem)/14.2),4rem)] leading-none font-bold tracking-[-0.035em] break-all underline decoration-rule decoration-2 underline-offset-[0.18em] transition-colors hover:decoration-signal"
+            className="wide py-2 text-[clamp(1.05rem,calc((100vw-2.25rem)/14.2),4rem)] leading-none font-bold tracking-[-0.035em] [overflow-wrap:anywhere] underline decoration-rule decoration-2 underline-offset-[0.18em] transition-colors hover:decoration-signal"
           >
             {profile.email}
           </a>
           <button
             type="button"
-            onClick={copy}
+            onClick={copyEmail}
+            aria-live="polite"
             className="press relative h-11 min-w-[118px] rounded-full border border-rule px-4 text-sm font-medium transition-colors hover:border-muted"
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
-                key={copied ? "done" : "idle"}
+                key={copy}
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.15 }}
-                className={`block ${copied ? "text-ok" : ""}`}
+                className={`block ${copy === "done" ? "text-ok" : ""}`}
               >
-                {copied ? "Copied" : "Copy email"}
+                {{ idle: "Copy email", done: "Copied", failed: "Couldn’t copy" }[copy]}
               </motion.span>
             </AnimatePresence>
           </button>
@@ -74,9 +77,9 @@ export function Contact() {
           </a>
         </div>
 
-        <ul className="mt-16 grid border-t border-rule sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-16 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
           {channels.map((c) => (
-            <li key={c.label} className="border-b border-rule sm:odd:border-r sm:even:pl-6 lg:border-r lg:pl-6 lg:first:pl-0 lg:last:border-r-0">
+            <li key={c.label} className="border-t border-rule">
               <a
                 href={c.href}
                 target={c.href.startsWith("http") ? "_blank" : undefined}
@@ -95,7 +98,7 @@ export function Contact() {
         <footer className="mt-20 flex flex-wrap justify-between gap-4 text-sm text-faint">
           <p>
             © 2026 {profile.name} ·{" "}
-            <span lang="ar" dir="rtl">
+            <span lang="ar" dir="rtl" className="font-arabic">
               {profile.nameAr}
             </span>
           </p>

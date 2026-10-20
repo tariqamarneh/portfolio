@@ -59,7 +59,7 @@ function Row({
         <div>
           <div ref={trackRef} className="relative h-5">
             <div
-              className={`absolute inset-y-0 overflow-hidden rounded-[5px] ${study ? "border border-dashed border-faint" : "bg-ink-3"}`}
+              className="absolute inset-y-0 overflow-hidden rounded-[5px] bg-ink-3"
               style={{ left: `${left}%`, width: `max(${width}%, 6px)` }}
             >
               {/* Each bar fills as its own row comes into view, so long expanded rows never leave it empty. */}
@@ -69,12 +69,12 @@ function Row({
                 animate={{ scaleX: seen ? 1 : 0 }}
                 transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
                 style={{
-                  background: study ? "color-mix(in oklab, var(--faint) 45%, transparent)" : "var(--signal)",
+                  background: study ? "color-mix(in oklab, var(--faint) 55%, transparent)" : "var(--signal)",
                 }}
               />
             </div>
           </div>
-          <p className="mt-2 font-mono text-xs text-faint" suppressHydrationWarning>
+          <p className="mt-2 text-[13px] text-faint tabular-nums" suppressHydrationWarning>
             {monthName(role.start)} – {role.end ? monthName(role.end) : "now"} · {length(role)}
           </p>
         </div>
@@ -113,7 +113,7 @@ function Row({
                 </ul>
                 <ul className="mt-5 flex flex-wrap gap-2">
                   {role.tags.map((t) => (
-                    <li key={t} className="rounded-full border border-rule px-3 py-1 font-mono text-xs text-muted">
+                    <li key={t} className="rounded-full bg-ink-3 px-3 py-1 text-[13px] text-muted">
                       {t}
                     </li>
                   ))}
@@ -133,23 +133,24 @@ export function Career() {
   const years = Array.from({ length: NOW.y - AXIS_START.y }, (_, i) => AXIS_START.y + 1 + i);
 
   return (
-    <section id="career" className="border-t border-rule py-24">
+    <section id="career" className="py-24 lg:py-28">
       <div className="mx-auto max-w-[1240px] gutter">
-        <div className="grid gap-6 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-x-6">
-          <h2 className="wide text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
-            Career
-          </h2>
-          <p className="max-w-[52ch] self-end text-lg leading-relaxed text-muted">
+        {/* The title spans; the sentence sits on the content column so the two never collide. */}
+        <h2 className="wide text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
+          Career
+        </h2>
+        <div className="mt-5 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-x-6">
+          <p className="max-w-[56ch] text-lg leading-relaxed text-muted md:col-start-2">
             From forecasting sales at a bank to running AI agents in production. Each bar is a role on the same
             timeline. Select one to see what I did there.
           </p>
         </div>
 
-        <div className="relative mt-14">
+        <div className="relative mt-12">
           {/* Year axis */}
           <div className="grid gap-x-6 border-b border-rule pb-3 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
             <span className="hidden md:block" />
-            <div className="relative h-4 font-mono text-[11px] text-faint">
+            <div className="relative h-4 text-[13px] text-faint tabular-nums">
               {years.map((y) => {
                 const pos = ((toMonths({ y, m: 1 }) - AXIS_FROM) / AXIS_SPAN) * 100;
                 return (

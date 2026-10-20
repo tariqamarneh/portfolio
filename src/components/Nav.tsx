@@ -1,12 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { profile } from "@/content/profile";
 
 const sections = [
   { id: "work", label: "Work" },
   { id: "career", label: "Career" },
+  { id: "stack", label: "Stack" },
   { id: "writing", label: "Writing" },
   { id: "contact", label: "Contact" },
 ];
@@ -71,6 +72,27 @@ export function Nav({ home = false }: { home?: boolean }) {
   const links = sections.map((s) => ({ href: `${base}#${s.id}`, label: s.label }));
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [current, setCurrent] = useState<string | null>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Mark the section under the middle of the screen, so the bar says where you are.
+  useEffect(() => {
+    if (!home) return;
+    const targets = sections
+      .map((s) => document.getElementById(s.id))
+      .filter((el): el is HTMLElement => el !== null);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const { isIntersecting, target } of entries) {
+          setCurrent((prev) => (isIntersecting ? target.id : prev === target.id ? null : prev));
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [home]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -81,26 +103,53 @@ export function Nav({ home = false }: { home?: boolean }) {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const toggle = toggleRef.current;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggle?.focus();
+    };
     const desktop = window.matchMedia("(min-width: 768px)");
     const onResize = () => desktop.matches && setOpen(false);
     window.addEventListener("keydown", onKey);
     desktop.addEventListener("change", onResize);
+    // The page behind the open menu stays put.
+    const root = document.documentElement;
+    const overflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    menuRef.current?.querySelector("a")?.focus({ preventScroll: true });
     return () => {
       window.removeEventListener("keydown", onKey);
       desktop.removeEventListener("change", onResize);
+      root.style.overflow = overflow;
     };
   }, [open]);
 
 
   return (
+    <>
+    <a
+      href="#main"
+      className="sr-only rounded-full bg-text px-4 py-2.5 text-sm font-medium text-ink focus-visible:not-sr-only focus-visible:fixed focus-visible:top-[calc(0.75rem+env(safe-area-inset-top))] focus-visible:left-3 focus-visible:z-[60]"
+    >
+      Skip to content
+    </a>
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-40 bg-ink/70 md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.15 } }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setOpen(false)}
+          aria-hidden
+        />
+      )}
+    </AnimatePresence>
     <header
-      className={`fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color] duration-300 ${
-        open
-          ? "border-b border-rule bg-ink"
-          : scrolled
-            ? "border-b border-rule bg-ink/85 backdrop-blur-md"
-            : "border-b border-transparent"
+      className={`fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,border-color] duration-200 ${
+        open || scrolled ? "border-b border-rule bg-ink" : "border-b border-transparent"
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-[1240px] items-center justify-between pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] sm:px-8">
@@ -113,7 +162,8 @@ export function Nav({ home = false }: { home?: boolean }) {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-text"
+                  aria-current={current === link.href.slice(link.href.indexOf("#") + 1) ? "location" : undefined}
+                  className="relative rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-text aria-[current]:text-text"
                 >
                   {link.label}
                 </a>
@@ -123,11 +173,12 @@ export function Nav({ home = false }: { home?: boolean }) {
           <a
             href={profile.cv}
             download="Tariq-Amarneh-CV.pdf"
-            className="press hidden h-9 items-center rounded-full bg-text px-4 text-sm font-medium text-ink transition-opacity hover:opacity-90 md:flex"
+            className="press hidden h-9 items-center rounded-full border border-rule px-4 text-sm font-medium transition-colors hover:border-muted md:flex"
           >
             Download CV
           </a>
           <button
+            ref={toggleRef}
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
@@ -149,6 +200,7 @@ export function Nav({ home = false }: { home?: boolean }) {
             exit={{ height: 0, opacity: 0, transition: { duration: 0.18 } }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden md:hidden"
+            ref={menuRef}
           >
             <ul className="px-[max(1rem,env(safe-area-inset-left))] pt-2 pb-6">
               {links.map((link) => (
@@ -162,14 +214,30 @@ export function Nav({ home = false }: { home?: boolean }) {
                   </a>
                 </li>
               ))}
-              <li className="border-t border-rule pt-4">
+              <li className="grid grid-cols-2 gap-3 border-t border-rule pt-4">
                 <a
                   href={profile.cv}
                   download="Tariq-Amarneh-CV.pdf"
                   onClick={() => setOpen(false)}
-                  className="press flex h-12 items-center justify-center rounded-full bg-text text-[15px] font-medium text-ink"
+                  className="press col-span-2 flex h-12 items-center justify-center rounded-full bg-text text-[15px] font-medium text-ink"
                 >
                   Download CV
+                </a>
+                <a
+                  href={`mailto:${profile.email}`}
+                  onClick={() => setOpen(false)}
+                  className="press flex h-12 items-center justify-center rounded-full border border-rule text-[15px] font-medium"
+                >
+                  Email
+                </a>
+                <a
+                  href={profile.whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="press flex h-12 items-center justify-center rounded-full border border-rule text-[15px] font-medium"
+                >
+                  WhatsApp
                 </a>
               </li>
             </ul>
@@ -177,5 +245,6 @@ export function Nav({ home = false }: { home?: boolean }) {
         )}
       </AnimatePresence>
     </header>
+    </>
   );
 }

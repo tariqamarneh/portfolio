@@ -32,10 +32,7 @@ export function Portrait({ className = "" }: { className?: string }) {
       className={`relative aspect-[1/1.22] ${className}`}
     >
       <div
-        className="absolute inset-x-0 bottom-0 aspect-square rounded-full border border-rule bg-ink-3"
-        style={{
-          backgroundImage: "radial-gradient(circle at 50% 28%, var(--signal-soft), transparent 70%)",
-        }}
+        className="absolute inset-x-0 bottom-0 aspect-square rounded-full bg-ink-3"
         aria-hidden
       />
       <div

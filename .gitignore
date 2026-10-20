@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design-tool working files (PRODUCT.md holds private notes; the repo is public)
+PRODUCT.md
+/.impeccable/
+/.taste-skill/

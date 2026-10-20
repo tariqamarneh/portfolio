@@ -40,17 +40,18 @@ const HOME_LIMIT = 4;
 
 export function Writing() {
   return (
-    <section id="writing" className="border-t border-rule py-24">
+    <section id="writing" className="py-24 lg:py-28">
       <div className="mx-auto max-w-[1240px] gutter">
-        <div className="grid gap-6 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-x-6">
-          <h2 className="wide text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
-            Writing
-          </h2>
-          <p className="max-w-[52ch] self-end text-lg leading-relaxed text-muted">
+        {/* The title spans; the sentence sits on the content column so the two never collide. */}
+        <h2 className="wide text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
+          Writing
+        </h2>
+        <div className="mt-5 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-x-6">
+          <p className="max-w-[56ch] text-lg leading-relaxed text-muted md:col-start-2">
             Notes from building production agents: what was slow, what broke, and what I changed.
           </p>
         </div>
-        <div className="mt-14">
+        <div className="mt-12">
           <ArticleList limit={HOME_LIMIT} />
         </div>
         {articles.length > HOME_LIMIT && (

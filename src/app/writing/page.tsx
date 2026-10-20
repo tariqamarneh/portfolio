@@ -13,7 +13,7 @@ export default function WritingPage() {
   return (
     <>
       <Nav />
-      <main className="pt-[calc(7rem+env(safe-area-inset-top))] pb-24">
+      <main id="main" className="pt-[calc(7rem+env(safe-area-inset-top))] pb-24">
         <div className="mx-auto max-w-[1240px] gutter">
           <h1 className="wide text-[clamp(2.75rem,8vw,6rem)] leading-[0.92] font-extrabold tracking-[-0.045em]">
             Writing

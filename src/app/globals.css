@@ -9,8 +9,8 @@
   --ink-3: #18253f;
   --rule: #233251;
   --text: #e8ecf3;
-  --muted: #8d9ab3;
-  --faint: #56637d;
+  --muted: #9ba7bd;
+  --faint: #8290a9;
   --signal: #8ab4ff;
   --signal-soft: rgb(138 180 255 / 0.14);
   --ok: #6ee7b7;
@@ -27,8 +27,8 @@
   --ink-3: #e7ebf3;
   --rule: #d3d9e5;
   --text: #0f1b33;
-  --muted: #56627b;
-  --faint: #8a94a8;
+  --muted: #465269;
+  --faint: #5c6780;
   --signal: #2453d6;
   --signal-soft: rgb(36 83 214 / 0.1);
   --ok: #0e8f62;
@@ -46,8 +46,8 @@
     --ink-3: #e7ebf3;
     --rule: #d3d9e5;
     --text: #0f1b33;
-    --muted: #56627b;
-    --faint: #8a94a8;
+    --muted: #465269;
+    --faint: #5c6780;
     --signal: #2453d6;
     --signal-soft: rgb(36 83 214 / 0.1);
     --ok: #0e8f62;
@@ -121,26 +121,28 @@ body {
   color: var(--ink);
 }
 
-/* Expressive width axis for display type. */
-.wide {
+/* Browser surfaces take the palette too. */
+html {
+  scrollbar-color: var(--rule) var(--ink);
+  accent-color: var(--signal);
+  caret-color: var(--signal);
+}
+a {
+  text-underline-offset: 0.2em;
+}
+
+/* Expressive width axis for display type. Utilities, so `md:wide` works. */
+@utility wide {
   font-stretch: 125%;
 }
-.condensed {
+@utility condensed {
   font-stretch: 75%;
 }
 
-.grid-paper {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--rule) 45%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--rule) 45%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, black 30%, transparent 75%);
-}
-
+/* The outline follows each element's own radius, so pills keep their shape when focused. */
 :focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 html.lenis,

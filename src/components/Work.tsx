@@ -29,17 +29,17 @@ function CaseStudy({
   return (
     <article
       ref={ref}
-      className={`py-12 transition-opacity duration-500 lg:min-h-[78vh] lg:py-[18vh] ${
-        active ? "lg:opacity-100" : "lg:opacity-35"
+      className={`py-12 transition-opacity duration-300 lg:min-h-[64vh] lg:py-[12vh] ${
+        active ? "lg:opacity-100" : "lg:opacity-45"
       }`}
     >
-      <p className="text-sm text-muted">{item.where}</p>
-      <h3 className="wide mt-2 text-[clamp(1.75rem,3.4vw,2.75rem)] leading-[1.02] font-bold tracking-[-0.03em]">
+      <h3 className="wide text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.05] font-bold tracking-[-0.03em] text-balance">
         {item.title}
       </h3>
+      <p className="mt-3 text-sm text-muted">{item.where}</p>
 
       {/* Inline visual on small screens */}
-      <div className="mt-8 rounded-2xl border border-rule bg-ink-2/60 px-4 py-6 lg:hidden">
+      <div data-ui className="mt-8 rounded-2xl bg-ink-2 px-4 py-6 lg:hidden">
         <WorkVisual visual={item.visual} active={seen} />
       </div>
 
@@ -67,7 +67,7 @@ function CaseStudy({
       )}
       <ul className="mt-6 flex flex-wrap gap-2">
         {item.stack.map((s) => (
-          <li key={s} className="rounded-full border border-rule px-3 py-1 font-mono text-xs text-muted">
+          <li key={s} className="rounded-full bg-ink-3 px-3 py-1 text-[13px] text-muted">
             {s}
           </li>
         ))}
@@ -81,11 +81,11 @@ export function Work({ liveArticles = [] }: { liveArticles?: string[] }) {
   const [active, setActive] = useState(0);
 
   return (
-    <section id="work" className="border-t border-rule">
+    <section id="work">
       <div className="mx-auto max-w-[1240px] gutter">
         <div className="grid gap-x-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div>
-            <h2 className="wide pt-24 text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
+            <h2 className="wide pt-28 text-[clamp(2.5rem,6vw,4.75rem)] leading-[0.95] font-extrabold tracking-[-0.04em]">
               Selected work
             </h2>
             <p className="mt-5 max-w-[48ch] text-lg leading-relaxed text-muted">
@@ -106,35 +106,38 @@ export function Work({ liveArticles = [] }: { liveArticles?: string[] }) {
           {/* Sticky visual on large screens */}
           <div className="hidden lg:block">
             <div className="sticky top-0 flex h-dvh items-center py-24">
-              <div className="relative aspect-[11/10] w-full overflow-hidden rounded-[24px] border border-rule bg-ink-2/60 p-8">
+              <div data-ui className="relative aspect-[11/10] w-full overflow-hidden rounded-[24px] bg-ink-2 p-8">
                 <div className="absolute top-5 left-8 flex gap-1.5" aria-hidden>
                   {work.map((w, i) => (
                     <span
                       key={w.id}
-                      className={`h-1 rounded-full transition-all duration-500 ${
+                      className={`h-1 rounded-full transition-[width,background-color] duration-300 ease-out ${
                         i === active ? "w-8 bg-signal" : "w-3 bg-rule"
                       }`}
                     />
                   ))}
                 </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={work[active].id}
-                    className="h-full pt-6"
-                    initial={{ opacity: 0, filter: "blur(4px)" }}
-                    animate={{ opacity: 1, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, filter: "blur(4px)" }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <WorkVisual visual={work[active].visual} active />
-                  </motion.div>
-                </AnimatePresence>
+                {/* Old and new visuals overlap while they swap, so the panel is never blank between cases. */}
+                <div className="relative h-full">
+                  <AnimatePresence initial={false}>
+                    <motion.div
+                      key={work[active].id}
+                      className="absolute inset-0 pt-6"
+                      initial={{ opacity: 0, filter: "blur(4px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, filter: "blur(4px)", transition: { duration: 0.2 } }}
+                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    >
+                      <WorkVisual visual={work[active].visual} active />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-rule py-20">
+        <div className="pt-16 pb-8 lg:pt-8">
           <h3 className="wide text-2xl font-bold tracking-[-0.02em]">Also shipped</h3>
           <ul className="mt-8 grid gap-x-12 gap-y-4 sm:grid-cols-2">
             {alsoShipped.map((line) => (

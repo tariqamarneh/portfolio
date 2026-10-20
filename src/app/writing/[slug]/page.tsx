@@ -71,7 +71,7 @@ async function ArticleView({ params }: { params: Promise<{ slug: string }> }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <main className="gutter pt-[calc(7rem+env(safe-area-inset-top))] pb-24">
+      <main id="main" className="gutter pt-[calc(7rem+env(safe-area-inset-top))] pb-24">
         <article className="mx-auto max-w-[44rem]">
           <Link href="/writing" className="text-sm text-muted transition-colors hover:text-text">
             ← Writing

@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Nav home />
-      <main>
+      <main id="main">
         <Hero />
         <Work liveArticles={articles.map((a) => a.slug)} />
         <Career />
