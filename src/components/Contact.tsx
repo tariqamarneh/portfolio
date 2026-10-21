@@ -10,6 +10,7 @@ const channels = [
   { label: "WhatsApp", value: "Message me", href: profile.whatsappHref },
   { label: "LinkedIn", value: "in/tariq-amarneh", href: profile.linkedin },
   { label: "GitHub", value: "tariqamarneh", href: profile.github },
+  { label: "Medium", value: "@tariqamarneh", href: profile.medium },
 ];
 
 export function Contact() {
@@ -77,7 +78,7 @@ export function Contact() {
           </a>
         </div>
 
-        <ul className="mt-16 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-16 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-5">
           {channels.map((c) => (
             <li key={c.label} className="border-t border-rule">
               <a

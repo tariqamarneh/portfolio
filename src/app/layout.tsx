@@ -107,7 +107,7 @@ const jsonLd = {
         "Google Cloud",
         "AWS",
       ],
-      sameAs: [profile.linkedin, profile.github],
+      sameAs: [profile.linkedin, profile.github, profile.medium],
     },
     {
       "@type": "WebSite",

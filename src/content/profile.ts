@@ -20,6 +20,7 @@ export const profile = {
   whatsappHref: `https://wa.me/962797909969?text=${encodeURIComponent("Hi Tariq, I saw your portfolio and wanted to get in touch.")}`,
   linkedin: "https://www.linkedin.com/in/tariq-amarneh",
   github: "https://github.com/tariqamarneh",
+  medium: "https://medium.com/@tariqamarneh",
   cv: "/Tariq-Amarneh-CV.pdf",
 };
 
