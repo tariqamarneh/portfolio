@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
 import { useState } from "react";
 import { profile } from "@/content/profile";
 import { Portrait } from "./Portrait";
@@ -39,6 +40,13 @@ export function Contact() {
             <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted">
               I&apos;m open to conversations about AI agents and backend systems. Email is the fastest way to
               reach me, and WhatsApp works too.
+            </p>
+            <p className="mt-4 max-w-[52ch] leading-relaxed text-muted">
+              Running an agent in production that needs a second pair of eyes? See the{" "}
+              <Link href="/audit" className="text-text underline decoration-rule underline-offset-4 hover:decoration-signal">
+                agent audit
+              </Link>
+              .
             </p>
           </div>
         </div>
