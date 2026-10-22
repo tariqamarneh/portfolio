@@ -23,6 +23,8 @@ export type Article = {
   slug: string;
   title: string;
   description: string;
+  /** Search-result snippet (≤160 chars) when `description` runs longer. */
+  seoDescription?: string;
   published: string; // YYYY-MM-DD
   tags: string[];
   /** Drafts render in `next dev` only, so they can be reviewed before going live. */

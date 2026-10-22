@@ -5,6 +5,8 @@ export const strictMypy: Article = {
   title: "1,901 type errors to zero on a live AI codebase",
   description:
     "Type checking had been switched off for a long time. How a shrinking baseline, a safety net of replay tests and import contracts got a fast-moving Python agent service to strict mypy, and the 15 real bugs it found.",
+  seoDescription:
+    "How a shrinking baseline, replay tests and import contracts took a fast-moving Python agent service to strict mypy, and the 15 real bugs it found.",
   published: "2026-10-18",
   tags: ["Python", "mypy", "Architecture", "Code quality"],
   body: [

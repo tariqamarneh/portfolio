@@ -5,6 +5,8 @@ export const procedures: Article = {
   title: "Compiling plain-language workflows into graphs an agent can't wander off",
   description:
     "Businesses write their processes as sentences. A compiler turns them into a control-flow graph, and a deterministic runtime only asks the LLM four narrow questions.",
+  seoDescription:
+    "Businesses write their processes as sentences. A compiler turns them into a control-flow graph, and a deterministic runtime asks the LLM four narrow questions.",
   published: "2026-10-18",
   tags: ["LangGraph", "Compilers", "AI agents", "Product"],
   body: [

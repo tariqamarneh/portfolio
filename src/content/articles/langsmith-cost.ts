@@ -5,6 +5,8 @@ export const langsmithCost: Article = {
   title: "Cutting LangSmith costs without going blind",
   description:
     "Half our traces came from tests, and the rest carried the same graph state five times. Four small changes, and how we kept every trace our evals and support team rely on.",
+  seoDescription:
+    "Half our LangSmith traces came from tests, and the rest repeated the same graph state. Four small changes cut the bill and kept every trace our evals rely on.",
   published: "2026-10-18",
   tags: ["LangSmith", "Observability", "LangGraph", "Cost"],
   body: [

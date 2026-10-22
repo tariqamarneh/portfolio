@@ -5,6 +5,8 @@ export const adaptiveAgent: Article = {
   title: "One agent for every kind of business",
   description:
     "Instead of a new agent per industry, each business describes its world as a schema, and a single LangGraph agent reads it. How the schema, the graph and the write safety net fit together.",
+  seoDescription:
+    "Instead of a new agent per industry, each business describes its world as a schema and one LangGraph agent reads it. How the schema, graph and safety net fit.",
   published: "2026-10-18",
   tags: ["LangGraph", "AI agents", "Architecture", "Kotlin"],
   body: [

@@ -24,7 +24,7 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 });
 
 const title = `${profile.name} — Senior Software Engineer, AI Agents & Backend`;
-const description = `${profile.name} is a Senior Software Engineer in ${profile.location} who builds production AI agents with LangGraph and RAG, and the backend systems behind them. Previously at Amazon and PwC.`;
+const description = `${profile.name}, Senior Software Engineer in ${profile.location}, builds production AI agents with LangGraph and RAG and the backends behind them. Ex-Amazon and PwC.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),

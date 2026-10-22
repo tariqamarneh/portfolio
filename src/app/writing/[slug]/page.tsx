@@ -17,20 +17,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) notFound();
   if (article.draft) return { title: article.title, robots: { index: false } };
   const url = `/writing/${article.slug}`;
+  const description = article.seoDescription ?? article.description;
   return {
     title: article.title,
-    description: article.description,
+    description,
     alternates: { canonical: url },
     openGraph: {
       type: "article",
       url,
       title: article.title,
-      description: article.description,
+      description,
       publishedTime: article.published,
       authors: [profile.siteUrl],
       tags: article.tags,
     },
-    twitter: { card: "summary_large_image", title: article.title, description: article.description },
+    twitter: { card: "summary_large_image", title: article.title, description },
   };
 }
 

@@ -5,6 +5,8 @@ export const kbConflicts: Article = {
   title: "When the knowledge base disagrees with itself",
   description:
     "Two FAQ articles give different prices, and the agent picks one. A parallel LLM step that catches contradictions in what was actually retrieved, and a review queue that lets the business fix the source.",
+  seoDescription:
+    "When two FAQ articles disagree, the agent picks one. A parallel LLM check catches contradictions in what was retrieved, and a review queue fixes the source.",
   published: "2026-10-18",
   tags: ["RAG", "LLM", "Product", "PostgreSQL"],
   body: [
