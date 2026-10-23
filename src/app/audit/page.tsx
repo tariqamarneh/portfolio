@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/audit" },
 };
 
-const bookHref = `mailto:${profile.email}?subject=${encodeURIComponent("Agent audit")}`;
+const bookHref = "https://calendar.app.google/pHvy2PMSSRSjeSoy8";
 const whatsappHref = `https://wa.me/962797909969?text=${encodeURIComponent("Hi Tariq, I'd like to talk about an agent audit.")}`;
 
 const areas: { title: string; body: string; proof?: { label: string; slug: string } }[] = [
@@ -73,6 +73,8 @@ export default function AuditPage() {
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <a
               href={bookHref}
+              target="_blank"
+              rel="noreferrer"
               className="press flex h-12 items-center rounded-full bg-text px-6 font-medium text-ink transition-opacity hover:opacity-90"
             >
               Book a 30-minute call
@@ -195,14 +197,16 @@ export default function AuditPage() {
               Start with a call
             </h2>
             <p className="mt-4 max-w-[56ch] leading-relaxed text-muted">
-              Tell me what the agent does and what&apos;s worrying you. I reply within a day.
+              Pick a time that suits you, and tell me what the agent does and what&apos;s worrying you.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href={bookHref}
+                target="_blank"
+                rel="noreferrer"
                 className="press flex h-12 items-center rounded-full bg-text px-6 font-medium text-ink transition-opacity hover:opacity-90"
               >
-                Email {profile.email}
+                Book a 30-minute call
               </a>
               <a
                 href={whatsappHref}
@@ -213,6 +217,9 @@ export default function AuditPage() {
                 Message on WhatsApp
               </a>
             </div>
+            <p className="mt-6 text-muted">
+              Or email me at <span className="text-text select-all">{profile.email}</span>. I reply within a day.
+            </p>
           </section>
         </div>
       </main>
