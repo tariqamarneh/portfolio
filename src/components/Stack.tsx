@@ -49,7 +49,17 @@ export function Stack() {
           </div>
           <div>
             <h3 className="text-sm text-faint">Certificates</h3>
-            <p className="mt-2 font-medium">Azure AI Fundamentals (AI-900)</p>
+            <p className="mt-2">
+              <a
+                href="https://learn.microsoft.com/api/credentials/share/en-us/TariqNaser-2558/3E87F11A3A3A756B?sharingId=C8DAA3C7CB1C5BC0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline decoration-faint/50 underline-offset-4 hover:decoration-current"
+              >
+                Azure AI Fundamentals (AI-900)
+              </a>
+              <span className="text-muted">, Microsoft, 2024</span>
+            </p>
             <p className="text-muted">Professional Data Analysis, Google Cloud Platform, 2022</p>
           </div>
           <div>
