@@ -23,8 +23,8 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   weight: ["400", "500", "600"],
 });
 
-const title = `${profile.name} — Senior Software Engineer, AI Agents & Backend`;
-const description = `${profile.name}, Senior Software Engineer in ${profile.location}, builds production AI agents with LangGraph and RAG and the backends behind them. Ex-Amazon and PwC.`;
+const title = `${profile.name} — ${profile.headline}, Amman`;
+const description = `${profile.name} is an AI engineer and senior software engineer in ${profile.location}, building production AI agents with LangGraph and RAG. Ex-Amazon and PwC.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
@@ -85,11 +85,12 @@ const jsonLd = {
       alternateName: profile.alternateNames,
       url: profile.siteUrl,
       image: `${profile.siteUrl}/images/tariq-portrait.png`,
-      jobTitle: profile.role,
+      jobTitle: ["AI Engineer", profile.role],
       description,
       email: `mailto:${profile.email}`,
       telephone: profile.phoneDisplay.replace(/\s/g, ""),
       address: { "@type": "PostalAddress", addressLocality: "Amman", addressCountry: "JO" },
+      homeLocation: { "@type": "Place", name: profile.location },
       worksFor: { "@type": "Organization", name: profile.company, url: "https://www.businesschat.io" },
       alumniOf: { "@type": "CollegeOrUniversity", name: "Princess Sumaya University for Technology" },
       knowsLanguage: ["ar", "en"],

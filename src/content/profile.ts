@@ -9,6 +9,8 @@ export const profile = {
   alternateNames: ["طارق عمارنة", "طارق عمارنه"],
   siteUrl: "https://www.tariqamarneh.com",
   role: "Senior Software Engineer",
+  // Both titles people search for, AI first since that is the rarer match.
+  headline: "AI Engineer & Senior Software Engineer",
   company: "BusinessChat",
   location: "Amman, Jordan",
   previously: "Amazon and PwC",

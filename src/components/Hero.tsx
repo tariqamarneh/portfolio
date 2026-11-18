@@ -39,7 +39,7 @@ export function Hero() {
         >
           {/* One fact per line on phones, so no line starts with a separator. */}
           <span className="block sm:inline">
-            {profile.role} at {profile.company}
+            {profile.headline} at {profile.company}
           </span>
           <span className="text-muted">
             <span className="max-sm:hidden"> · </span>
